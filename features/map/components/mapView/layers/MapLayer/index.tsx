@@ -1,7 +1,6 @@
-import { HnHMaxZoom, HnHMinZoom, TileSize } from "../../utils";
-
 import { useHavenMap } from "./hooks/useHavenMap";
 import { HavenLayer } from "./havenLayer";
+import { HnHMaxZoom, HnHMinZoom, TileSize } from "features/map/config";
 
 interface MapLayerProps {
   mapId: number;
@@ -22,7 +21,7 @@ export const MapLayer = ({ mapId, opacity }: MapLayerProps) => {
       }}
       map={mapId}
       opacity={opacity}
-      tileData={mapData.data?.getMapData}
+      tileData={mapData?.getMapData}
     />
   );
 };

@@ -1,9 +1,9 @@
 import { Marker as MarkerType } from "graphql/client/graphql";
 import { useMap, Marker as LeafletMarker, Popup, Tooltip } from "react-leaflet";
 import L from "leaflet";
-import { HnHMaxZoom } from "./utils";
 import { useMemo } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import { HnHMaxZoom } from "features/map/config";
 
 interface MarkerProps {
   marker: Omit<MarkerType, "hidden">;

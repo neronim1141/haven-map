@@ -1,9 +1,10 @@
 import { ReactNode, useCallback, useRef } from "react";
 import { MapContainer as Map } from "react-leaflet";
-import { HnHCRS, HnHMaxZoom, HnHMinZoom } from "./utils";
 import L, { LatLngTuple, LeafletMouseEvent } from "leaflet";
 import { useRouter } from "next/router";
 import { MapEvents } from "./mapEvents";
+import { HnHCRS } from "./utils";
+import { HnHMaxZoom, HnHMinZoom } from "features/map/config";
 
 export const MapContainer = (props: {
   zoom: number;

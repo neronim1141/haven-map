@@ -1,4 +1,4 @@
-import { HnHMaxZoom, HnHMinZoom } from "../../utils";
+import { HnHMaxZoom, HnHMinZoom } from "features/map/config";
 import { GridLayer as Layer } from "./gridLayer";
 
 export const GridLayer = () => {
