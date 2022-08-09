@@ -1,0 +1,47 @@
+type Tile {
+  x: Int!
+  y: Int!
+  lastUpdated: String!
+  z: Int!
+  mapId: Int!
+}
+type Coord {
+  x: Int!
+  y: Int!
+}
+type MapMerge {
+  to: Int!
+  shift: Coord!
+}
+type Map {
+  id: Int!
+  name: String
+  hidden: Boolean!
+}
+type Marker {
+  id: Int!
+  name: String!
+  x: Int!
+  y: Int!
+  mapId: Int!
+  hidden: Boolean!
+  image: String
+}
+type Query {
+  getMapData(id: Int!): [Tile!]!
+  getMaps: [Map!]!
+  getMarkers(hidden: Boolean!): [Marker!]!
+}
+
+type Subscription {
+  getMapUpdates(id: Int!): Tile!
+  MapMerges(id: Int!): MapMerge!
+}
+
+input CoordInput {
+  x: Int!
+  y: Int!
+}
+type Mutation {
+  setCenterCoord(mapId: Int!, shiftBy: CoordInput!): Coord!
+}

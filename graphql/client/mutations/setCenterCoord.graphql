@@ -1,0 +1,6 @@
+mutation SetCenterCoord($mapId: Int!, $shiftBy: CoordInput!) {
+  setCenterCoord(mapId: $mapId, shiftBy: $shiftBy) {
+    x
+    y
+  }
+}

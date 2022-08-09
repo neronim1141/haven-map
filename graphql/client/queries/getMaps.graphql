@@ -1,0 +1,7 @@
+query GetMaps {
+  getMaps {
+    id
+    name
+    hidden
+  }
+}

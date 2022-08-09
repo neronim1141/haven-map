@@ -1,0 +1,10 @@
+query GetMarkers($hidden: Boolean = false) {
+  getMarkers(hidden: $hidden) {
+    id
+    name
+    x
+    y
+    image
+    mapId
+  }
+}

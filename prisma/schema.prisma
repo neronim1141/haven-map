@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Map {
+  id       Int     @id @default(autoincrement())
+  name     String?
+  hidden   Boolean @default(false)
+  priority Boolean @default(false)
+}
+
+model Grid {
+  id    String @id
+  mapId Int
+  x     Int
+  y     Int
+}
+
+model Tile {
+  id          Int     @id @default(autoincrement())
+  gridId      String? @unique
+  mapId       Int
+  x           Int
+  y           Int
+  z           Int
+  tileData    Bytes
+  lastUpdated String
+}
+
+model Marker {
+  id     Int     @id
+  image  String
+  x      Int
+  y      Int
+  gridId String
+  name   String
+  hidden Boolean @default(false)
+  type   String
+}
+
+model MarkerIcon {
+  id       Int    @id
+  image    String @unique
+  iconData Bytes
+}

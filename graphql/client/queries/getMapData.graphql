@@ -1,0 +1,9 @@
+query GetMapData($mapId: Int!) {
+  getMapData(id: $mapId) {
+    x
+    y
+    z
+    lastUpdated
+    mapId
+  }
+}

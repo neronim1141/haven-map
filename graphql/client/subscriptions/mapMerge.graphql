@@ -1,0 +1,9 @@
+subscription GetMapMerges($mapId: Int!) {
+  MapMerges(id: $mapId) {
+    to
+    shift {
+      x
+      y
+    }
+  }
+}

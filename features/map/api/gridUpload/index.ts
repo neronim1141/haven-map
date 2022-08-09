@@ -1,0 +1,35 @@
+import { prisma } from "lib/prisma";
+
+import { File } from "formidable";
+import { promises as fs } from "fs";
+import { getParentCoords, saveTile, updateZoomLevel } from "..";
+import * as logger from "lib/logger";
+
+type RequestData = {
+  id: string;
+  extraData: { season: number };
+  file: File;
+};
+export const gridUpload = async (tile: RequestData) => {
+  try {
+    logger.log(`map Tile for: ${tile.id}`);
+    const tileData = await fs.readFile(tile.file.filepath);
+    const grid = await prisma.grid.findUnique({
+      where: { id: tile.id },
+    });
+    if (!grid) {
+      throw new Error(`Unknown grid id: ${tile.id}`);
+    }
+    await saveTile(grid.mapId, grid.x, grid.y, 0, tileData, grid.id);
+    let coord = { x: grid.x, y: grid.y };
+
+    for (let z = 1; z <= 5; z++) {
+      coord = getParentCoords(coord.x, coord.y);
+      await updateZoomLevel(grid.mapId, coord.x, coord.y, z);
+    }
+  } catch (e) {
+    console.log(e);
+  } finally {
+    fs.rm(tile.file.filepath);
+  }
+};

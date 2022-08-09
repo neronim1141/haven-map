@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import '~leaflet/dist/leaflet.css';
+
+.map-tile {
+  border-bottom: 1px solid #40404050;
+  border-right: 1px solid #40404050;
+  color: black;
+  font-size: 14px;
+  font-weight:600;
+  z-index: 10;
+  text-shadow: -1px -1px 0px rgba(255, 255, 255, 0.5), 1px -1px 0px rgba(255, 255, 255, 0.5), -1px 1px 0px rgba(255, 255, 255, 0.5), 1px 1px 0px rgba(255, 255, 255, 0.5);
+}
+.leaflet-container {
+  background: #000;
+}
+.leaflet-control { z-index: 0 !important}
+.leaflet-pane { z-index: 0 !important}
+.leaflet-top, .leaflet-bottom {z-index: 0 !important}
+.control-panel {
+  position: absolute;
+  top: 10%;
+  left: 10px;
+  z-index: 502;
+}
+
+.red{
+  @apply bg-red-500
+}

@@ -1,0 +1,9 @@
+subscription GetMapDataUpdates($mapId: Int!) {
+  getMapUpdates(id: $mapId) {
+    x
+    y
+    z
+    lastUpdated
+    mapId
+  }
+}
