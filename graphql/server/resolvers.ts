@@ -33,7 +33,6 @@ export const resolvers: Resolvers = {
         const icon = await prisma.markerIcon.findUnique({
           where: { image: marker.image },
         });
-        console.log(marker.image);
         if (grid)
           toSend.push({
             ...marker,

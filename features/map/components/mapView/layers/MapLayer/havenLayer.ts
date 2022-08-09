@@ -2,7 +2,7 @@ import { Tile } from "graphql/client/graphql";
 import L, { Util } from "leaflet";
 import { createTileLayerComponent, LayerProps } from "@react-leaflet/core";
 import { ReactNode } from "react";
-import { HnHMaxZoom } from "../../utils";
+import { HnHMaxZoom } from "features/map/config";
 interface HavenProps extends LayerProps {
   url?: string;
   map: number;
@@ -25,11 +25,14 @@ export class Haven extends L.TileLayer {
     this.redraw();
   }
   setMapData(data: Tile[]) {
+    console.log("dataSet");
     for (let { x, y, z, lastUpdated, mapId } of data) {
       let cache = this.cache[`${mapId}:${x}:${y}:${z}`];
+
       if (cache && cache === lastUpdated) {
         continue;
       }
+
       this.cache[`${mapId}:${x}:${y}:${z}`] = lastUpdated;
       this.refresh(x, y, z);
     }

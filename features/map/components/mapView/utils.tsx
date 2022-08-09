@@ -1,8 +1,5 @@
+import { TileSize } from "features/map/config";
 import L, { Bounds, LatLng, Point } from "leaflet";
-
-export const TileSize = 100;
-export const HnHMaxZoom = 6;
-export const HnHMinZoom = 1;
 
 const latNormalization = (90.0 * TileSize) / 2500000.0;
 const lngNormalization = (180.0 * TileSize) / 2500000.0;

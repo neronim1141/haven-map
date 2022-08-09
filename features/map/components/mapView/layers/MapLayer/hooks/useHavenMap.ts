@@ -9,10 +9,10 @@ import {
 import { useDebounce } from "./useDebounce";
 
 export const useHavenMap = (mapId: number) => {
-  const { subscribeToMore, data, refetch } = useGetMapDataQuery({
+  const { subscribeToMore, data } = useGetMapDataQuery({
     variables: { mapId },
     fetchPolicy: "network-only", // Used for first execution
-    nextFetchPolicy: "cache-first",
+    nextFetchPolicy: "cache-and-network",
   });
   useEffect(() => {
     subscribeToMore<GetMapDataUpdatesSubscription>({
@@ -25,22 +25,21 @@ export const useHavenMap = (mapId: number) => {
         if (!prev || !prev.getMapData) {
           return { getMapData: [] };
         }
-        if (!tileData) {
-          return prev;
-        }
-        const mapDataWithoutIncomingTile = prev.getMapData.filter((tile) => {
-          // for (let newTile of tileData) {
-          //   if (tile.lastUpdated === newTile.lastUpdated) return false;
-          if (tile.lastUpdated === tileData.lastUpdated) return false;
-          // }
+        const filtered = prev.getMapData.filter((tile) => {
+          if (
+            tile.x === tileData.x &&
+            tile.y === tileData.y &&
+            tile.z === tileData.z
+          ) {
+            return false;
+          }
           return true;
         });
         return {
-          getMapData: [...mapDataWithoutIncomingTile, tileData],
+          getMapData: [...filtered, tileData],
         };
       },
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mapId]);
-  return { data: useDebounce(data, 100), refetch };
+  }, [mapId, subscribeToMore]);
+  return useDebounce(data, 1000);
 };

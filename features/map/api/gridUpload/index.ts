@@ -4,6 +4,7 @@ import { File } from "formidable";
 import { promises as fs } from "fs";
 import { getParentCoords, saveTile, updateZoomLevel } from "..";
 import * as logger from "lib/logger";
+import { HnHMaxZoom, HnHMinZoom } from "features/map/config";
 
 type RequestData = {
   id: string;
@@ -23,7 +24,7 @@ export const gridUpload = async (tile: RequestData) => {
     await saveTile(grid.mapId, grid.x, grid.y, 0, tileData, grid.id);
     let coord = { x: grid.x, y: grid.y };
 
-    for (let z = 1; z <= 5; z++) {
+    for (let z = HnHMinZoom; z < HnHMaxZoom; z++) {
       coord = getParentCoords(coord.x, coord.y);
       await updateZoomLevel(grid.mapId, coord.x, coord.y, z);
     }
