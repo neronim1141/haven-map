@@ -24,7 +24,7 @@ export const authOptions: NextAuthOptions = {
           if (!data) return null;
           const { password, ...user } = data;
           if (!verifyPassword(password, credentials.password)) return null;
-          return user;
+          return user as Omit<User, "password">;
         } catch (e) {
           logger.error(e);
           return null;

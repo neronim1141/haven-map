@@ -62,7 +62,7 @@ export type Marker = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  shiftCoord: Coord;
+  shiftCoord: Scalars['Boolean'];
 };
 
 
@@ -265,7 +265,7 @@ export type MarkerResolvers<ContextType = any, ParentType extends ResolversParen
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  shiftCoord?: Resolver<ResolversTypes['Coord'], ParentType, ContextType, RequireFields<MutationShiftCoordArgs, 'mapId' | 'shiftBy'>>;
+  shiftCoord?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationShiftCoordArgs, 'mapId' | 'shiftBy'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {

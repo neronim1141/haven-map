@@ -11,7 +11,7 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = async (values) => {
+  const onSubmit = async (values: any) => {
     const res = await signIn("credentials", {
       redirect: false,
       login: values.login,

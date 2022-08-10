@@ -63,7 +63,7 @@ export type Marker = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  shiftCoord: Coord;
+  shiftCoord: Scalars['Boolean'];
 };
 
 
@@ -127,7 +127,7 @@ export type ShiftCoordMutationVariables = Exact<{
 }>;
 
 
-export type ShiftCoordMutation = { __typename?: 'Mutation', shiftCoord: { __typename?: 'Coord', x: number, y: number } };
+export type ShiftCoordMutation = { __typename?: 'Mutation', shiftCoord: boolean };
 
 export type MapQueryVariables = Exact<{
   mapId: Scalars['Int'];
@@ -173,10 +173,7 @@ export type MapUpdatesSubscription = { __typename?: 'Subscription', mapUpdates: 
 
 export const ShiftCoordDocument = gql`
     mutation ShiftCoord($mapId: Int!, $shiftBy: CoordInput!) {
-  shiftCoord(mapId: $mapId, shiftBy: $shiftBy) {
-    x
-    y
-  }
+  shiftCoord(mapId: $mapId, shiftBy: $shiftBy)
 }
     `;
 export type ShiftCoordMutationFn = Apollo.MutationFunction<ShiftCoordMutation, ShiftCoordMutationVariables>;

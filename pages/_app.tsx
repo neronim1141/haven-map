@@ -1,7 +1,7 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { ApolloProvider } from "@apollo/client";
-import apolloClient from "../graphql/apolloClient";
+import apolloClient from "../graphql/client/apolloClient";
 import { NavLink } from "components/NavLink/NavLink";
 import { SessionProvider } from "next-auth/react";
 import { NavUser } from "components/NavLink/NavUser";

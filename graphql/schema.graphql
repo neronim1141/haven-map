@@ -53,5 +53,5 @@ input CoordInput {
   y: Int!
 }
 type Mutation {
-  shiftCoord(mapId: Int!, shiftBy: CoordInput!): Coord!
+  shiftCoord(mapId: Int!, shiftBy: CoordInput!): Boolean!
 }

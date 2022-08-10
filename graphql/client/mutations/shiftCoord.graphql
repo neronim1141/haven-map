@@ -1,6 +1,3 @@
 mutation ShiftCoord($mapId: Int!, $shiftBy: CoordInput!) {
-  shiftCoord(mapId: $mapId, shiftBy: $shiftBy) {
-    x
-    y
-  }
+  shiftCoord(mapId: $mapId, shiftBy: $shiftBy)
 }

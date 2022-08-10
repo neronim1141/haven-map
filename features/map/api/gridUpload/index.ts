@@ -2,7 +2,7 @@ import { prisma } from "lib/prisma";
 
 import { File } from "formidable";
 import { promises as fs } from "fs";
-import { getParentCoords, saveTile, updateZoomLevel } from "..";
+import { getParentCoords, saveTile, updateZoomLevel } from "../utils";
 import * as logger from "lib/logger";
 import { HnHMaxZoom, HnHMinZoom } from "features/map/config";
 
