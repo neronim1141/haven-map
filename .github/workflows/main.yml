@@ -1,5 +1,9 @@
-name: Pull Requests
-on: [pull_request]
+name: cli
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
 jobs:
   quality:
     name: Quality
