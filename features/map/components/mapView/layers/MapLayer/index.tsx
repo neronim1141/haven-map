@@ -21,7 +21,7 @@ export const MapLayer = ({ mapId, opacity }: MapLayerProps) => {
       }}
       map={mapId}
       opacity={opacity}
-      tileData={mapData?.getMapData}
+      tileData={mapData?.map}
     />
   );
 };

@@ -1,0 +1,10 @@
+query Markers($hidden: Boolean = false, $ids: [Int]!) {
+  markers(hidden: $hidden, ids: $ids) {
+    id
+    name
+    x
+    y
+    image
+    mapId
+  }
+}

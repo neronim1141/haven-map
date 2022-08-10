@@ -29,7 +29,7 @@ export const gridUpload = async (tile: RequestData) => {
       await updateZoomLevel(grid.mapId, coord.x, coord.y, z);
     }
   } catch (e) {
-    console.log(e);
+    logger.error(e);
   } finally {
     fs.rm(tile.file.filepath);
   }

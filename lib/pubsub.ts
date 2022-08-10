@@ -1,8 +1,10 @@
 import { createPubSub, PubSub } from "@graphql-yoga/node";
 import { Tile } from "@prisma/client";
+import { Character } from "graphql/server/types";
 
 type PubSubData = {
   tileUpdate: [mapId: number, payload: Tile];
+  characters: [payload: Character[]];
   merge: [
     from: number,
     payload: { to: number; shift: { x: number; y: number } }

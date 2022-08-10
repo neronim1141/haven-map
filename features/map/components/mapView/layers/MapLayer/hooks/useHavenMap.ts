@@ -1,31 +1,28 @@
 import { useEffect } from "react";
 
-import MAP_DATA_UPDATE from "graphql/client/subscriptions/getMapDataUpdate.graphql";
+import MAP_DATA_UPDATE from "graphql/client/subscriptions/mapUpdate.graphql";
 
-import {
-  GetMapDataUpdatesSubscription,
-  useGetMapDataQuery,
-} from "graphql/client/graphql";
 import { useDebounce } from "./useDebounce";
+import { MapUpdatesSubscription, useMapQuery } from "graphql/client/graphql";
 
 export const useHavenMap = (mapId: number) => {
-  const { subscribeToMore, data } = useGetMapDataQuery({
+  const { subscribeToMore, data } = useMapQuery({
     variables: { mapId },
     fetchPolicy: "network-only", // Used for first execution
     nextFetchPolicy: "cache-and-network",
   });
   useEffect(() => {
-    subscribeToMore<GetMapDataUpdatesSubscription>({
+    subscribeToMore<MapUpdatesSubscription>({
       document: MAP_DATA_UPDATE,
       variables: {
         mapId,
       },
       updateQuery: (prev, { subscriptionData }) => {
-        const tileData = subscriptionData.data.getMapUpdates;
-        if (!prev || !prev.getMapData) {
-          return { getMapData: [] };
+        const tileData = subscriptionData.data.mapUpdates;
+        if (!prev || !prev.map) {
+          return { map: [] };
         }
-        const filtered = prev.getMapData.filter((tile) => {
+        const filtered = prev.map.filter((tile) => {
           if (
             tile.x === tileData.x &&
             tile.y === tileData.y &&
@@ -36,7 +33,7 @@ export const useHavenMap = (mapId: number) => {
           return true;
         });
         return {
-          getMapData: [...filtered, tileData],
+          map: [...filtered, tileData],
         };
       },
     });

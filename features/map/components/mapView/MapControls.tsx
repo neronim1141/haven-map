@@ -1,5 +1,5 @@
 import { useMapData } from "./hooks/useMapData";
-import { Marker, useGetMapsQuery } from "graphql/client/graphql";
+import { Marker, useMapsQuery } from "graphql/client/graphql";
 import _ from "lodash";
 import { useOverlayData } from "./hooks/useOverlayData";
 export function MapControls({
@@ -11,8 +11,8 @@ export function MapControls({
   overlay: ReturnType<typeof useOverlayData>;
   markers?: Omit<Marker, "hidden">[];
 }) {
-  const { data: maps } = useGetMapsQuery();
-  if (!maps?.getMaps) {
+  const { data: maps } = useMapsQuery();
+  if (!maps?.maps) {
     return <>Loading</>;
   }
 
@@ -25,7 +25,7 @@ export function MapControls({
           overlay.setId("");
         }}
       >
-        {maps.getMaps.map((map) => (
+        {maps.maps.map((map) => (
           <option value={map.id} key={map.id}>
             {map.name ?? map.id}
           </option>
@@ -38,7 +38,7 @@ export function MapControls({
         }}
       >
         <option value="">None</option>
-        {maps.getMaps
+        {maps.maps
           .filter((map) => map.id !== main.mapId)
           .map((map) => (
             <option value={map.id} key={map.id}>

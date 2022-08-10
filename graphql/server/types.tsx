@@ -14,6 +14,17 @@ export type Scalars = {
   Float: number;
 };
 
+export type Character = {
+  __typename?: 'Character';
+  expire: Scalars['Float'];
+  id: Scalars['String'];
+  inMap: Scalars['Int'];
+  name: Scalars['String'];
+  type: Scalars['String'];
+  x: Scalars['Int'];
+  y: Scalars['Int'];
+};
+
 export type Coord = {
   __typename?: 'Coord';
   x: Scalars['Int'];
@@ -51,36 +62,43 @@ export type Marker = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  setCenterCoord: Coord;
+  shiftCoord: Coord;
 };
 
 
-export type MutationSetCenterCoordArgs = {
+export type MutationShiftCoordArgs = {
   mapId: Scalars['Int'];
   shiftBy: CoordInput;
 };
 
 export type Query = {
   __typename?: 'Query';
-  getMapData: Array<Tile>;
-  getMaps: Array<Map>;
-  getMarkers: Array<Marker>;
+  map: Array<Tile>;
+  maps: Array<Map>;
+  markers: Array<Marker>;
 };
 
 
-export type QueryGetMapDataArgs = {
+export type QueryMapArgs = {
   id: Scalars['Int'];
 };
 
 
-export type QueryGetMarkersArgs = {
+export type QueryMarkersArgs = {
   hidden: Scalars['Boolean'];
+  ids: Array<InputMaybe<Scalars['Int']>>;
 };
 
 export type Subscription = {
   __typename?: 'Subscription';
-  MapMerges: MapMerge;
-  getMapUpdates: Tile;
+  characters: Array<Character>;
+  mapMerges: MapMerge;
+  mapUpdates: Tile;
+};
+
+
+export type SubscriptionCharactersArgs = {
+  ids: Array<InputMaybe<Scalars['Int']>>;
 };
 
 
@@ -89,7 +107,7 @@ export type SubscriptionMapMergesArgs = {
 };
 
 
-export type SubscriptionGetMapUpdatesArgs = {
+export type SubscriptionMapUpdatesArgs = {
   id: Scalars['Int'];
 };
 
@@ -172,8 +190,10 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  Character: ResolverTypeWrapper<Character>;
   Coord: ResolverTypeWrapper<Coord>;
   CoordInput: CoordInput;
+  Float: ResolverTypeWrapper<Scalars['Float']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Map: ResolverTypeWrapper<Map>;
   MapMerge: ResolverTypeWrapper<MapMerge>;
@@ -188,8 +208,10 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
+  Character: Character;
   Coord: Coord;
   CoordInput: CoordInput;
+  Float: Scalars['Float'];
   Int: Scalars['Int'];
   Map: Map;
   MapMerge: MapMerge;
@@ -199,6 +221,17 @@ export type ResolversParentTypes = {
   String: Scalars['String'];
   Subscription: {};
   Tile: Tile;
+};
+
+export type CharacterResolvers<ContextType = any, ParentType extends ResolversParentTypes['Character'] = ResolversParentTypes['Character']> = {
+  expire?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  inMap?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  x?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  y?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CoordResolvers<ContextType = any, ParentType extends ResolversParentTypes['Coord'] = ResolversParentTypes['Coord']> = {
@@ -232,18 +265,19 @@ export type MarkerResolvers<ContextType = any, ParentType extends ResolversParen
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  setCenterCoord?: Resolver<ResolversTypes['Coord'], ParentType, ContextType, RequireFields<MutationSetCenterCoordArgs, 'mapId' | 'shiftBy'>>;
+  shiftCoord?: Resolver<ResolversTypes['Coord'], ParentType, ContextType, RequireFields<MutationShiftCoordArgs, 'mapId' | 'shiftBy'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  getMapData?: Resolver<Array<ResolversTypes['Tile']>, ParentType, ContextType, RequireFields<QueryGetMapDataArgs, 'id'>>;
-  getMaps?: Resolver<Array<ResolversTypes['Map']>, ParentType, ContextType>;
-  getMarkers?: Resolver<Array<ResolversTypes['Marker']>, ParentType, ContextType, RequireFields<QueryGetMarkersArgs, 'hidden'>>;
+  map?: Resolver<Array<ResolversTypes['Tile']>, ParentType, ContextType, RequireFields<QueryMapArgs, 'id'>>;
+  maps?: Resolver<Array<ResolversTypes['Map']>, ParentType, ContextType>;
+  markers?: Resolver<Array<ResolversTypes['Marker']>, ParentType, ContextType, RequireFields<QueryMarkersArgs, 'hidden' | 'ids'>>;
 };
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
-  MapMerges?: SubscriptionResolver<ResolversTypes['MapMerge'], "MapMerges", ParentType, ContextType, RequireFields<SubscriptionMapMergesArgs, 'id'>>;
-  getMapUpdates?: SubscriptionResolver<ResolversTypes['Tile'], "getMapUpdates", ParentType, ContextType, RequireFields<SubscriptionGetMapUpdatesArgs, 'id'>>;
+  characters?: SubscriptionResolver<Array<ResolversTypes['Character']>, "characters", ParentType, ContextType, RequireFields<SubscriptionCharactersArgs, 'ids'>>;
+  mapMerges?: SubscriptionResolver<ResolversTypes['MapMerge'], "mapMerges", ParentType, ContextType, RequireFields<SubscriptionMapMergesArgs, 'id'>>;
+  mapUpdates?: SubscriptionResolver<ResolversTypes['Tile'], "mapUpdates", ParentType, ContextType, RequireFields<SubscriptionMapUpdatesArgs, 'id'>>;
 };
 
 export type TileResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tile'] = ResolversParentTypes['Tile']> = {
@@ -256,6 +290,7 @@ export type TileResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type Resolvers<ContextType = any> = {
+  Character?: CharacterResolvers<ContextType>;
   Coord?: CoordResolvers<ContextType>;
   Map?: MapResolvers<ContextType>;
   MapMerge?: MapMergeResolvers<ContextType>;

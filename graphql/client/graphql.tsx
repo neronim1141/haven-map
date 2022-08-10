@@ -15,6 +15,17 @@ export type Scalars = {
   Float: number;
 };
 
+export type Character = {
+  __typename?: 'Character';
+  expire: Scalars['Float'];
+  id: Scalars['String'];
+  inMap: Scalars['Int'];
+  name: Scalars['String'];
+  type: Scalars['String'];
+  x: Scalars['Int'];
+  y: Scalars['Int'];
+};
+
 export type Coord = {
   __typename?: 'Coord';
   x: Scalars['Int'];
@@ -52,36 +63,43 @@ export type Marker = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  setCenterCoord: Coord;
+  shiftCoord: Coord;
 };
 
 
-export type MutationSetCenterCoordArgs = {
+export type MutationShiftCoordArgs = {
   mapId: Scalars['Int'];
   shiftBy: CoordInput;
 };
 
 export type Query = {
   __typename?: 'Query';
-  getMapData: Array<Tile>;
-  getMaps: Array<Map>;
-  getMarkers: Array<Marker>;
+  map: Array<Tile>;
+  maps: Array<Map>;
+  markers: Array<Marker>;
 };
 
 
-export type QueryGetMapDataArgs = {
+export type QueryMapArgs = {
   id: Scalars['Int'];
 };
 
 
-export type QueryGetMarkersArgs = {
+export type QueryMarkersArgs = {
   hidden: Scalars['Boolean'];
+  ids: Array<InputMaybe<Scalars['Int']>>;
 };
 
 export type Subscription = {
   __typename?: 'Subscription';
-  MapMerges: MapMerge;
-  getMapUpdates: Tile;
+  characters: Array<Character>;
+  mapMerges: MapMerge;
+  mapUpdates: Tile;
+};
+
+
+export type SubscriptionCharactersArgs = {
+  ids: Array<InputMaybe<Scalars['Int']>>;
 };
 
 
@@ -90,7 +108,7 @@ export type SubscriptionMapMergesArgs = {
 };
 
 
-export type SubscriptionGetMapUpdatesArgs = {
+export type SubscriptionMapUpdatesArgs = {
   id: Scalars['Int'];
 };
 
@@ -103,86 +121,94 @@ export type Tile = {
   z: Scalars['Int'];
 };
 
-export type SetCenterCoordMutationVariables = Exact<{
+export type ShiftCoordMutationVariables = Exact<{
   mapId: Scalars['Int'];
   shiftBy: CoordInput;
 }>;
 
 
-export type SetCenterCoordMutation = { __typename?: 'Mutation', setCenterCoord: { __typename?: 'Coord', x: number, y: number } };
+export type ShiftCoordMutation = { __typename?: 'Mutation', shiftCoord: { __typename?: 'Coord', x: number, y: number } };
 
-export type GetMapDataQueryVariables = Exact<{
+export type MapQueryVariables = Exact<{
   mapId: Scalars['Int'];
 }>;
 
 
-export type GetMapDataQuery = { __typename?: 'Query', getMapData: Array<{ __typename?: 'Tile', x: number, y: number, z: number, lastUpdated: string, mapId: number }> };
+export type MapQuery = { __typename?: 'Query', map: Array<{ __typename?: 'Tile', x: number, y: number, z: number, lastUpdated: string, mapId: number }> };
 
-export type GetMapsQueryVariables = Exact<{ [key: string]: never; }>;
+export type MapsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMapsQuery = { __typename?: 'Query', getMaps: Array<{ __typename?: 'Map', id: number, name?: string | null, hidden: boolean }> };
+export type MapsQuery = { __typename?: 'Query', maps: Array<{ __typename?: 'Map', id: number, name?: string | null, hidden: boolean }> };
 
-export type GetMarkersQueryVariables = Exact<{
+export type MarkersQueryVariables = Exact<{
   hidden?: InputMaybe<Scalars['Boolean']>;
+  ids: Array<InputMaybe<Scalars['Int']>> | InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type GetMarkersQuery = { __typename?: 'Query', getMarkers: Array<{ __typename?: 'Marker', id: number, name: string, x: number, y: number, image?: string | null, mapId: number }> };
+export type MarkersQuery = { __typename?: 'Query', markers: Array<{ __typename?: 'Marker', id: number, name: string, x: number, y: number, image?: string | null, mapId: number }> };
 
-export type GetMapDataUpdatesSubscriptionVariables = Exact<{
+export type CharactersSubscriptionVariables = Exact<{
+  ids: Array<Scalars['Int']> | Scalars['Int'];
+}>;
+
+
+export type CharactersSubscription = { __typename?: 'Subscription', characters: Array<{ __typename?: 'Character', id: string, name: string, type: string, inMap: number, expire: number, x: number, y: number }> };
+
+export type MapMergesSubscriptionVariables = Exact<{
   mapId: Scalars['Int'];
 }>;
 
 
-export type GetMapDataUpdatesSubscription = { __typename?: 'Subscription', getMapUpdates: { __typename?: 'Tile', x: number, y: number, z: number, lastUpdated: string, mapId: number } };
+export type MapMergesSubscription = { __typename?: 'Subscription', mapMerges: { __typename?: 'MapMerge', to: number, shift: { __typename?: 'Coord', x: number, y: number } } };
 
-export type GetMapMergesSubscriptionVariables = Exact<{
+export type MapUpdatesSubscriptionVariables = Exact<{
   mapId: Scalars['Int'];
 }>;
 
 
-export type GetMapMergesSubscription = { __typename?: 'Subscription', MapMerges: { __typename?: 'MapMerge', to: number, shift: { __typename?: 'Coord', x: number, y: number } } };
+export type MapUpdatesSubscription = { __typename?: 'Subscription', mapUpdates: { __typename?: 'Tile', x: number, y: number, z: number, lastUpdated: string, mapId: number } };
 
 
-export const SetCenterCoordDocument = gql`
-    mutation SetCenterCoord($mapId: Int!, $shiftBy: CoordInput!) {
-  setCenterCoord(mapId: $mapId, shiftBy: $shiftBy) {
+export const ShiftCoordDocument = gql`
+    mutation ShiftCoord($mapId: Int!, $shiftBy: CoordInput!) {
+  shiftCoord(mapId: $mapId, shiftBy: $shiftBy) {
     x
     y
   }
 }
     `;
-export type SetCenterCoordMutationFn = Apollo.MutationFunction<SetCenterCoordMutation, SetCenterCoordMutationVariables>;
+export type ShiftCoordMutationFn = Apollo.MutationFunction<ShiftCoordMutation, ShiftCoordMutationVariables>;
 
 /**
- * __useSetCenterCoordMutation__
+ * __useShiftCoordMutation__
  *
- * To run a mutation, you first call `useSetCenterCoordMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSetCenterCoordMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useShiftCoordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useShiftCoordMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [setCenterCoordMutation, { data, loading, error }] = useSetCenterCoordMutation({
+ * const [shiftCoordMutation, { data, loading, error }] = useShiftCoordMutation({
  *   variables: {
  *      mapId: // value for 'mapId'
  *      shiftBy: // value for 'shiftBy'
  *   },
  * });
  */
-export function useSetCenterCoordMutation(baseOptions?: Apollo.MutationHookOptions<SetCenterCoordMutation, SetCenterCoordMutationVariables>) {
+export function useShiftCoordMutation(baseOptions?: Apollo.MutationHookOptions<ShiftCoordMutation, ShiftCoordMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<SetCenterCoordMutation, SetCenterCoordMutationVariables>(SetCenterCoordDocument, options);
+        return Apollo.useMutation<ShiftCoordMutation, ShiftCoordMutationVariables>(ShiftCoordDocument, options);
       }
-export type SetCenterCoordMutationHookResult = ReturnType<typeof useSetCenterCoordMutation>;
-export type SetCenterCoordMutationResult = Apollo.MutationResult<SetCenterCoordMutation>;
-export type SetCenterCoordMutationOptions = Apollo.BaseMutationOptions<SetCenterCoordMutation, SetCenterCoordMutationVariables>;
-export const GetMapDataDocument = gql`
-    query GetMapData($mapId: Int!) {
-  getMapData(id: $mapId) {
+export type ShiftCoordMutationHookResult = ReturnType<typeof useShiftCoordMutation>;
+export type ShiftCoordMutationResult = Apollo.MutationResult<ShiftCoordMutation>;
+export type ShiftCoordMutationOptions = Apollo.BaseMutationOptions<ShiftCoordMutation, ShiftCoordMutationVariables>;
+export const MapDocument = gql`
+    query Map($mapId: Int!) {
+  map(id: $mapId) {
     x
     y
     z
@@ -193,35 +219,35 @@ export const GetMapDataDocument = gql`
     `;
 
 /**
- * __useGetMapDataQuery__
+ * __useMapQuery__
  *
- * To run a query within a React component, call `useGetMapDataQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetMapDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useMapQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMapQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetMapDataQuery({
+ * const { data, loading, error } = useMapQuery({
  *   variables: {
  *      mapId: // value for 'mapId'
  *   },
  * });
  */
-export function useGetMapDataQuery(baseOptions: Apollo.QueryHookOptions<GetMapDataQuery, GetMapDataQueryVariables>) {
+export function useMapQuery(baseOptions: Apollo.QueryHookOptions<MapQuery, MapQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetMapDataQuery, GetMapDataQueryVariables>(GetMapDataDocument, options);
+        return Apollo.useQuery<MapQuery, MapQueryVariables>(MapDocument, options);
       }
-export function useGetMapDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMapDataQuery, GetMapDataQueryVariables>) {
+export function useMapLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MapQuery, MapQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetMapDataQuery, GetMapDataQueryVariables>(GetMapDataDocument, options);
+          return Apollo.useLazyQuery<MapQuery, MapQueryVariables>(MapDocument, options);
         }
-export type GetMapDataQueryHookResult = ReturnType<typeof useGetMapDataQuery>;
-export type GetMapDataLazyQueryHookResult = ReturnType<typeof useGetMapDataLazyQuery>;
-export type GetMapDataQueryResult = Apollo.QueryResult<GetMapDataQuery, GetMapDataQueryVariables>;
-export const GetMapsDocument = gql`
-    query GetMaps {
-  getMaps {
+export type MapQueryHookResult = ReturnType<typeof useMapQuery>;
+export type MapLazyQueryHookResult = ReturnType<typeof useMapLazyQuery>;
+export type MapQueryResult = Apollo.QueryResult<MapQuery, MapQueryVariables>;
+export const MapsDocument = gql`
+    query Maps {
+  maps {
     id
     name
     hidden
@@ -230,34 +256,34 @@ export const GetMapsDocument = gql`
     `;
 
 /**
- * __useGetMapsQuery__
+ * __useMapsQuery__
  *
- * To run a query within a React component, call `useGetMapsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetMapsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useMapsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMapsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetMapsQuery({
+ * const { data, loading, error } = useMapsQuery({
  *   variables: {
  *   },
  * });
  */
-export function useGetMapsQuery(baseOptions?: Apollo.QueryHookOptions<GetMapsQuery, GetMapsQueryVariables>) {
+export function useMapsQuery(baseOptions?: Apollo.QueryHookOptions<MapsQuery, MapsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetMapsQuery, GetMapsQueryVariables>(GetMapsDocument, options);
+        return Apollo.useQuery<MapsQuery, MapsQueryVariables>(MapsDocument, options);
       }
-export function useGetMapsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMapsQuery, GetMapsQueryVariables>) {
+export function useMapsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MapsQuery, MapsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetMapsQuery, GetMapsQueryVariables>(GetMapsDocument, options);
+          return Apollo.useLazyQuery<MapsQuery, MapsQueryVariables>(MapsDocument, options);
         }
-export type GetMapsQueryHookResult = ReturnType<typeof useGetMapsQuery>;
-export type GetMapsLazyQueryHookResult = ReturnType<typeof useGetMapsLazyQuery>;
-export type GetMapsQueryResult = Apollo.QueryResult<GetMapsQuery, GetMapsQueryVariables>;
-export const GetMarkersDocument = gql`
-    query GetMarkers($hidden: Boolean = false) {
-  getMarkers(hidden: $hidden) {
+export type MapsQueryHookResult = ReturnType<typeof useMapsQuery>;
+export type MapsLazyQueryHookResult = ReturnType<typeof useMapsLazyQuery>;
+export type MapsQueryResult = Apollo.QueryResult<MapsQuery, MapsQueryVariables>;
+export const MarkersDocument = gql`
+    query Markers($hidden: Boolean = false, $ids: [Int]!) {
+  markers(hidden: $hidden, ids: $ids) {
     id
     name
     x
@@ -269,69 +295,72 @@ export const GetMarkersDocument = gql`
     `;
 
 /**
- * __useGetMarkersQuery__
+ * __useMarkersQuery__
  *
- * To run a query within a React component, call `useGetMarkersQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetMarkersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useMarkersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMarkersQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetMarkersQuery({
+ * const { data, loading, error } = useMarkersQuery({
  *   variables: {
  *      hidden: // value for 'hidden'
+ *      ids: // value for 'ids'
  *   },
  * });
  */
-export function useGetMarkersQuery(baseOptions?: Apollo.QueryHookOptions<GetMarkersQuery, GetMarkersQueryVariables>) {
+export function useMarkersQuery(baseOptions: Apollo.QueryHookOptions<MarkersQuery, MarkersQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetMarkersQuery, GetMarkersQueryVariables>(GetMarkersDocument, options);
+        return Apollo.useQuery<MarkersQuery, MarkersQueryVariables>(MarkersDocument, options);
       }
-export function useGetMarkersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMarkersQuery, GetMarkersQueryVariables>) {
+export function useMarkersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MarkersQuery, MarkersQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetMarkersQuery, GetMarkersQueryVariables>(GetMarkersDocument, options);
+          return Apollo.useLazyQuery<MarkersQuery, MarkersQueryVariables>(MarkersDocument, options);
         }
-export type GetMarkersQueryHookResult = ReturnType<typeof useGetMarkersQuery>;
-export type GetMarkersLazyQueryHookResult = ReturnType<typeof useGetMarkersLazyQuery>;
-export type GetMarkersQueryResult = Apollo.QueryResult<GetMarkersQuery, GetMarkersQueryVariables>;
-export const GetMapDataUpdatesDocument = gql`
-    subscription GetMapDataUpdates($mapId: Int!) {
-  getMapUpdates(id: $mapId) {
+export type MarkersQueryHookResult = ReturnType<typeof useMarkersQuery>;
+export type MarkersLazyQueryHookResult = ReturnType<typeof useMarkersLazyQuery>;
+export type MarkersQueryResult = Apollo.QueryResult<MarkersQuery, MarkersQueryVariables>;
+export const CharactersDocument = gql`
+    subscription Characters($ids: [Int!]!) {
+  characters(ids: $ids) {
+    id
+    name
+    type
+    inMap
+    expire
     x
     y
-    z
-    lastUpdated
-    mapId
   }
 }
     `;
 
 /**
- * __useGetMapDataUpdatesSubscription__
+ * __useCharactersSubscription__
  *
- * To run a query within a React component, call `useGetMapDataUpdatesSubscription` and pass it any options that fit your needs.
- * When your component renders, `useGetMapDataUpdatesSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useCharactersSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useCharactersSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetMapDataUpdatesSubscription({
+ * const { data, loading, error } = useCharactersSubscription({
  *   variables: {
- *      mapId: // value for 'mapId'
+ *      ids: // value for 'ids'
  *   },
  * });
  */
-export function useGetMapDataUpdatesSubscription(baseOptions: Apollo.SubscriptionHookOptions<GetMapDataUpdatesSubscription, GetMapDataUpdatesSubscriptionVariables>) {
+export function useCharactersSubscription(baseOptions: Apollo.SubscriptionHookOptions<CharactersSubscription, CharactersSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<GetMapDataUpdatesSubscription, GetMapDataUpdatesSubscriptionVariables>(GetMapDataUpdatesDocument, options);
+        return Apollo.useSubscription<CharactersSubscription, CharactersSubscriptionVariables>(CharactersDocument, options);
       }
-export type GetMapDataUpdatesSubscriptionHookResult = ReturnType<typeof useGetMapDataUpdatesSubscription>;
-export type GetMapDataUpdatesSubscriptionResult = Apollo.SubscriptionResult<GetMapDataUpdatesSubscription>;
-export const GetMapMergesDocument = gql`
-    subscription GetMapMerges($mapId: Int!) {
-  MapMerges(id: $mapId) {
+export type CharactersSubscriptionHookResult = ReturnType<typeof useCharactersSubscription>;
+export type CharactersSubscriptionResult = Apollo.SubscriptionResult<CharactersSubscription>;
+export const MapMergesDocument = gql`
+    subscription MapMerges($mapId: Int!) {
+  mapMerges(id: $mapId) {
     to
     shift {
       x
@@ -342,24 +371,58 @@ export const GetMapMergesDocument = gql`
     `;
 
 /**
- * __useGetMapMergesSubscription__
+ * __useMapMergesSubscription__
  *
- * To run a query within a React component, call `useGetMapMergesSubscription` and pass it any options that fit your needs.
- * When your component renders, `useGetMapMergesSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useMapMergesSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useMapMergesSubscription` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetMapMergesSubscription({
+ * const { data, loading, error } = useMapMergesSubscription({
  *   variables: {
  *      mapId: // value for 'mapId'
  *   },
  * });
  */
-export function useGetMapMergesSubscription(baseOptions: Apollo.SubscriptionHookOptions<GetMapMergesSubscription, GetMapMergesSubscriptionVariables>) {
+export function useMapMergesSubscription(baseOptions: Apollo.SubscriptionHookOptions<MapMergesSubscription, MapMergesSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useSubscription<GetMapMergesSubscription, GetMapMergesSubscriptionVariables>(GetMapMergesDocument, options);
+        return Apollo.useSubscription<MapMergesSubscription, MapMergesSubscriptionVariables>(MapMergesDocument, options);
       }
-export type GetMapMergesSubscriptionHookResult = ReturnType<typeof useGetMapMergesSubscription>;
-export type GetMapMergesSubscriptionResult = Apollo.SubscriptionResult<GetMapMergesSubscription>;
+export type MapMergesSubscriptionHookResult = ReturnType<typeof useMapMergesSubscription>;
+export type MapMergesSubscriptionResult = Apollo.SubscriptionResult<MapMergesSubscription>;
+export const MapUpdatesDocument = gql`
+    subscription MapUpdates($mapId: Int!) {
+  mapUpdates(id: $mapId) {
+    x
+    y
+    z
+    lastUpdated
+    mapId
+  }
+}
+    `;
+
+/**
+ * __useMapUpdatesSubscription__
+ *
+ * To run a query within a React component, call `useMapUpdatesSubscription` and pass it any options that fit your needs.
+ * When your component renders, `useMapUpdatesSubscription` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the subscription, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMapUpdatesSubscription({
+ *   variables: {
+ *      mapId: // value for 'mapId'
+ *   },
+ * });
+ */
+export function useMapUpdatesSubscription(baseOptions: Apollo.SubscriptionHookOptions<MapUpdatesSubscription, MapUpdatesSubscriptionVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useSubscription<MapUpdatesSubscription, MapUpdatesSubscriptionVariables>(MapUpdatesDocument, options);
+      }
+export type MapUpdatesSubscriptionHookResult = ReturnType<typeof useMapUpdatesSubscription>;
+export type MapUpdatesSubscriptionResult = Apollo.SubscriptionResult<MapUpdatesSubscription>;

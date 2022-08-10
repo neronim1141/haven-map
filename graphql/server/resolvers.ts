@@ -1,7 +1,8 @@
 import { pubsub } from "../../lib/pubsub";
 import { prisma } from "../../lib/prisma";
-import { Resolvers, Tile, MapMerge, Marker } from "./types";
+import { Resolvers, Tile, MapMerge, Marker, Character } from "./types";
 import { shiftMap } from "features/map/api/utils/shiftMap";
+import { map, pipe } from "@graphql-yoga/node";
 
 export const config = {
   api: {
@@ -10,17 +11,17 @@ export const config = {
 };
 export const resolvers: Resolvers = {
   Query: {
-    getMapData: async (_, { id }) => {
+    map: async (_, { id }) => {
       return await prisma.tile.findMany({
         where: {
           AND: [{ mapId: id }],
         },
       });
     },
-    getMaps: async () => {
+    maps: async () => {
       return await prisma.map.findMany();
     },
-    getMarkers: async (_, { hidden }) => {
+    markers: async (_, { hidden }) => {
       const markers = await prisma.marker.findMany({
         where: { hidden },
       });
@@ -46,19 +47,29 @@ export const resolvers: Resolvers = {
     },
   },
   Subscription: {
-    getMapUpdates: {
+    mapUpdates: {
       subscribe: (_, { id }) => pubsub.subscribe("tileUpdate", id),
       resolve: (payload: Tile) => {
         return payload;
       },
     },
-    MapMerges: {
+    mapMerges: {
       subscribe: (_, { id }) => pubsub.subscribe("merge", id),
       resolve: (payload: MapMerge) => payload,
     },
+    characters: {
+      subscribe: (_, { ids }) =>
+        pipe(
+          pubsub.subscribe("characters"),
+          map((characters) =>
+            characters.filter((character) => ids.includes(character.inMap))
+          )
+        ),
+      resolve: (payload: Character[]) => payload,
+    },
   },
   Mutation: {
-    setCenterCoord: async (_, { mapId, shiftBy }) => {
+    shiftCoord: async (_, { mapId, shiftBy }) => {
       await shiftMap(mapId, shiftBy);
       return { x: 0, y: 0 };
     },

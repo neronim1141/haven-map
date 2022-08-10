@@ -1,15 +1,15 @@
-import { useGetMapMergesSubscription } from "graphql/client/graphql";
+import { useMapMergesSubscription } from "graphql/client/graphql";
 import { useState } from "react";
 
 export const useOverlayData = () => {
   const [overlayMapId, setOverlayMapId] = useState<string>("");
   const [overlayOpacity, setOverlayOpacity] = useState(0.5);
 
-  useGetMapMergesSubscription({
+  useMapMergesSubscription({
     variables: { mapId: Number(overlayMapId) },
     skip: overlayMapId === "",
     onSubscriptionData: ({ subscriptionData: merge }) => {
-      const mapMergeData = merge.data?.MapMerges;
+      const mapMergeData = merge.data?.mapMerges;
       if (mapMergeData) {
         setOverlayMapId(mapMergeData.to.toString());
       }
@@ -17,7 +17,7 @@ export const useOverlayData = () => {
   });
 
   return {
-    id: overlayMapId,
+    id: Number(overlayMapId),
     opacity: overlayOpacity,
     setId: setOverlayMapId,
     setOpacity: setOverlayOpacity,
