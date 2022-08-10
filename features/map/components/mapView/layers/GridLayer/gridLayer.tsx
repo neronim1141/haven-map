@@ -28,11 +28,9 @@ class Grid extends L.TileLayer {
     }
 
     let textElement = document.createElement("div");
-    textElement.classList.add("map-tile-text");
-    textElement.classList.add("w-full");
-    textElement.classList.add("h-full");
-    textElement.classList.add("relative");
-    textElement.classList.add("p-1");
+    textElement.className =
+      "map-tile-text w-full h-full relative p-1 text-outline";
+
     textElement.innerHTML = text;
     element.appendChild(textElement);
     return element;

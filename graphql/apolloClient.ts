@@ -19,7 +19,7 @@ class SSELink extends ApolloLink {
   }
 
   public request(operation: Operation): Observable<FetchResult> {
-    const url = new URL(this.options.uri);
+    const url = new URL(document.location.origin + this.options.uri);
     url.searchParams.append("query", print(operation.query));
     url.searchParams.append("variables", JSON.stringify(operation.variables));
     if (operation.extensions) {
@@ -46,7 +46,7 @@ class SSELink extends ApolloLink {
   }
 }
 
-const uri = process.env.NEXT_PUBLIC_HOSTNAME + "/api/graphql";
+const uri = "/api/graphql";
 
 const sseLink = new SSELink({
   uri,
