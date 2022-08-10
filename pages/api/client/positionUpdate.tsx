@@ -2,23 +2,16 @@ import { createRouter } from "next-connect";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as logger from "lib/logger";
+import {
+  PositionUpdateRequest,
+  updatePosition,
+} from "features/map/api/positionUpdate";
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
-type PositionUpdateRequest = {
-  [key: string]: {
-    name: string;
-    gridID: string;
-    type: string;
-    coords: {
-      x: number;
-      y: number;
-    };
-  };
-};
-
 router.post(async (req, res) => {
   logger.log("positionUpdate");
+  await updatePosition(req.body as PositionUpdateRequest);
   res.end();
 });
 

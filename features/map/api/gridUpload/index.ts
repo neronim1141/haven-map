@@ -6,7 +6,7 @@ import { getParentCoords, saveTile, updateZoomLevel } from "..";
 import * as logger from "lib/logger";
 import { HnHMaxZoom, HnHMinZoom } from "features/map/config";
 
-type RequestData = {
+export type RequestData = {
   id: string;
   extraData: { season: number };
   file: File;
@@ -29,7 +29,7 @@ export const gridUpload = async (tile: RequestData) => {
       await updateZoomLevel(grid.mapId, coord.x, coord.y, z);
     }
   } catch (e) {
-    console.log(e);
+    logger.error(e);
   } finally {
     fs.rm(tile.file.filepath);
   }

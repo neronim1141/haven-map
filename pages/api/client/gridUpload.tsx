@@ -4,15 +4,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { File, IncomingForm } from "formidable";
 import { promises as fs } from "fs";
 import { fileToString } from "features/map/api/gridUpload/fileToString";
-import { gridUpload } from "features/map/api/gridUpload";
+import { gridUpload, RequestData } from "features/map/api/gridUpload";
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
-type RequestData = {
-  id: string;
-  extraData: { season: number };
-  file: File;
-};
 router.post(async (req, res) => {
   const tile = await getTileFromRequest(req);
   await gridUpload(tile);

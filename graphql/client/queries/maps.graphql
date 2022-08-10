@@ -1,5 +1,5 @@
-query GetMaps {
-  getMaps {
+query Maps {
+  maps {
     id
     name
     hidden

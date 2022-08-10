@@ -1,0 +1,11 @@
+subscription Characters($ids: [Int!]!) {
+  characters(ids: $ids) {
+    id
+    name
+    type
+    inMap
+    expire
+    x
+    y
+  }
+}

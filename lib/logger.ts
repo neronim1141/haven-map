@@ -10,3 +10,4 @@ const logger = pino({
 });
 
 export const log = (msg: string) => logger.info(msg);
+export const error = (e: unknown) => logger.error(e);

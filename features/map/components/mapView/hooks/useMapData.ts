@@ -1,4 +1,4 @@
-import { useGetMapMergesSubscription } from "graphql/client/graphql";
+import { useMapMergesSubscription } from "graphql/client/graphql";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
@@ -18,10 +18,10 @@ export const useMapData = () => {
   });
   const zoom = Number(router.query.z ?? 1);
 
-  useGetMapMergesSubscription({
+  useMapMergesSubscription({
     variables: { mapId: mapId },
     onSubscriptionData: ({ subscriptionData: merge }) => {
-      const mapMergeData = merge.data?.MapMerges;
+      const mapMergeData = merge.data?.mapMerges;
       if (mapMergeData) {
         setId(mapMergeData.to);
         setCoord({

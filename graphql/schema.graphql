@@ -27,15 +27,25 @@ type Marker {
   hidden: Boolean!
   image: String
 }
+type Character {
+  id: String!
+  name: String!
+  type: String!
+  inMap: Int!
+  expire: Float!
+  x: Int!
+  y: Int!
+}
 type Query {
-  getMapData(id: Int!): [Tile!]!
-  getMaps: [Map!]!
-  getMarkers(hidden: Boolean!): [Marker!]!
+  map(id: Int!): [Tile!]!
+  maps: [Map!]!
+  markers(hidden: Boolean!, ids: [Int]!): [Marker!]!
 }
 
 type Subscription {
-  getMapUpdates(id: Int!): Tile!
-  MapMerges(id: Int!): MapMerge!
+  mapUpdates(id: Int!): Tile!
+  mapMerges(id: Int!): MapMerge!
+  characters(ids: [Int]!): [Character!]!
 }
 
 input CoordInput {
@@ -43,5 +53,5 @@ input CoordInput {
   y: Int!
 }
 type Mutation {
-  setCenterCoord(mapId: Int!, shiftBy: CoordInput!): Coord!
+  shiftCoord(mapId: Int!, shiftBy: CoordInput!): Coord!
 }
