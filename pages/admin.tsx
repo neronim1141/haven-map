@@ -1,8 +1,9 @@
+import { Role } from "@prisma/client";
 import axios from "axios";
 import type { NextPage } from "next";
 import { useForm } from "react-hook-form";
 
-const Home: NextPage = () => {
+const Page = () => {
   const { register, handleSubmit } = useForm();
   const onSubmit = (data: any) => {
     let formData = new FormData();
@@ -30,4 +31,7 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default Page;
+Page.auth = {
+  role: Role.ADMIN,
+};

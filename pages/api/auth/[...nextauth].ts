@@ -47,10 +47,7 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
   },
-  session: {
-    maxAge: 30 * 24 * 60 * 60,
-    updateAge: 24 * 60 * 60,
-  },
+
   debug: process.env.NODE_ENV === "development",
 };
 export default NextAuth(authOptions);
