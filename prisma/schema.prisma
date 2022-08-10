@@ -51,3 +51,17 @@ model MarkerIcon {
   image    String @unique
   iconData Bytes
 }
+
+model User {
+  name     String @id
+  password String
+  role     Role   @default(NEED_CHECK)
+  token    String
+}
+
+enum Role {
+  NEED_CHECK // new registered user need to have role assigned
+  ALLY // access to map can send new tiles, local resources
+  VILLAGER // access to map, custom markers, characters
+  ADMIN // access to all
+}

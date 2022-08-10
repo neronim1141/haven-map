@@ -1,7 +1,6 @@
 import { createRouter } from "next-connect";
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "lib/prisma";
 import * as logger from "lib/logger";
 import { MarkersRequest, markerUpdate } from "features/map/api/markerUpdate";
 const router = createRouter<NextApiRequest, NextApiResponse>();

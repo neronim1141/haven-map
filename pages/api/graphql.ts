@@ -2,7 +2,7 @@
 import { createServer } from "@graphql-yoga/node";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { server } from "../../graphql/server";
+import { Context, server } from "../../graphql/server";
 
 export const config = {
   api: {
@@ -10,7 +10,11 @@ export const config = {
   },
 };
 
-export default createServer<{
-  req: NextApiRequest;
-  res: NextApiResponse;
-}>(server);
+export default createServer<
+  {
+    req: NextApiRequest;
+    res: NextApiResponse;
+  },
+  Context,
+  {}
+>(server);

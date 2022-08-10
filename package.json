@@ -8,7 +8,8 @@
     "start": "next start -p 8080",
     "cli:lint": "next lint",
     "cli:tsc": "tsc",
-    "generate": "graphql-codegen --config codegen.yml"
+    "generate": "graphql-codegen --config codegen.yml",
+    "reset:admin": "node ./prisma/seed.js"
   },
   "dependencies": {
     "@apollo/client": "^3.6.9",
@@ -22,6 +23,7 @@
     "leaflet": "^1.8.0",
     "lodash": "^4.17.21",
     "next": "12.2.4",
+    "next-auth": "^4.10.3",
     "next-connect": "^1.0.0-next.3",
     "next-graphql-loader": "^1.0.1",
     "pino": "^8.4.0",
@@ -57,5 +59,8 @@
   },
   "resolutions": {
     "autoprefixer": "10.4.5"
+  },
+  "prisma": {
+    "seed": "node ./prisma/seed.js"
   }
 }
