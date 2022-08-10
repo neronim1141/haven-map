@@ -1,3 +1,5 @@
+import { Role } from "@prisma/client";
+import { canAccess } from "features/auth/canAccess";
 import { prisma } from "lib/prisma";
 
 export type MarkersRequest = {
@@ -10,8 +12,9 @@ export type MarkersRequest = {
   type: string;
 }[];
 
-export const markerUpdate = async (markers: MarkersRequest) => {
+export const markerUpdate = async (markers: MarkersRequest, role?: Role) => {
   for (let marker of markers) {
+    if (marker.image === "" && !canAccess(Role.VILLAGER, role)) continue;
     const { gridID, ...data } = marker;
     const grid = await prisma.grid.findUnique({ where: { id: gridID } });
     if (!grid) continue;

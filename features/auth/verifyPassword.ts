@@ -1,3 +1,8 @@
-export const verifyPassword = (orginal: string, toCheck: string): boolean => {
-  return orginal === toCheck;
+import bcrypt from "bcrypt";
+
+export const verifyPassword = async (
+  hashed: string,
+  plain: string
+): Promise<boolean> => {
+  return bcrypt.compare(plain, hashed);
 };

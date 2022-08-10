@@ -1,9 +1,10 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "lib/prisma";
-import { verifyPassword } from "features/auth/verifyPassword";
 import { User } from "@prisma/client";
 import * as logger from "lib/logger";
+import bcrypt from "bcrypt";
+
 export const authOptions: NextAuthOptions = {
   // Configure one or more authentication providers
   providers: [
@@ -13,8 +14,7 @@ export const authOptions: NextAuthOptions = {
         login: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
-        // If no error and we have user data, return it
+      async authorize(credentials) {
         try {
           if (!credentials?.login || !credentials?.password) return null;
 
@@ -23,7 +23,8 @@ export const authOptions: NextAuthOptions = {
           });
           if (!data) return null;
           const { password, ...user } = data;
-          if (!verifyPassword(password, credentials.password)) return null;
+          if (!(await bcrypt.compare(credentials.password, password)))
+            return null;
           return user as Omit<User, "password">;
         } catch (e) {
           logger.error(e);
@@ -32,7 +33,7 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  secret: process.env.JWT_SECRET ?? "secret",
+  secret: process.env.JWT_SECRET,
   pages: {
     signIn: "/login",
   },

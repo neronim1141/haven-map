@@ -43,7 +43,7 @@ model Marker {
   gridId String
   name   String
   hidden Boolean @default(false)
-  type   String
+  type   String  @default("custom")
 }
 
 model MarkerIcon {
