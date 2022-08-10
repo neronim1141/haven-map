@@ -1,0 +1,25 @@
+name: Pull Requests
+on: [pull_request]
+jobs:
+  quality:
+    name: Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16.x"
+
+      - name: install
+        run: yarn install
+
+      - name: lint
+        run: yarn cli:lint
+
+      - name: typescript
+        run: yarn cli:tsc
+
+      - name: build
+        run: yarn build
