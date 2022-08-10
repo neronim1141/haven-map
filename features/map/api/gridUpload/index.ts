@@ -6,7 +6,7 @@ import { getParentCoords, saveTile, updateZoomLevel } from "..";
 import * as logger from "lib/logger";
 import { HnHMaxZoom, HnHMinZoom } from "features/map/config";
 
-type RequestData = {
+export type RequestData = {
   id: string;
   extraData: { season: number };
   file: File;
