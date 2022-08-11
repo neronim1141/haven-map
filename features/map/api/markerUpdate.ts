@@ -1,11 +1,8 @@
-import { createRouter } from "next-connect";
-
-import type { NextApiRequest, NextApiResponse } from "next";
+import { Role } from "@prisma/client";
+import { canAccess } from "features/auth/canAccess";
 import { prisma } from "lib/prisma";
-import * as logger from "lib/logger";
-const router = createRouter<NextApiRequest, NextApiResponse>();
 
-type MarkersRequest = {
+export type MarkersRequest = {
   id: number;
   image: string;
   x: number;
@@ -15,10 +12,9 @@ type MarkersRequest = {
   type: string;
 }[];
 
-router.post(async (req, res) => {
-  logger.log("markerUpdate");
-  const markers = req.body as MarkersRequest;
+export const markerUpdate = async (markers: MarkersRequest, role?: Role) => {
   for (let marker of markers) {
+    if (marker.image === "" && !canAccess(Role.VILLAGER, role)) continue;
     const { gridID, ...data } = marker;
     const grid = await prisma.grid.findUnique({ where: { id: gridID } });
     if (!grid) continue;
@@ -28,7 +24,7 @@ router.post(async (req, res) => {
       data.image = "gfx/terobjs/mm/custom";
       data.type = "custom";
     }
-
+    console.log(data.image);
     await prisma.marker.upsert({
       where: {
         id: data.id,
@@ -43,16 +39,4 @@ router.post(async (req, res) => {
       },
     });
   }
-
-  res.end();
-});
-
-export default router.handler({
-  onError: (err: any, req, res) => {
-    console.error(err.stack);
-    res.status(500).end("Something broke!");
-  },
-  onNoMatch: (req, res) => {
-    res.status(404).end("Page is not found");
-  },
-});
+};

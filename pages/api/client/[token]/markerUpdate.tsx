@@ -1,20 +1,24 @@
 import { createRouter } from "next-connect";
 
 import type { NextApiRequest, NextApiResponse } from "next";
-
-import { gridUpdate, HavenGrids } from "features/map/api/gridUpdate";
 import * as logger from "lib/logger";
+import { MarkersRequest, markerUpdate } from "features/map/api/markerUpdate";
+import { prisma } from "lib/prisma";
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 router.post(async (req, res) => {
-  logger.log("gridUpdate");
-  const grids = (
-    req.body as {
-      grids: HavenGrids;
-    }
-  ).grids;
-  res.json(await gridUpdate(grids));
+  logger.log("markerUpdate");
+  if (!req.query.token) return res.status(403).end();
+  const user = await prisma.user.findFirst({
+    where: {
+      token: req.query.token as string,
+    },
+  });
+
+  await markerUpdate(req.body as MarkersRequest, user?.role);
+
+  res.end();
 });
 
 export default router.handler({

@@ -1,5 +1,5 @@
 import { HnHMaxZoom, HnHMinZoom } from "features/map/config";
-import { getParentCoords, updateZoomLevel } from "..";
+import { getParentCoords, updateZoomLevel } from ".";
 
 export async function processZoom(
   needProcess: Map<{ mapId: number; x: number; y: number }, boolean>,

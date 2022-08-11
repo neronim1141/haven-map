@@ -1,9 +1,9 @@
-import { getParentCoords, processZoom, saveTile } from "..";
-import { Coord } from "../models";
-import { Grid, Tile } from "@prisma/client";
+import { Coord } from "../../models";
+import { Tile } from "@prisma/client";
 import { prisma } from "lib/prisma";
+import { getParentCoords, processZoom } from "../../utils";
 
-export async function shiftMap(mapId: number, shiftBy: Coord) {
+export async function shiftCoord(mapId: number, shiftBy: Coord) {
   const grids = await prisma.grid.findMany({
     where: {
       mapId,

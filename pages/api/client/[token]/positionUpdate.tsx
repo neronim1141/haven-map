@@ -1,18 +1,18 @@
 import { createRouter } from "next-connect";
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "lib/prisma";
+import * as logger from "lib/logger";
+import {
+  PositionUpdateRequest,
+  updatePosition,
+} from "features/map/api/positionUpdate";
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
-router.get(async (req, res) => {
-  const gridId = req.query.gridID as string | undefined;
-  if (gridId) {
-    const grid = await prisma.grid.findUnique({ where: { id: gridId } });
-    if (grid) {
-      return res.send(`${grid.mapId};${grid.x};${grid.y}`);
-    }
-  }
+router.post(async (req, res) => {
+  logger.log("positionUpdate");
+
+  await updatePosition(req.body as PositionUpdateRequest);
   res.end();
 });
 

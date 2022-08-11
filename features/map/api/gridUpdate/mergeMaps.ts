@@ -1,4 +1,4 @@
-import { getParentCoords, processZoom } from "..";
+import { getParentCoords, processZoom } from "../utils";
 import { Coord } from "../models";
 import { Grid, Tile } from "@prisma/client";
 import { prisma } from "lib/prisma";

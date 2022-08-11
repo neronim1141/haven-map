@@ -18,8 +18,8 @@ export const Marker = ({ marker }: MarkerProps) => {
           iconUrl: marker.image
             ? `/api/map/icons/${marker.image}`
             : "/default.png",
-          iconSize: clampSize(zoom),
-          iconAnchor: clampSize(zoom, 2),
+          iconSize: clampSize(zoom, 1.2),
+          iconAnchor: clampSize(zoom, 2.4),
           className: "transition-all duration-300",
         })
       : L.divIcon({
@@ -49,12 +49,12 @@ export const Marker = ({ marker }: MarkerProps) => {
       <Tooltip direction="top" offset={[0, -15]} opacity={0.7}>
         {marker.name}
       </Tooltip>
-      <Popup>
+      {/* <Popup>
         <div>
           <input value={marker.name} />
           <button>save</button>
         </div>
-      </Popup>
+      </Popup> */}
     </LeafletMarker>
   );
 };
