@@ -24,7 +24,7 @@ export default function MapView() {
     console.log(e);
   };
   return (
-    <div className="h-full relative">
+    <div className="h-full relative w-full">
       <MapContainer zoom={main.z} onContextMenu={onContextMenu}>
         <MapLayer mapId={main.mapId} />
         {overlay.id && (

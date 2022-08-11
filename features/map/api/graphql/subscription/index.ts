@@ -2,7 +2,7 @@ import { map, pipe } from "@graphql-yoga/node";
 import { Role } from "@prisma/client";
 import { canAccess } from "features/auth/canAccess";
 import { handleForbidden } from "features/auth/handleForbidden";
-import { Context } from "graphql/server/context";
+import { GraphqlContext } from "graphql/server/context";
 import {
   Character,
   MapMerge,
@@ -11,7 +11,7 @@ import {
 } from "graphql/server/types";
 import { pubsub } from "lib/pubsub";
 
-export const Subscriptions: SubscriptionResolvers<Context, {}> = {
+export const Subscriptions: SubscriptionResolvers<GraphqlContext, {}> = {
   mapUpdates: {
     subscribe: (_, { id }, ctx) => {
       if (!canAccess(Role.ALLY, ctx?.session?.user?.role)) {

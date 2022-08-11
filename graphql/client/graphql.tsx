@@ -63,7 +63,14 @@ export type Marker = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createUser?: Maybe<User>;
   shiftCoord: Scalars['Boolean'];
+};
+
+
+export type MutationCreateUserArgs = {
+  login: Scalars['String'];
+  password: Scalars['String'];
 };
 
 
@@ -121,6 +128,21 @@ export type Tile = {
   z: Scalars['Int'];
 };
 
+export type User = {
+  __typename?: 'User';
+  name: Scalars['String'];
+  role: Scalars['String'];
+  token: Scalars['String'];
+};
+
+export type CreateUserMutationVariables = Exact<{
+  login: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+
+export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'User', name: string } | null };
+
 export type ShiftCoordMutationVariables = Exact<{
   mapId: Scalars['Int'];
   shiftBy: CoordInput;
@@ -171,6 +193,40 @@ export type MapUpdatesSubscriptionVariables = Exact<{
 export type MapUpdatesSubscription = { __typename?: 'Subscription', mapUpdates: { __typename?: 'Tile', x: number, y: number, z: number, lastUpdated: string, mapId: number } };
 
 
+export const CreateUserDocument = gql`
+    mutation CreateUser($login: String!, $password: String!) {
+  createUser(login: $login, password: $password) {
+    name
+  }
+}
+    `;
+export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, CreateUserMutationVariables>;
+
+/**
+ * __useCreateUserMutation__
+ *
+ * To run a mutation, you first call `useCreateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createUserMutation, { data, loading, error }] = useCreateUserMutation({
+ *   variables: {
+ *      login: // value for 'login'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<CreateUserMutation, CreateUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, options);
+      }
+export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
+export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
+export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
 export const ShiftCoordDocument = gql`
     mutation ShiftCoord($mapId: Int!, $shiftBy: CoordInput!) {
   shiftCoord(mapId: $mapId, shiftBy: $shiftBy)

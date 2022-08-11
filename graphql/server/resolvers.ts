@@ -1,13 +1,14 @@
 import { Resolvers } from "./types";
 import * as mapper from "features/map/api/graphql";
-import { Context } from "./context";
+import * as auth from "features/auth/graphql";
+import { GraphqlContext } from "./context";
 
 export const config = {
   api: {
     bodyParser: false,
   },
 };
-export const resolvers: Resolvers<Context> = {
+export const resolvers: Resolvers<GraphqlContext> = {
   Query: {
     ...mapper.Query,
   },
@@ -16,5 +17,6 @@ export const resolvers: Resolvers<Context> = {
   },
   Mutation: {
     ...mapper.Mutations,
+    ...auth.Mutations,
   },
 };

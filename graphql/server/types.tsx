@@ -62,7 +62,14 @@ export type Marker = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createUser?: Maybe<User>;
   shiftCoord: Scalars['Boolean'];
+};
+
+
+export type MutationCreateUserArgs = {
+  login: Scalars['String'];
+  password: Scalars['String'];
 };
 
 
@@ -118,6 +125,13 @@ export type Tile = {
   x: Scalars['Int'];
   y: Scalars['Int'];
   z: Scalars['Int'];
+};
+
+export type User = {
+  __typename?: 'User';
+  name: Scalars['String'];
+  role: Scalars['String'];
+  token: Scalars['String'];
 };
 
 
@@ -203,6 +217,7 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']>;
   Subscription: ResolverTypeWrapper<{}>;
   Tile: ResolverTypeWrapper<Tile>;
+  User: ResolverTypeWrapper<User>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -221,6 +236,7 @@ export type ResolversParentTypes = {
   String: Scalars['String'];
   Subscription: {};
   Tile: Tile;
+  User: User;
 };
 
 export type CharacterResolvers<ContextType = any, ParentType extends ResolversParentTypes['Character'] = ResolversParentTypes['Character']> = {
@@ -265,6 +281,7 @@ export type MarkerResolvers<ContextType = any, ParentType extends ResolversParen
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  createUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'login' | 'password'>>;
   shiftCoord?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationShiftCoordArgs, 'mapId' | 'shiftBy'>>;
 };
 
@@ -289,6 +306,13 @@ export type TileResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  role?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  token?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = any> = {
   Character?: CharacterResolvers<ContextType>;
   Coord?: CoordResolvers<ContextType>;
@@ -299,5 +323,6 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Subscription?: SubscriptionResolvers<ContextType>;
   Tile?: TileResolvers<ContextType>;
+  User?: UserResolvers<ContextType>;
 };
 

@@ -1,11 +1,11 @@
 import { Role } from "@prisma/client";
 import { canAccess } from "features/auth/canAccess";
 import { handleForbidden } from "features/auth/handleForbidden";
-import { Context } from "graphql/server";
+import { GraphqlContext } from "graphql/server";
 import { Marker, QueryResolvers } from "graphql/server/types";
 import { prisma } from "lib/prisma";
 
-export const Query: QueryResolvers<Context> = {
+export const Query: QueryResolvers<GraphqlContext> = {
   map: async (_, { id }, ctx) => {
     if (!canAccess(Role.ALLY, ctx?.session?.user?.role)) {
       handleForbidden();

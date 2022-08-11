@@ -36,6 +36,12 @@ type Character {
   x: Int!
   y: Int!
 }
+
+type User {
+  name: String!
+  role: String!
+  token: String!
+}
 type Query {
   map(id: Int!): [Tile!]!
   maps: [Map!]!
@@ -54,4 +60,5 @@ input CoordInput {
 }
 type Mutation {
   shiftCoord(mapId: Int!, shiftBy: CoordInput!): Boolean!
+  createUser(login: String!, password: String!): User
 }

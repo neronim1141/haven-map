@@ -1,60 +1,79 @@
-import { InferGetServerSidePropsType } from "next";
-import { CtxOrReq } from "next-auth/client/_utils";
-import { signIn, getCsrfToken } from "next-auth/react";
+import { SubmitButton } from "components/controls/buttons/SubmitButton";
+import { Input } from "components/controls/inputs/FormInput";
+import { ErrorMessage } from "components/errorMessage";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+import * as yup from "yup";
+
+const schema = yup.object({
+  login: yup.string().required(),
+  password: yup.string().required().min(3),
+});
+type LoginFormData = yup.InferType<typeof schema>;
 
 const Login = () => {
   const router = useRouter();
+  const [error, setError] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<LoginFormData>({
+    resolver: yupResolver(schema),
+  });
   const onSubmit = async (values: any) => {
     const res = await signIn("credentials", {
       redirect: false,
       login: values.login,
       password: values.password,
     });
-    if (res && res.url) router.push(res.url);
+    if (res) {
+      console.log(res);
+      setError(true);
+    }
+    if (res && res.url) {
+      setError(false);
+      router.push(res.url);
+    }
   };
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="mb-4">
-        <label
-          htmlFor="email"
-          className="uppercase text-sm text-gray-600 font-bold"
-        >
-          Email
-          <input
-            type="text"
-            className="w-full bg-gray-300 text-gray-900 mt-2 p-3"
-            {...register("login")}
-          />
-        </label>
-      </div>
-      <div className="mb-6">
-        <label
-          htmlFor="password"
-          className="uppercase text-sm text-gray-600 font-bold"
-        >
-          password
-          <input
-            aria-label="enter your password"
-            aria-required="true"
-            type="password"
-            className="w-full bg-gray-300 text-gray-900 mt-2 p-3"
-            {...register("password")}
-          />
-        </label>
-      </div>
-      <button
-        type="submit"
-        className="bg-green-400 text-gray-100 p-3 rounded-lg w-full"
-      >
-        Sign In
-      </button>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="w-full h-full flex items-center justify-center text-white"
+    >
+      <section className="flex  p-6 sm:p-0 w-[30rem] flex-col space-y-8">
+        <div className="text-center text-4xl font-bold">Log In</div>
+
+        <Input<LoginFormData>
+          id="login"
+          placeholder="Type login..."
+          register={register}
+          error={errors.login}
+        />
+        <Input<LoginFormData>
+          id="password"
+          type="password"
+          placeholder="Type password..."
+          register={register}
+          error={errors.password}
+        />
+        <SubmitButton>Log In</SubmitButton>
+
+        {error && <ErrorMessage>Login and password Mismatch</ErrorMessage>}
+        <p className="text-center text-lg">
+          No account?{" "}
+          <Link href="/register">
+            <a className="font-medium text-indigo-500 underline-offset-4 hover:underline">
+              Create One
+            </a>
+          </Link>
+        </p>
+      </section>
     </form>
   );
 };

@@ -17,7 +17,6 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         try {
           if (!credentials?.login || !credentials?.password) return null;
-
           const data = await prisma.user.findUnique({
             where: { name: credentials.login },
           });
@@ -33,21 +32,18 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  secret: process.env.JWT_SECRET,
   pages: {
     signIn: "/login",
   },
   callbacks: {
     async session({ session, token }) {
-      session.user = token.user as User | undefined;
+      if (session.user) session.user.role = token.role;
       return session;
     },
     async jwt({ token, user }) {
-      if (user) token.user = user;
+      if (user) token.role = user.role;
       return token;
     },
   },
-
-  debug: process.env.NODE_ENV === "development",
 };
 export default NextAuth(authOptions);
