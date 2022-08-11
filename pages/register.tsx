@@ -35,7 +35,7 @@ const Register = () => {
   });
   const onSubmit = async (values: any) => {
     const user = await mutation({
-      variables: { login: values.login, password: values.password },
+      variables: { name: values.login, password: values.password },
       onError: (e) => {
         setError(e.message);
       },
@@ -46,7 +46,7 @@ const Register = () => {
     if (!user.data?.createUser) return;
     const res = await signIn("credentials", {
       redirect: false,
-      login: user.data.createUser.name,
+      login: user.data.createUser,
       password: values.password,
     });
     if (res?.error) {
