@@ -72,7 +72,7 @@ const Page = () => {
         ),
       }),
     ],
-    []
+    [assignRole, users]
   );
   if (!users.data?.users) {
     return <>loading</>;
