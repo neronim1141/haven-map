@@ -3,9 +3,3 @@
 
 // NOTE: This file should not be edited
 // see https://nextjs.org/docs/basic-features/typescript for more information.
-declare module "*.graphql" {
-  import { DocumentNode } from "graphql";
-  const Schema: DocumentNode;
-
-  export = Schema;
-}

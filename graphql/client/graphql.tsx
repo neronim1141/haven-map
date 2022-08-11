@@ -63,7 +63,28 @@ export type Marker = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  shiftCoord: Coord;
+  assignRole: Scalars['String'];
+  changePassword: Scalars['String'];
+  createUser: Scalars['String'];
+  shiftCoord: Scalars['Boolean'];
+};
+
+
+export type MutationAssignRoleArgs = {
+  name: Scalars['String'];
+  role: Scalars['String'];
+};
+
+
+export type MutationChangePasswordArgs = {
+  name: Scalars['String'];
+  password: Scalars['String'];
+};
+
+
+export type MutationCreateUserArgs = {
+  name: Scalars['String'];
+  password: Scalars['String'];
 };
 
 
@@ -77,6 +98,8 @@ export type Query = {
   map: Array<Tile>;
   maps: Array<Map>;
   markers: Array<Marker>;
+  user?: Maybe<User>;
+  users: Array<User>;
 };
 
 
@@ -88,6 +111,11 @@ export type QueryMapArgs = {
 export type QueryMarkersArgs = {
   hidden: Scalars['Boolean'];
   ids: Array<InputMaybe<Scalars['Int']>>;
+};
+
+
+export type QueryUserArgs = {
+  name: Scalars['String'];
 };
 
 export type Subscription = {
@@ -121,13 +149,44 @@ export type Tile = {
   z: Scalars['Int'];
 };
 
+export type User = {
+  __typename?: 'User';
+  name: Scalars['String'];
+  role: Scalars['String'];
+  token: Scalars['String'];
+};
+
+export type AssignRoleMutationVariables = Exact<{
+  name: Scalars['String'];
+  role: Scalars['String'];
+}>;
+
+
+export type AssignRoleMutation = { __typename?: 'Mutation', assignRole: string };
+
+export type ChangePasswordMutationVariables = Exact<{
+  name: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+
+export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: string };
+
+export type CreateUserMutationVariables = Exact<{
+  name: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+
+export type CreateUserMutation = { __typename?: 'Mutation', createUser: string };
+
 export type ShiftCoordMutationVariables = Exact<{
   mapId: Scalars['Int'];
   shiftBy: CoordInput;
 }>;
 
 
-export type ShiftCoordMutation = { __typename?: 'Mutation', shiftCoord: { __typename?: 'Coord', x: number, y: number } };
+export type ShiftCoordMutation = { __typename?: 'Mutation', shiftCoord: boolean };
 
 export type MapQueryVariables = Exact<{
   mapId: Scalars['Int'];
@@ -148,6 +207,18 @@ export type MarkersQueryVariables = Exact<{
 
 
 export type MarkersQuery = { __typename?: 'Query', markers: Array<{ __typename?: 'Marker', id: number, name: string, x: number, y: number, image?: string | null, mapId: number }> };
+
+export type UserQueryVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+
+export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'User', name: string, role: string, token: string } | null };
+
+export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', name: string, role: string, token: string }> };
 
 export type CharactersSubscriptionVariables = Exact<{
   ids: Array<Scalars['Int']> | Scalars['Int'];
@@ -171,12 +242,105 @@ export type MapUpdatesSubscriptionVariables = Exact<{
 export type MapUpdatesSubscription = { __typename?: 'Subscription', mapUpdates: { __typename?: 'Tile', x: number, y: number, z: number, lastUpdated: string, mapId: number } };
 
 
+export const AssignRoleDocument = gql`
+    mutation AssignRole($name: String!, $role: String!) {
+  assignRole(name: $name, role: $role)
+}
+    `;
+export type AssignRoleMutationFn = Apollo.MutationFunction<AssignRoleMutation, AssignRoleMutationVariables>;
+
+/**
+ * __useAssignRoleMutation__
+ *
+ * To run a mutation, you first call `useAssignRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAssignRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [assignRoleMutation, { data, loading, error }] = useAssignRoleMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      role: // value for 'role'
+ *   },
+ * });
+ */
+export function useAssignRoleMutation(baseOptions?: Apollo.MutationHookOptions<AssignRoleMutation, AssignRoleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AssignRoleMutation, AssignRoleMutationVariables>(AssignRoleDocument, options);
+      }
+export type AssignRoleMutationHookResult = ReturnType<typeof useAssignRoleMutation>;
+export type AssignRoleMutationResult = Apollo.MutationResult<AssignRoleMutation>;
+export type AssignRoleMutationOptions = Apollo.BaseMutationOptions<AssignRoleMutation, AssignRoleMutationVariables>;
+export const ChangePasswordDocument = gql`
+    mutation ChangePassword($name: String!, $password: String!) {
+  changePassword(name: $name, password: $password)
+}
+    `;
+export type ChangePasswordMutationFn = Apollo.MutationFunction<ChangePasswordMutation, ChangePasswordMutationVariables>;
+
+/**
+ * __useChangePasswordMutation__
+ *
+ * To run a mutation, you first call `useChangePasswordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChangePasswordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [changePasswordMutation, { data, loading, error }] = useChangePasswordMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useChangePasswordMutation(baseOptions?: Apollo.MutationHookOptions<ChangePasswordMutation, ChangePasswordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(ChangePasswordDocument, options);
+      }
+export type ChangePasswordMutationHookResult = ReturnType<typeof useChangePasswordMutation>;
+export type ChangePasswordMutationResult = Apollo.MutationResult<ChangePasswordMutation>;
+export type ChangePasswordMutationOptions = Apollo.BaseMutationOptions<ChangePasswordMutation, ChangePasswordMutationVariables>;
+export const CreateUserDocument = gql`
+    mutation CreateUser($name: String!, $password: String!) {
+  createUser(name: $name, password: $password)
+}
+    `;
+export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, CreateUserMutationVariables>;
+
+/**
+ * __useCreateUserMutation__
+ *
+ * To run a mutation, you first call `useCreateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createUserMutation, { data, loading, error }] = useCreateUserMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<CreateUserMutation, CreateUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, options);
+      }
+export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
+export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
+export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
 export const ShiftCoordDocument = gql`
     mutation ShiftCoord($mapId: Int!, $shiftBy: CoordInput!) {
-  shiftCoord(mapId: $mapId, shiftBy: $shiftBy) {
-    x
-    y
-  }
+  shiftCoord(mapId: $mapId, shiftBy: $shiftBy)
 }
     `;
 export type ShiftCoordMutationFn = Apollo.MutationFunction<ShiftCoordMutation, ShiftCoordMutationVariables>;
@@ -322,6 +486,79 @@ export function useMarkersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Ma
 export type MarkersQueryHookResult = ReturnType<typeof useMarkersQuery>;
 export type MarkersLazyQueryHookResult = ReturnType<typeof useMarkersLazyQuery>;
 export type MarkersQueryResult = Apollo.QueryResult<MarkersQuery, MarkersQueryVariables>;
+export const UserDocument = gql`
+    query User($name: String!) {
+  user(name: $name) {
+    name
+    role
+    token
+  }
+}
+    `;
+
+/**
+ * __useUserQuery__
+ *
+ * To run a query within a React component, call `useUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserQuery({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useUserQuery(baseOptions: Apollo.QueryHookOptions<UserQuery, UserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserQuery, UserQueryVariables>(UserDocument, options);
+      }
+export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQuery, UserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserQuery, UserQueryVariables>(UserDocument, options);
+        }
+export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
+export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
+export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
+export const UsersDocument = gql`
+    query Users {
+  users {
+    name
+    role
+    token
+  }
+}
+    `;
+
+/**
+ * __useUsersQuery__
+ *
+ * To run a query within a React component, call `useUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useUsersQuery(baseOptions?: Apollo.QueryHookOptions<UsersQuery, UsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
+      }
+export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersQuery, UsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
+        }
+export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
+export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
+export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
 export const CharactersDocument = gql`
     subscription Characters($ids: [Int!]!) {
   characters(ids: $ids) {

@@ -1,8 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { createServer } from "@graphql-yoga/node";
+import { GraphqlContext, server } from "graphql/server";
 import type { NextApiRequest, NextApiResponse } from "next";
-
-import { server } from "../../graphql/server";
 
 export const config = {
   api: {
@@ -10,7 +9,11 @@ export const config = {
   },
 };
 
-export default createServer<{
-  req: NextApiRequest;
-  res: NextApiResponse;
-}>(server);
+export default createServer<
+  {
+    req: NextApiRequest;
+    res: NextApiResponse;
+  },
+  GraphqlContext,
+  {}
+>(server);

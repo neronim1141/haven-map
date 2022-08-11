@@ -1,7 +1,7 @@
 import { createRouter } from "next-connect";
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getMapTile } from "features/map/api";
+import { getMapTile } from "features/map/api/utils";
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 

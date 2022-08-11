@@ -1,9 +1,7 @@
-import type { NextPage } from "next";
-
 import Map from "features/map/components/mapView";
 
-const Home: NextPage = () => {
+const Page = () => {
   return <Map />;
 };
 
-export default Home;
+export default Page;
