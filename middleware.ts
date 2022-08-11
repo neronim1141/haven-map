@@ -24,12 +24,17 @@ export default withAuth(
           !canAccess(Role.ADMIN, token.role)
         )
           return false;
-
+        if (
+          req.nextUrl.pathname.startsWith("/profile") &&
+          (!token || token.role !== Role.ADMIN)
+        ) {
+          return false;
+        }
         return true;
       },
     },
   }
 );
 export const config = {
-  matcher: ["/map/:path*", "/admin", "/profile"],
+  matcher: ["/map/:path*", "/admin/:path*", "/profile/:path*"],
 };

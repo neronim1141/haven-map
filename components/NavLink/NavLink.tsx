@@ -19,7 +19,7 @@ export const NavLink = ({
   }
   return (
     <Link href={href}>
-      <a className="bg-gray-400 p-1 rounded  font-bold  hover:bg-gray-300 transition-colors">
+      <a className="p-2 border-b-2 hover:border-indigo-600 transition-colors hover:text-indigo-400">
         {children}
       </a>
     </Link>

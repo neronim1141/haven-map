@@ -33,7 +33,6 @@ const Login = () => {
       password: values.password,
     });
     if (res) {
-      console.log(res);
       setError(true);
     }
     if (res && res.url) {

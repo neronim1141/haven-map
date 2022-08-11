@@ -49,12 +49,12 @@ export const Marker = ({ marker }: MarkerProps) => {
       <Tooltip direction="top" offset={[0, -15]} opacity={0.7}>
         {marker.name}
       </Tooltip>
-      <Popup>
+      {/* <Popup>
         <div>
           <input value={marker.name} />
           <button>save</button>
         </div>
-      </Popup>
+      </Popup> */}
     </LeafletMarker>
   );
 };

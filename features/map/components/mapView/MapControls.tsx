@@ -2,14 +2,20 @@ import { useMapData } from "./hooks/useMapData";
 import { Marker, useMapsQuery } from "graphql/client/graphql";
 import _ from "lodash";
 import { useOverlayData } from "./hooks/useOverlayData";
+import { Switch } from "../controls/switch";
 export function MapControls({
   main,
   overlay,
   markers,
+  grid,
 }: {
   main: ReturnType<typeof useMapData>;
   overlay: ReturnType<typeof useOverlayData>;
   markers?: Omit<Marker, "hidden">[];
+  grid: {
+    show: boolean;
+    setShow: (value: boolean) => void;
+  };
 }) {
   const { data: maps } = useMapsQuery();
   if (!maps?.maps) {
@@ -18,6 +24,7 @@ export function MapControls({
 
   return (
     <>
+      <Switch value={grid.show} onChange={grid.setShow} label="Show grid" />
       <select
         value={main.mapId}
         onChange={(e) => {

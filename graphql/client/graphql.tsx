@@ -218,7 +218,7 @@ export type UserQuery = { __typename?: 'Query', user?: { __typename?: 'User', na
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', name: string, role: string }> };
+export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', name: string, role: string, token: string }> };
 
 export type CharactersSubscriptionVariables = Exact<{
   ids: Array<Scalars['Int']> | Scalars['Int'];
@@ -528,6 +528,7 @@ export const UsersDocument = gql`
   users {
     name
     role
+    token
   }
 }
     `;

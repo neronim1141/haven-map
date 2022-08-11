@@ -10,6 +10,8 @@ import { MapControls } from "./MapControls";
 import L, { LeafletMouseEvent } from "leaflet";
 import { useCharacters } from "./hooks/useCharacters";
 import { CharacterMarker } from "./characterMarker";
+import { useState } from "react";
+
 export default function MapView() {
   const main = useMapData();
   const overlay = useOverlayData();
@@ -17,6 +19,7 @@ export default function MapView() {
     variables: { ids: [main.mapId, overlay.id] },
   });
   const characters = useCharacters([main.mapId, overlay.id]);
+  const [showGrid, setShowGrid] = useState(false);
   // const [mutation] = useSetCenterCoordMutation();
   // const [contextMenu, setContextMenu] = useState<{ x: number; y: number }>();
   const onContextMenu = (e: LeafletMouseEvent) => {
@@ -24,13 +27,13 @@ export default function MapView() {
     console.log(e);
   };
   return (
-    <div className="h-full relative w-full">
+    <div className="h-full relative w-full text-black">
       <MapContainer zoom={main.z} onContextMenu={onContextMenu}>
         <MapLayer mapId={main.mapId} />
         {overlay.id && (
           <MapLayer mapId={overlay.id} opacity={overlay.opacity} />
         )}
-        <GridLayer />
+        {showGrid && <GridLayer />}
         {markersQuery.data?.markers
           .filter(
             (marker) =>
@@ -49,6 +52,7 @@ export default function MapView() {
             main={main}
             overlay={overlay}
             markers={markersQuery.data?.markers}
+            grid={{ show: showGrid, setShow: setShowGrid }}
           />
         </div>
       </div>

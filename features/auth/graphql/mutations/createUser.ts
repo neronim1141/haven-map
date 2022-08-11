@@ -18,7 +18,7 @@ export const createUser = async (name: string, password: string) => {
     logger.log(`created User: ${user.name}`);
     return excludeFields(user, "password");
   } catch (e) {
-    console.log(e);
+    logger.error(e);
     if ((e as PrismaClientKnownRequestError).code === "P2002")
       throw new GraphQLYogaError(`User already exist`);
     throw e;
