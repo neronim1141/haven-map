@@ -4,18 +4,19 @@ import bcrypt from "bcrypt";
 import { createToken } from "../../createToken";
 import { GraphQLYogaError } from "@graphql-yoga/node";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
+import { excludeFields } from "features/auth/utils/excludePassword";
 
-export const createUser = async (login: string, password: string) => {
+export const createUser = async (name: string, password: string) => {
   try {
-    const { password: _, ...user } = await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
-        name: login,
+        name,
         password: await bcrypt.hash(password, 10),
-        token: createToken(login),
+        token: createToken(name),
       },
     });
     logger.log(`created User: ${user.name}`);
-    return user;
+    return excludeFields(user, "password");
   } catch (e) {
     console.log(e);
     if ((e as PrismaClientKnownRequestError).code === "P2002")

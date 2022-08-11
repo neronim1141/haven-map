@@ -42,10 +42,17 @@ type User {
   role: String!
   token: String!
 }
+input CoordInput {
+  x: Int!
+  y: Int!
+}
+
 type Query {
   map(id: Int!): [Tile!]!
   maps: [Map!]!
   markers(hidden: Boolean!, ids: [Int]!): [Marker!]!
+  users: [User!]!
+  user(name: String!): User
 }
 
 type Subscription {
@@ -54,11 +61,9 @@ type Subscription {
   characters(ids: [Int]!): [Character!]!
 }
 
-input CoordInput {
-  x: Int!
-  y: Int!
-}
 type Mutation {
   shiftCoord(mapId: Int!, shiftBy: CoordInput!): Boolean!
-  createUser(login: String!, password: String!): User
+  createUser(name: String!, password: String!): String!
+  assignRole(name: String!, role: String!): String!
+  changePassword(name: String!, password: String!): String!
 }

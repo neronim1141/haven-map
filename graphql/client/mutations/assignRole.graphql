@@ -1,0 +1,3 @@
+mutation AssignRole($name: String!, $role: String!) {
+  assignRole(name: $name, role: $role)
+}

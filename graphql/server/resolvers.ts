@@ -11,6 +11,7 @@ export const config = {
 export const resolvers: Resolvers<GraphqlContext> = {
   Query: {
     ...mapper.Query,
+    ...auth.Query,
   },
   Subscription: {
     ...mapper.Subscriptions,

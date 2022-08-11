@@ -22,7 +22,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
             </nav>
             <NavUser />
           </header>
-          <main className="flex-grow flex ">
+          <main className="flex-grow flex">
             <Component {...pageProps} />
           </main>
         </div>

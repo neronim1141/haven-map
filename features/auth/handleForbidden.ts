@@ -1,3 +1,5 @@
+import { GraphQLYogaError } from "@graphql-yoga/node";
+
 export const handleForbidden = () => {
-  throw new Error("forbidden");
+  throw new GraphQLYogaError("Forbidden");
 };

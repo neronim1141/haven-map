@@ -62,13 +62,27 @@ export type Marker = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createUser?: Maybe<User>;
+  assignRole: Scalars['String'];
+  changePassword: Scalars['String'];
+  createUser: Scalars['String'];
   shiftCoord: Scalars['Boolean'];
 };
 
 
+export type MutationAssignRoleArgs = {
+  name: Scalars['String'];
+  role: Scalars['String'];
+};
+
+
+export type MutationChangePasswordArgs = {
+  name: Scalars['String'];
+  password: Scalars['String'];
+};
+
+
 export type MutationCreateUserArgs = {
-  login: Scalars['String'];
+  name: Scalars['String'];
   password: Scalars['String'];
 };
 
@@ -83,6 +97,8 @@ export type Query = {
   map: Array<Tile>;
   maps: Array<Map>;
   markers: Array<Marker>;
+  user?: Maybe<User>;
+  users: Array<User>;
 };
 
 
@@ -94,6 +110,11 @@ export type QueryMapArgs = {
 export type QueryMarkersArgs = {
   hidden: Scalars['Boolean'];
   ids: Array<InputMaybe<Scalars['Int']>>;
+};
+
+
+export type QueryUserArgs = {
+  name: Scalars['String'];
 };
 
 export type Subscription = {
@@ -281,7 +302,9 @@ export type MarkerResolvers<ContextType = any, ParentType extends ResolversParen
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'login' | 'password'>>;
+  assignRole?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationAssignRoleArgs, 'name' | 'role'>>;
+  changePassword?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationChangePasswordArgs, 'name' | 'password'>>;
+  createUser?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'name' | 'password'>>;
   shiftCoord?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationShiftCoordArgs, 'mapId' | 'shiftBy'>>;
 };
 
@@ -289,6 +312,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   map?: Resolver<Array<ResolversTypes['Tile']>, ParentType, ContextType, RequireFields<QueryMapArgs, 'id'>>;
   maps?: Resolver<Array<ResolversTypes['Map']>, ParentType, ContextType>;
   markers?: Resolver<Array<ResolversTypes['Marker']>, ParentType, ContextType, RequireFields<QueryMarkersArgs, 'hidden' | 'ids'>>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'name'>>;
+  users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
 };
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {

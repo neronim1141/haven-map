@@ -1,5 +1,3 @@
-mutation CreateUser($login: String!, $password: String!) {
-  createUser(login: $login, password: $password) {
-    name
-  }
+mutation CreateUser($name: String!, $password: String!) {
+  createUser(name: $name, password: $password)
 }
