@@ -47,7 +47,7 @@ model Marker {
 }
 
 model MarkerIcon {
-  id       Int    @id
+  id       Int    @id @default(autoincrement())
   image    String @unique
   iconData Bytes
 }

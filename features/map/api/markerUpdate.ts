@@ -24,7 +24,7 @@ export const markerUpdate = async (markers: MarkersRequest, role?: Role) => {
       data.image = "gfx/terobjs/mm/custom";
       data.type = "custom";
     }
-
+    console.log(data.image);
     await prisma.marker.upsert({
       where: {
         id: data.id,
