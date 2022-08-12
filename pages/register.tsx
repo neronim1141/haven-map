@@ -1,3 +1,5 @@
+import React from "react";
+
 import { SubmitButton } from "components/controls/buttons/SubmitButton";
 import { Input } from "components/controls/inputs/FormInput";
 import { ErrorMessage } from "components/errorMessage";
@@ -10,6 +12,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import * as yup from "yup";
 import { useCreateUserMutation } from "graphql/client/graphql";
+import Head from "next/head";
 
 const schema = yup.object({
   login: yup.string().required(),
@@ -56,46 +59,51 @@ const Register = () => {
     }
   };
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="w-full h-full flex items-center justify-center text-white"
-    >
-      <section className="flex  p-6 sm:p-0 w-[30rem] flex-col space-y-8">
-        <div className="text-center text-4xl font-bold">Sign In</div>
+    <>
+      <Head>
+        <title>Login</title>
+      </Head>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="w-full h-full flex items-center justify-center text-white"
+      >
+        <section className="flex  p-6 sm:p-0 w-[30rem] flex-col space-y-8">
+          <div className="text-center text-4xl font-bold">Sign In</div>
 
-        <Input<RegisterFormData>
-          id="login"
-          placeholder="Type login..."
-          register={register}
-          error={errors.login}
-        />
-        <Input<RegisterFormData>
-          id="password"
-          type="password"
-          placeholder="Type password..."
-          register={register}
-          error={errors.password}
-        />
-        <Input<RegisterFormData>
-          id="repeatPassword"
-          type="password"
-          placeholder="Type password again..."
-          register={register}
-          error={errors.repeatPassword}
-        />
-        <SubmitButton>Sign In</SubmitButton>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
+          <Input<RegisterFormData>
+            id="login"
+            placeholder="Type login..."
+            register={register}
+            error={errors.login}
+          />
+          <Input<RegisterFormData>
+            id="password"
+            type="password"
+            placeholder="Type password..."
+            register={register}
+            error={errors.password}
+          />
+          <Input<RegisterFormData>
+            id="repeatPassword"
+            type="password"
+            placeholder="Type password again..."
+            register={register}
+            error={errors.repeatPassword}
+          />
+          <SubmitButton>Sign In</SubmitButton>
+          {error && <ErrorMessage>{error}</ErrorMessage>}
 
-        <p className="text-center text-lg">
-          Already have an account?{" "}
-          <Link href="/login">
-            <a className="font-medium text-indigo-500 underline-offset-4 hover:underline">
-              Log In.
-            </a>
-          </Link>
-        </p>
-      </section>
-    </form>
+          <p className="text-center text-lg">
+            Already have an account?{" "}
+            <Link href="/login">
+              <a className="font-medium text-indigo-500 underline-offset-4 hover:underline">
+                Log In.
+              </a>
+            </Link>
+          </p>
+        </section>
+      </form>
+    </>
   );
 };
 

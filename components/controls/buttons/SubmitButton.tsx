@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes } from "react";
+import React, { ButtonHTMLAttributes } from "react";
 
 interface SubmitButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
 export const SubmitButton = ({ children, ...rest }: SubmitButtonProps) => {

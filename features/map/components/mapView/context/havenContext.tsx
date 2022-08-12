@@ -1,5 +1,5 @@
+import React from "react";
 import {
-  Character,
   Map,
   Marker,
   useMapMergesSubscription,
@@ -12,10 +12,8 @@ import {
   FunctionComponent,
   ReactNode,
   useContext,
-  useMemo,
   useState,
 } from "react";
-import { useCharacters } from "../hooks/useCharacters";
 export type MapCoords = {
   x: number;
   y: number;

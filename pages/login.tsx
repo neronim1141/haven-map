@@ -1,3 +1,5 @@
+import React from "react";
+
 import { SubmitButton } from "components/controls/buttons/SubmitButton";
 import { Input } from "components/controls/inputs/FormInput";
 import { ErrorMessage } from "components/errorMessage";
@@ -9,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import * as yup from "yup";
+import Head from "next/head";
 
 const schema = yup.object({
   login: yup.string().required(),
@@ -41,39 +44,44 @@ const Login = () => {
     }
   };
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="w-full h-full flex items-center justify-center text-white"
-    >
-      <section className="flex  p-6 sm:p-0 w-[30rem] flex-col space-y-8">
-        <div className="text-center text-4xl font-bold">Log In</div>
+    <>
+      <Head>
+        <title>Login</title>
+      </Head>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="w-full h-full flex items-center justify-center text-white"
+      >
+        <section className="flex  p-6 sm:p-0 w-[30rem] flex-col space-y-8">
+          <div className="text-center text-4xl font-bold">Log In</div>
 
-        <Input<LoginFormData>
-          id="login"
-          placeholder="Type login..."
-          register={register}
-          error={errors.login}
-        />
-        <Input<LoginFormData>
-          id="password"
-          type="password"
-          placeholder="Type password..."
-          register={register}
-          error={errors.password}
-        />
-        <SubmitButton>Log In</SubmitButton>
+          <Input<LoginFormData>
+            id="login"
+            placeholder="Type login..."
+            register={register}
+            error={errors.login}
+          />
+          <Input<LoginFormData>
+            id="password"
+            type="password"
+            placeholder="Type password..."
+            register={register}
+            error={errors.password}
+          />
+          <SubmitButton>Log In</SubmitButton>
 
-        {error && <ErrorMessage>Login and password Mismatch</ErrorMessage>}
-        <p className="text-center text-lg">
-          No account?{" "}
-          <Link href="/register">
-            <a className="font-medium text-indigo-500 underline-offset-4 hover:underline">
-              Create One
-            </a>
-          </Link>
-        </p>
-      </section>
-    </form>
+          {error && <ErrorMessage>Login and password Mismatch</ErrorMessage>}
+          <p className="text-center text-lg">
+            No account?{" "}
+            <Link href="/register">
+              <a className="font-medium text-indigo-500 underline-offset-4 hover:underline">
+                Create One
+              </a>
+            </Link>
+          </p>
+        </section>
+      </form>
+    </>
   );
 };
 

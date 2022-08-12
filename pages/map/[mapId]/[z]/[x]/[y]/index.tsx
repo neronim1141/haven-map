@@ -1,3 +1,5 @@
+import React from "react";
+
 import Map from "features/map/components/mapView";
 import { HavenProvider } from "features/map/components/mapView/context/havenContext";
 import { useMapsQuery } from "graphql/client/graphql";
