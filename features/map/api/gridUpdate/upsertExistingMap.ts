@@ -1,11 +1,10 @@
-import { Coord } from "../models";
 import { prisma } from "lib/prisma";
 import { HavenGrids } from ".";
 
 export const updateExistingMap = async (
   grids: HavenGrids,
   mapId: number,
-  offset: Coord
+  offset: { x: number; y: number }
 ) => {
   const toUpload = [];
 

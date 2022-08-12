@@ -45,6 +45,7 @@ export type Map = {
 
 export type MapMerge = {
   __typename?: 'MapMerge';
+  from: Scalars['Int'];
   shift: Coord;
   to: Scalars['Int'];
 };
@@ -65,6 +66,7 @@ export type Mutation = {
   assignRole: Scalars['String'];
   changePassword: Scalars['String'];
   createUser: Scalars['String'];
+  rebuildZooms: Scalars['Boolean'];
   shiftCoord: Scalars['Boolean'];
 };
 
@@ -84,6 +86,11 @@ export type MutationChangePasswordArgs = {
 export type MutationCreateUserArgs = {
   name: Scalars['String'];
   password: Scalars['String'];
+};
+
+
+export type MutationRebuildZoomsArgs = {
+  mapId: Scalars['Int'];
 };
 
 
@@ -127,11 +134,6 @@ export type Subscription = {
 
 export type SubscriptionCharactersArgs = {
   ids: Array<InputMaybe<Scalars['Int']>>;
-};
-
-
-export type SubscriptionMapMergesArgs = {
-  id: Scalars['Int'];
 };
 
 
@@ -285,6 +287,7 @@ export type MapResolvers<ContextType = any, ParentType extends ResolversParentTy
 };
 
 export type MapMergeResolvers<ContextType = any, ParentType extends ResolversParentTypes['MapMerge'] = ResolversParentTypes['MapMerge']> = {
+  from?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   shift?: Resolver<ResolversTypes['Coord'], ParentType, ContextType>;
   to?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -305,6 +308,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   assignRole?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationAssignRoleArgs, 'name' | 'role'>>;
   changePassword?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationChangePasswordArgs, 'name' | 'password'>>;
   createUser?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'name' | 'password'>>;
+  rebuildZooms?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationRebuildZoomsArgs, 'mapId'>>;
   shiftCoord?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationShiftCoordArgs, 'mapId' | 'shiftBy'>>;
 };
 
@@ -318,7 +322,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   characters?: SubscriptionResolver<Array<ResolversTypes['Character']>, "characters", ParentType, ContextType, RequireFields<SubscriptionCharactersArgs, 'ids'>>;
-  mapMerges?: SubscriptionResolver<ResolversTypes['MapMerge'], "mapMerges", ParentType, ContextType, RequireFields<SubscriptionMapMergesArgs, 'id'>>;
+  mapMerges?: SubscriptionResolver<ResolversTypes['MapMerge'], "mapMerges", ParentType, ContextType>;
   mapUpdates?: SubscriptionResolver<ResolversTypes['Tile'], "mapUpdates", ParentType, ContextType, RequireFields<SubscriptionMapUpdatesArgs, 'id'>>;
 };
 

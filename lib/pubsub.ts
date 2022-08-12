@@ -6,8 +6,7 @@ type PubSubData = {
   tileUpdate: [mapId: number, payload: Tile];
   characters: [payload: Character[]];
   merge: [
-    from: number,
-    payload: { to: number; shift: { x: number; y: number } }
+    payload: { from: number; to: number; shift: { x: number; y: number } }
   ];
 };
 

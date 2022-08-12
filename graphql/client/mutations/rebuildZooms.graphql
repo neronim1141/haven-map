@@ -1,0 +1,3 @@
+mutation rebuildZooms($mapId: Int!) {
+  rebuildZooms(mapId: $mapId)
+}

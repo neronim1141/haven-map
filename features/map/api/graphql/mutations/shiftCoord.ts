@@ -1,9 +1,11 @@
-import { Coord } from "../../models";
 import { Tile } from "@prisma/client";
 import { prisma } from "lib/prisma";
-import { getParentCoords, processZoom } from "../../utils";
+import { Coord, processZoom } from "../../utils";
 
-export async function shiftCoord(mapId: number, shiftBy: Coord) {
+export async function shiftCoord(
+  mapId: number,
+  shiftBy: { x: number; y: number }
+) {
   const grids = await prisma.grid.findMany({
     where: {
       mapId,
@@ -35,13 +37,11 @@ export async function shiftCoord(mapId: number, shiftBy: Coord) {
       mapId,
     },
   });
-  let needProcess = new Map<{ mapId: number; x: number; y: number }, boolean>(
-    []
-  );
+  let needProcess = new Map<string, Coord>([]);
   for (let tile of tiles) {
-    const coord = getParentCoords(tile.x, tile.y);
+    const coord = new Coord(tile.x, tile.y).parent();
 
-    needProcess.set({ mapId, x: coord.x, y: coord.y }, true);
+    needProcess.set(coord.toString(), coord);
     pubsub?.publish("tileUpdate", mapId, tile);
   }
 

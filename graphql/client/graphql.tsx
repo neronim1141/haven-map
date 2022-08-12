@@ -46,6 +46,7 @@ export type Map = {
 
 export type MapMerge = {
   __typename?: 'MapMerge';
+  from: Scalars['Int'];
   shift: Coord;
   to: Scalars['Int'];
 };
@@ -66,6 +67,7 @@ export type Mutation = {
   assignRole: Scalars['String'];
   changePassword: Scalars['String'];
   createUser: Scalars['String'];
+  rebuildZooms: Scalars['Boolean'];
   shiftCoord: Scalars['Boolean'];
 };
 
@@ -85,6 +87,11 @@ export type MutationChangePasswordArgs = {
 export type MutationCreateUserArgs = {
   name: Scalars['String'];
   password: Scalars['String'];
+};
+
+
+export type MutationRebuildZoomsArgs = {
+  mapId: Scalars['Int'];
 };
 
 
@@ -131,11 +138,6 @@ export type SubscriptionCharactersArgs = {
 };
 
 
-export type SubscriptionMapMergesArgs = {
-  id: Scalars['Int'];
-};
-
-
 export type SubscriptionMapUpdatesArgs = {
   id: Scalars['Int'];
 };
@@ -179,6 +181,13 @@ export type CreateUserMutationVariables = Exact<{
 
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: string };
+
+export type RebuildZoomsMutationVariables = Exact<{
+  mapId: Scalars['Int'];
+}>;
+
+
+export type RebuildZoomsMutation = { __typename?: 'Mutation', rebuildZooms: boolean };
 
 export type ShiftCoordMutationVariables = Exact<{
   mapId: Scalars['Int'];
@@ -227,12 +236,10 @@ export type CharactersSubscriptionVariables = Exact<{
 
 export type CharactersSubscription = { __typename?: 'Subscription', characters: Array<{ __typename?: 'Character', id: string, name: string, type: string, inMap: number, expire: number, x: number, y: number }> };
 
-export type MapMergesSubscriptionVariables = Exact<{
-  mapId: Scalars['Int'];
-}>;
+export type MapMergesSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MapMergesSubscription = { __typename?: 'Subscription', mapMerges: { __typename?: 'MapMerge', to: number, shift: { __typename?: 'Coord', x: number, y: number } } };
+export type MapMergesSubscription = { __typename?: 'Subscription', mapMerges: { __typename?: 'MapMerge', from: number, to: number, shift: { __typename?: 'Coord', x: number, y: number } } };
 
 export type MapUpdatesSubscriptionVariables = Exact<{
   mapId: Scalars['Int'];
@@ -338,6 +345,37 @@ export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const RebuildZoomsDocument = gql`
+    mutation rebuildZooms($mapId: Int!) {
+  rebuildZooms(mapId: $mapId)
+}
+    `;
+export type RebuildZoomsMutationFn = Apollo.MutationFunction<RebuildZoomsMutation, RebuildZoomsMutationVariables>;
+
+/**
+ * __useRebuildZoomsMutation__
+ *
+ * To run a mutation, you first call `useRebuildZoomsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRebuildZoomsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [rebuildZoomsMutation, { data, loading, error }] = useRebuildZoomsMutation({
+ *   variables: {
+ *      mapId: // value for 'mapId'
+ *   },
+ * });
+ */
+export function useRebuildZoomsMutation(baseOptions?: Apollo.MutationHookOptions<RebuildZoomsMutation, RebuildZoomsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RebuildZoomsMutation, RebuildZoomsMutationVariables>(RebuildZoomsDocument, options);
+      }
+export type RebuildZoomsMutationHookResult = ReturnType<typeof useRebuildZoomsMutation>;
+export type RebuildZoomsMutationResult = Apollo.MutationResult<RebuildZoomsMutation>;
+export type RebuildZoomsMutationOptions = Apollo.BaseMutationOptions<RebuildZoomsMutation, RebuildZoomsMutationVariables>;
 export const ShiftCoordDocument = gql`
     mutation ShiftCoord($mapId: Int!, $shiftBy: CoordInput!) {
   shiftCoord(mapId: $mapId, shiftBy: $shiftBy)
@@ -596,8 +634,9 @@ export function useCharactersSubscription(baseOptions: Apollo.SubscriptionHookOp
 export type CharactersSubscriptionHookResult = ReturnType<typeof useCharactersSubscription>;
 export type CharactersSubscriptionResult = Apollo.SubscriptionResult<CharactersSubscription>;
 export const MapMergesDocument = gql`
-    subscription MapMerges($mapId: Int!) {
-  mapMerges(id: $mapId) {
+    subscription MapMerges {
+  mapMerges {
+    from
     to
     shift {
       x
@@ -619,11 +658,10 @@ export const MapMergesDocument = gql`
  * @example
  * const { data, loading, error } = useMapMergesSubscription({
  *   variables: {
- *      mapId: // value for 'mapId'
  *   },
  * });
  */
-export function useMapMergesSubscription(baseOptions: Apollo.SubscriptionHookOptions<MapMergesSubscription, MapMergesSubscriptionVariables>) {
+export function useMapMergesSubscription(baseOptions?: Apollo.SubscriptionHookOptions<MapMergesSubscription, MapMergesSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useSubscription<MapMergesSubscription, MapMergesSubscriptionVariables>(MapMergesDocument, options);
       }

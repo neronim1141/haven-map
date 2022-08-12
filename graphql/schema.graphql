@@ -10,6 +10,7 @@ type Coord {
   y: Int!
 }
 type MapMerge {
+  from: Int!
   to: Int!
   shift: Coord!
 }
@@ -57,12 +58,13 @@ type Query {
 
 type Subscription {
   mapUpdates(id: Int!): Tile!
-  mapMerges(id: Int!): MapMerge!
+  mapMerges: MapMerge!
   characters(ids: [Int]!): [Character!]!
 }
 
 type Mutation {
   shiftCoord(mapId: Int!, shiftBy: CoordInput!): Boolean!
+  rebuildZooms(mapId: Int!): Boolean!
   createUser(name: String!, password: String!): String!
   assignRole(name: String!, role: String!): String!
   changePassword(name: String!, password: String!): String!

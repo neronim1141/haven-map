@@ -7,16 +7,19 @@ import {
   SortingState,
   getSortedRowModel,
 } from "@tanstack/react-table";
+import { Table as FlowTable } from "flowbite-react";
 
 interface TableProps<T extends object = {}> {
   columns: ColumnDef<T, any>[];
   data: T[];
   initialSort?: SortingState;
+  className?: string;
 }
 export const Table = <T extends object>({
   columns,
   data,
   initialSort,
+  className,
 }: TableProps<T>) => {
   const [sorting, setSorting] = React.useState<SortingState>(initialSort ?? []);
   const table = useReactTable({
@@ -32,68 +35,50 @@ export const Table = <T extends object>({
   });
 
   return (
-    <div className="overflow-auto">
-      <table className="rounded-t-lg m-5 w-full mx-auto bg-gray-800 text-gray-200">
-        <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr
-              key={headerGroup.id}
-              className="text-left border-b border-gray-300"
-            >
-              {headerGroup.headers.map((header) => (
-                <th key={header.id} className="px-4 py-3 capitalize">
-                  {header.isPlaceholder ? null : (
-                    <div
-                      {...{
-                        className: header.column.getCanSort()
-                          ? "cursor-pointer select-none"
-                          : "",
-                        onClick: header.column.getToggleSortingHandler(),
-                      }}
-                    >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                      {{
-                        asc: "▲",
-                        desc: "▼",
-                      }[header.column.getIsSorted() as string] ?? null}
-                    </div>
-                  )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
+    <div className={`overflow-auto ${className}`}>
+      <FlowTable>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <FlowTable.Head key={headerGroup.id}>
+            {headerGroup.headers.map((header) => (
+              <FlowTable.HeadCell key={header.id} className="capitalize">
+                {header.isPlaceholder ? null : (
+                  <div
+                    {...{
+                      className: header.column.getCanSort()
+                        ? "cursor-pointer select-none"
+                        : "",
+                      onClick: header.column.getToggleSortingHandler(),
+                    }}
+                  >
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                    {{
+                      asc: " ▲",
+                      desc: " ▼",
+                    }[header.column.getIsSorted() as string] ?? null}
+                  </div>
+                )}
+              </FlowTable.HeadCell>
+            ))}
+          </FlowTable.Head>
+        ))}
+        <FlowTable.Body className="divide-y">
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="bg-gray-700 border-b border-gray-600">
+            <FlowTable.Row
+              key={row.id}
+              className="bg-white dark:border-gray-700 dark:bg-gray-800 "
+            >
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="px-4 py-3">
+                <FlowTable.Cell key={cell.id}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
+                </FlowTable.Cell>
               ))}
-            </tr>
+            </FlowTable.Row>
           ))}
-        </tbody>
-        <tfoot>
-          {table.getFooterGroups().map((footerGroup) => (
-            <tr key={footerGroup.id}>
-              {footerGroup.headers.map((header) => (
-                <th key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.footer,
-                        header.getContext()
-                      )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </tfoot>
-      </table>
+        </FlowTable.Body>
+      </FlowTable>
     </div>
   );
 };

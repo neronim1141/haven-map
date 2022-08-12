@@ -23,10 +23,11 @@ export const useCharacters = (ids: number[]) => {
       setCharacters((prev) => {
         return prev.filter((character) => character.expire > Date.now());
       });
-    }, 5000);
+    }, 2500);
     return () => {
       clearInterval(interval);
     };
   }, []);
+
   return characters;
 };

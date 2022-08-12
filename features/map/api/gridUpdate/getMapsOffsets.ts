@@ -1,6 +1,6 @@
-import { Coord } from "../models";
 import { prisma } from "../../../../lib/prisma";
 import { HavenGrids } from ".";
+import { Coord } from "../utils";
 
 /**
  * gets map offsets based on provided grids
@@ -14,7 +14,7 @@ export const getMapsOffsets = async (grids: HavenGrids) => {
     for (let [y, gridId] of row.entries()) {
       const grid = await prisma.grid.findUnique({ where: { id: gridId } });
       if (grid) {
-        mapsOffsets[grid.mapId] = { x: grid.x - x, y: grid.y - y };
+        mapsOffsets[grid.mapId] = new Coord(grid.x - x, grid.y - y);
       }
     }
   }
