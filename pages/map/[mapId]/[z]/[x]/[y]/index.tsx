@@ -4,7 +4,6 @@ import { useMapsQuery } from "graphql/client/graphql";
 
 const Page = () => {
   const { loading, data, refetch } = useMapsQuery();
-  const maps = data?.maps;
   if (loading || !data) {
     return <>loading</>;
   }

@@ -43,9 +43,7 @@ export default function MapView() {
         {grid.show && <GridLayer />}
       </MapContainer>
       <div className="leaflet-top leaflet-left ">
-        <div className="w-36 h-40 bg-white leaflet-control leaflet-bar p-1 flex flex-col gap-2">
-          <MapControls main={main} overlay={overlay} grid={grid} />
-        </div>
+        <MapControls main={main} overlay={overlay} grid={grid} />
       </div>
     </div>
   );

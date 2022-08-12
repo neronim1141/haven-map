@@ -1,7 +1,6 @@
 import { Role } from "@prisma/client";
 import { createColumnHelper } from "@tanstack/react-table";
-import { ActionButton } from "components/controls/buttons/ActionButton";
-import { Select } from "components/controls/selects/Select";
+import { Button, Select } from "flowbite-react";
 import { Table } from "components/table";
 import { useAssignRoleMutation, useUsersQuery } from "graphql/client/graphql";
 import { useMemo } from "react";
@@ -27,47 +26,54 @@ const Page = () => {
       }),
       columnHelper.accessor("role", {
         cell: (info) => (
-          <Select<Role>
-            className="w-32"
-            value={info.getValue() as Role}
-            options={Object.keys(Role).map((role) => ({
-              value: role as unknown as Role,
-              label: role as unknown as string,
-            }))}
-            onChange={async (value) => {
-              const name = await assignRole({
-                variables: {
-                  name: info.row.original.name,
-                  role: value,
-                },
-              });
-              if (name) {
-                users.refetch();
-              }
-            }}
-          />
+          <div className="w-36">
+            <Select
+              sizing="sm"
+              value={info.getValue()}
+              onChange={async (e) => {
+                const value = e.target.value;
+                const name = await assignRole({
+                  variables: {
+                    name: info.row.original.name,
+                    role: value,
+                  },
+                });
+                if (name) {
+                  users.refetch();
+                }
+              }}
+            >
+              {Object.keys(Role).map((role) => (
+                <option key={role} role={role}>
+                  {role}
+                </option>
+              ))}
+            </Select>
+          </div>
         ),
       }),
       columnHelper.display({
         id: "actions",
         header: "actions",
         cell: (props) => (
-          <div className="flex gap-2">
-            <ActionButton
+          <div className="flex gap-2 items-stretch">
+            <Button
+              size="xs"
               onClick={() => {
                 alert("To be Done");
               }}
             >
               Change Password
-            </ActionButton>
-            <ActionButton
-              variant="warning"
+            </Button>
+            <Button
+              size="xs"
+              color="warning"
               onClick={() => {
                 alert("To be Done");
               }}
             >
               Delete
-            </ActionButton>
+            </Button>
           </div>
         ),
       }),
@@ -86,6 +92,7 @@ const Page = () => {
           columns={columns}
           data={users.data.users}
           initialSort={[{ id: "name", desc: false }]}
+          className="mt-2"
         />
       </div>
     </div>
