@@ -10,9 +10,9 @@ export const createUser = async (name: string, password: string) => {
   try {
     const user = await prisma.user.create({
       data: {
-        name,
-        password: await bcrypt.hash(password, 10),
-        token: createToken(name),
+        name: name.toLowerCase(),
+        password: await bcrypt.hash(password.toLowerCase(), 10),
+        token: createToken(name.toLowerCase()),
       },
     });
     logger.log(`created User: ${user.name}`);
