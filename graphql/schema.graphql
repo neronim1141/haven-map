@@ -51,7 +51,7 @@ input CoordInput {
 
 type Query {
   map(id: Int!): [Tile!]!
-  maps: [Map!]!
+  maps(hidden: Boolean!): [Map!]!
   markers(hidden: Boolean!): [Marker!]!
   users: [User!]!
   user(name: String!): User
@@ -66,6 +66,8 @@ type Subscription {
 type Mutation {
   shiftCoord(mapId: Int!, shiftBy: CoordInput!): Boolean!
   rebuildZooms(mapId: Int!): Boolean!
+  deleteMap(mapId: Int!): Boolean!
+  hideMap(mapId: Int!): Boolean!
   createUser(name: String!, password: String!): String!
   deleteUser(name: String!): String!
   assignRole(name: String!, role: String!): String!

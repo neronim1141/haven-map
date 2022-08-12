@@ -67,7 +67,9 @@ export type Mutation = {
   assignRole: Scalars['String'];
   changePassword: Scalars['String'];
   createUser: Scalars['String'];
+  deleteMap: Scalars['Boolean'];
   deleteUser: Scalars['String'];
+  hideMap: Scalars['Boolean'];
   rebuildZooms: Scalars['Boolean'];
   shiftCoord: Scalars['Boolean'];
 };
@@ -92,8 +94,18 @@ export type MutationCreateUserArgs = {
 };
 
 
+export type MutationDeleteMapArgs = {
+  mapId: Scalars['Int'];
+};
+
+
 export type MutationDeleteUserArgs = {
   name: Scalars['String'];
+};
+
+
+export type MutationHideMapArgs = {
+  mapId: Scalars['Int'];
 };
 
 
@@ -119,6 +131,11 @@ export type Query = {
 
 export type QueryMapArgs = {
   id: Scalars['Int'];
+};
+
+
+export type QueryMapsArgs = {
+  hidden: Scalars['Boolean'];
 };
 
 
@@ -311,14 +328,16 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   assignRole?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationAssignRoleArgs, 'name' | 'role'>>;
   changePassword?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationChangePasswordArgs, 'name' | 'newPassword' | 'password'>>;
   createUser?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'name' | 'password'>>;
+  deleteMap?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteMapArgs, 'mapId'>>;
   deleteUser?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'name'>>;
+  hideMap?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationHideMapArgs, 'mapId'>>;
   rebuildZooms?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationRebuildZoomsArgs, 'mapId'>>;
   shiftCoord?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationShiftCoordArgs, 'mapId' | 'shiftBy'>>;
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   map?: Resolver<Array<ResolversTypes['Tile']>, ParentType, ContextType, RequireFields<QueryMapArgs, 'id'>>;
-  maps?: Resolver<Array<ResolversTypes['Map']>, ParentType, ContextType>;
+  maps?: Resolver<Array<ResolversTypes['Map']>, ParentType, ContextType, RequireFields<QueryMapsArgs, 'hidden'>>;
   markers?: Resolver<Array<ResolversTypes['Marker']>, ParentType, ContextType, RequireFields<QueryMarkersArgs, 'hidden'>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'name'>>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;

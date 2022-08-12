@@ -1,6 +1,7 @@
 import { Character } from "graphql/server/types";
 import { pubsub } from "lib/pubsub";
 import { prisma } from "lib/prisma";
+import * as logger from "lib/logger";
 export type PositionUpdateRequest = {
   [id: string]: {
     name: string;
@@ -19,7 +20,8 @@ export const updatePosition = async (data: PositionUpdateRequest) => {
     const grid = await prisma?.grid.findUnique({
       where: { id: gridID },
     });
-    if (grid)
+    if (grid && characterData.name) {
+      logger.log("position for: " + characterData.name);
       flatData.push({
         ...characterData,
         id,
@@ -28,6 +30,7 @@ export const updatePosition = async (data: PositionUpdateRequest) => {
         y: coords.y + grid.y * 100,
         expire: new Date(Date.now() + 10000).getTime(),
       });
+    }
   }
   pubsub.publish("characters", flatData);
 };

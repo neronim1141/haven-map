@@ -68,7 +68,9 @@ export type Mutation = {
   assignRole: Scalars['String'];
   changePassword: Scalars['String'];
   createUser: Scalars['String'];
+  deleteMap: Scalars['Boolean'];
   deleteUser: Scalars['String'];
+  hideMap: Scalars['Boolean'];
   rebuildZooms: Scalars['Boolean'];
   shiftCoord: Scalars['Boolean'];
 };
@@ -93,8 +95,18 @@ export type MutationCreateUserArgs = {
 };
 
 
+export type MutationDeleteMapArgs = {
+  mapId: Scalars['Int'];
+};
+
+
 export type MutationDeleteUserArgs = {
   name: Scalars['String'];
+};
+
+
+export type MutationHideMapArgs = {
+  mapId: Scalars['Int'];
 };
 
 
@@ -120,6 +132,11 @@ export type Query = {
 
 export type QueryMapArgs = {
   id: Scalars['Int'];
+};
+
+
+export type QueryMapsArgs = {
+  hidden: Scalars['Boolean'];
 };
 
 
@@ -214,7 +231,9 @@ export type MapQueryVariables = Exact<{
 
 export type MapQuery = { __typename?: 'Query', map: Array<{ __typename?: 'Tile', x: number, y: number, z: number, lastUpdated: string, mapId: number }> };
 
-export type MapsQueryVariables = Exact<{ [key: string]: never; }>;
+export type MapsQueryVariables = Exact<{
+  hidden?: InputMaybe<Scalars['Boolean']>;
+}>;
 
 
 export type MapsQuery = { __typename?: 'Query', maps: Array<{ __typename?: 'Map', id: number, name?: string | null, hidden: boolean }> };
@@ -487,8 +506,8 @@ export type MapQueryHookResult = ReturnType<typeof useMapQuery>;
 export type MapLazyQueryHookResult = ReturnType<typeof useMapLazyQuery>;
 export type MapQueryResult = Apollo.QueryResult<MapQuery, MapQueryVariables>;
 export const MapsDocument = gql`
-    query Maps {
-  maps {
+    query Maps($hidden: Boolean = false) {
+  maps(hidden: $hidden) {
     id
     name
     hidden
@@ -508,6 +527,7 @@ export const MapsDocument = gql`
  * @example
  * const { data, loading, error } = useMapsQuery({
  *   variables: {
+ *      hidden: // value for 'hidden'
  *   },
  * });
  */
