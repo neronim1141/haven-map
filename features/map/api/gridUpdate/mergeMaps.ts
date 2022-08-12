@@ -1,5 +1,4 @@
-import { getParentCoords, processZoom } from "../utils";
-import { Coord } from "../models";
+import { Coord, processZoom } from "../utils";
 import { Grid, Tile } from "@prisma/client";
 import { prisma } from "lib/prisma";
 
@@ -18,16 +17,14 @@ export async function mergeMaps(
   });
   const tiles: Tile[] = [];
 
-  let needProcess = new Map<{ mapId: number; x: number; y: number }, boolean>(
-    []
-  );
+  let needProcess = new Map<string, Coord>([]);
   for (let grid of grids) {
     tiles.push(await updateGrid(mapsOffsets, grid, mapId, offset));
   }
 
   for (let tile of tiles) {
-    const coord = getParentCoords(tile.x, tile.y);
-    needProcess.set({ mapId, x: coord.x, y: coord.y }, true);
+    const coord = new Coord(tile.x, tile.y).parent();
+    needProcess.set(coord.toString(), coord);
     pubsub?.publish("tileUpdate", mapId, tile);
   }
 

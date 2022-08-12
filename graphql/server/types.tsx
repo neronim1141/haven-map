@@ -65,6 +65,7 @@ export type Mutation = {
   assignRole: Scalars['String'];
   changePassword: Scalars['String'];
   createUser: Scalars['String'];
+  rebuildZooms: Scalars['Boolean'];
   shiftCoord: Scalars['Boolean'];
 };
 
@@ -84,6 +85,11 @@ export type MutationChangePasswordArgs = {
 export type MutationCreateUserArgs = {
   name: Scalars['String'];
   password: Scalars['String'];
+};
+
+
+export type MutationRebuildZoomsArgs = {
+  mapId: Scalars['Int'];
 };
 
 
@@ -305,6 +311,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   assignRole?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationAssignRoleArgs, 'name' | 'role'>>;
   changePassword?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationChangePasswordArgs, 'name' | 'password'>>;
   createUser?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'name' | 'password'>>;
+  rebuildZooms?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationRebuildZoomsArgs, 'mapId'>>;
   shiftCoord?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationShiftCoordArgs, 'mapId' | 'shiftBy'>>;
 };
 

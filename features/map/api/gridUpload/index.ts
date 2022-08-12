@@ -2,7 +2,7 @@ import { prisma } from "lib/prisma";
 
 import { File } from "formidable";
 import { promises as fs } from "fs";
-import { getParentCoords, saveTile, updateZoomLevel } from "../utils";
+import { Coord, saveTile, updateZoomLevel } from "../utils";
 import * as logger from "lib/logger";
 import { HnHMaxZoom, HnHMinZoom } from "features/map/config";
 
@@ -25,7 +25,7 @@ export const gridUpload = async (tile: RequestData) => {
     let coord = { x: grid.x, y: grid.y };
 
     for (let z = HnHMinZoom; z < HnHMaxZoom; z++) {
-      coord = getParentCoords(coord.x, coord.y);
+      coord = new Coord(coord.x, coord.y).parent();
       await updateZoomLevel(grid.mapId, coord.x, coord.y, z);
     }
   } catch (e) {

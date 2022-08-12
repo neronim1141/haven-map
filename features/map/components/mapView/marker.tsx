@@ -7,9 +7,10 @@ import { HnHMaxZoom } from "features/map/config";
 
 interface MarkerProps {
   marker: Omit<MarkerType, "hidden">;
+  opacity?: number;
 }
 
-export const Marker = ({ marker }: MarkerProps) => {
+export const Marker = ({ marker, opacity = 1 }: MarkerProps) => {
   const map = useMap();
   const zoom = map.getZoom();
   const Icon = useMemo(() => {
@@ -45,6 +46,7 @@ export const Marker = ({ marker }: MarkerProps) => {
       icon={Icon}
       alt={marker.name}
       position={map.unproject([marker.x, marker.y], HnHMaxZoom)}
+      opacity={opacity}
     >
       <Tooltip direction="top" offset={[0, -15]} opacity={0.7}>
         {marker.name}

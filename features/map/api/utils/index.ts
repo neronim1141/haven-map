@@ -1,5 +1,5 @@
 export * from "./getMapTile";
-export * from "./getParentCoords";
+export * from "./coord";
 export * from "./processZooms";
 export * from "./saveTile";
 export * from "../graphql/mutations/shiftCoord";

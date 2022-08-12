@@ -35,16 +35,35 @@ export default function MapView() {
         )}
         {showGrid && <GridLayer />}
         {markersQuery.data?.markers
-          .filter(
-            (marker) =>
-              marker.mapId === main.mapId || marker.mapId === overlay.id
-          )
+          .filter((marker) => marker.mapId === main.mapId)
           .map((marker) => (
             <Marker key={marker.id} marker={marker} />
           ))}
-        {characters.map((character) => (
-          <CharacterMarker key={character.id} character={character} />
-        ))}
+        {overlay.id &&
+          markersQuery.data?.markers
+            .filter((marker) => marker.mapId === overlay.id)
+            .map((marker) => (
+              <Marker
+                key={marker.id}
+                marker={marker}
+                opacity={overlay.opacity}
+              />
+            ))}
+        {characters
+          .filter((character) => character.inMap === main.mapId)
+          .map((character) => (
+            <CharacterMarker key={character.id} character={character} />
+          ))}
+        {overlay.id &&
+          characters
+            .filter((character) => character.inMap === overlay.id)
+            .map((character) => (
+              <CharacterMarker
+                key={character.id}
+                character={character}
+                opacity={overlay.opacity}
+              />
+            ))}
       </MapContainer>
       <div className="leaflet-top leaflet-left ">
         <div className="w-36 h-40 bg-white leaflet-control leaflet-bar p-1 flex flex-col gap-2">

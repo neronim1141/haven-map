@@ -7,9 +7,13 @@ import { HnHMaxZoom } from "features/map/config";
 
 interface CharacterMarkerProps {
   character: Character;
+  opacity?: number;
 }
 
-export const CharacterMarker = ({ character }: CharacterMarkerProps) => {
+export const CharacterMarker = ({
+  character,
+  opacity = 1,
+}: CharacterMarkerProps) => {
   const map = useMap();
   const zoom = map.getZoom();
   const Icon = useMemo(() => {
@@ -19,7 +23,7 @@ export const CharacterMarker = ({ character }: CharacterMarkerProps) => {
       className: "transition-all duration-300 fill-blue-500",
       html: renderToStaticMarkup(
         <div className="flex relative z-50">
-          <div className="-top-4  -left-4 right-0 mx-auto   absolute text-base font-bold text-outline">
+          <div className="-top-4 -left-4 right-0 mx-auto absolute text-base font-bold text-outline">
             {character.name}
           </div>
           <svg viewBox="0 0 100 100" className="absolute ">
@@ -42,6 +46,7 @@ export const CharacterMarker = ({ character }: CharacterMarkerProps) => {
       alt={character.name}
       position={map.unproject([character.x, character.y], HnHMaxZoom)}
       zIndexOffset={10}
+      opacity={opacity}
     />
   );
 };

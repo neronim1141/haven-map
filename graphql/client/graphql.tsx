@@ -66,6 +66,7 @@ export type Mutation = {
   assignRole: Scalars['String'];
   changePassword: Scalars['String'];
   createUser: Scalars['String'];
+  rebuildZooms: Scalars['Boolean'];
   shiftCoord: Scalars['Boolean'];
 };
 
@@ -85,6 +86,11 @@ export type MutationChangePasswordArgs = {
 export type MutationCreateUserArgs = {
   name: Scalars['String'];
   password: Scalars['String'];
+};
+
+
+export type MutationRebuildZoomsArgs = {
+  mapId: Scalars['Int'];
 };
 
 
@@ -179,6 +185,13 @@ export type CreateUserMutationVariables = Exact<{
 
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: string };
+
+export type RebuildZoomsMutationVariables = Exact<{
+  mapId: Scalars['Int'];
+}>;
+
+
+export type RebuildZoomsMutation = { __typename?: 'Mutation', rebuildZooms: boolean };
 
 export type ShiftCoordMutationVariables = Exact<{
   mapId: Scalars['Int'];
@@ -338,6 +351,37 @@ export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const RebuildZoomsDocument = gql`
+    mutation rebuildZooms($mapId: Int!) {
+  rebuildZooms(mapId: $mapId)
+}
+    `;
+export type RebuildZoomsMutationFn = Apollo.MutationFunction<RebuildZoomsMutation, RebuildZoomsMutationVariables>;
+
+/**
+ * __useRebuildZoomsMutation__
+ *
+ * To run a mutation, you first call `useRebuildZoomsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRebuildZoomsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [rebuildZoomsMutation, { data, loading, error }] = useRebuildZoomsMutation({
+ *   variables: {
+ *      mapId: // value for 'mapId'
+ *   },
+ * });
+ */
+export function useRebuildZoomsMutation(baseOptions?: Apollo.MutationHookOptions<RebuildZoomsMutation, RebuildZoomsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RebuildZoomsMutation, RebuildZoomsMutationVariables>(RebuildZoomsDocument, options);
+      }
+export type RebuildZoomsMutationHookResult = ReturnType<typeof useRebuildZoomsMutation>;
+export type RebuildZoomsMutationResult = Apollo.MutationResult<RebuildZoomsMutation>;
+export type RebuildZoomsMutationOptions = Apollo.BaseMutationOptions<RebuildZoomsMutation, RebuildZoomsMutationVariables>;
 export const ShiftCoordDocument = gql`
     mutation ShiftCoord($mapId: Int!, $shiftBy: CoordInput!) {
   shiftCoord(mapId: $mapId, shiftBy: $shiftBy)

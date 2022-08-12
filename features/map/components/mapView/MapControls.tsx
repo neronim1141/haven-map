@@ -53,7 +53,7 @@ export function MapControls({
             </option>
           ))}
       </select>
-      {overlay.id && (
+      {overlay.id !== 0 && (
         <input
           type="range"
           min={0.2}

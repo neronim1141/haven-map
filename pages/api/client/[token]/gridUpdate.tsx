@@ -16,6 +16,7 @@ router.post(async (req, res) => {
     }
   ).grids;
   if (!req.query.token) return res.status(403).end();
+  console.log("test");
   const user = await prisma.user.findFirst({
     where: {
       token: req.query.token as string,

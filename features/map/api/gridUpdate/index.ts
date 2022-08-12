@@ -6,6 +6,7 @@ import { GetPriorityMapData } from "./getPriorityMapData";
 
 import { mergeMaps } from "./mergeMaps";
 import * as logger from "lib/logger";
+import { Coord } from "../utils";
 export type HavenGrids = [
   [string, string, string],
   [string, string, string],
@@ -21,10 +22,7 @@ export const gridUpdate = async (grids: HavenGrids) => {
   const gridRequests: GridRequest = {
     gridRequests: [],
     map: 0,
-    coord: {
-      x: 0,
-      y: 0,
-    },
+    coord: { x: 0, y: 0 },
   };
   const mapsOffsets = await getMapsOffsets(grids);
 
