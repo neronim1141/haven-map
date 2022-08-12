@@ -68,6 +68,7 @@ export type Mutation = {
   assignRole: Scalars['String'];
   changePassword: Scalars['String'];
   createUser: Scalars['String'];
+  deleteUser: Scalars['String'];
   rebuildZooms: Scalars['Boolean'];
   shiftCoord: Scalars['Boolean'];
 };
@@ -81,6 +82,7 @@ export type MutationAssignRoleArgs = {
 
 export type MutationChangePasswordArgs = {
   name: Scalars['String'];
+  newPassword: Scalars['String'];
   password: Scalars['String'];
 };
 
@@ -88,6 +90,11 @@ export type MutationChangePasswordArgs = {
 export type MutationCreateUserArgs = {
   name: Scalars['String'];
   password: Scalars['String'];
+};
+
+
+export type MutationDeleteUserArgs = {
+  name: Scalars['String'];
 };
 
 
@@ -164,6 +171,7 @@ export type AssignRoleMutation = { __typename?: 'Mutation', assignRole: string }
 export type ChangePasswordMutationVariables = Exact<{
   name: Scalars['String'];
   password: Scalars['String'];
+  newPassword: Scalars['String'];
 }>;
 
 
@@ -176,6 +184,13 @@ export type CreateUserMutationVariables = Exact<{
 
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: string };
+
+export type DeleteUserMutationVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+
+export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser: string };
 
 export type RebuildZoomsMutationVariables = Exact<{
   mapId: Scalars['Int'];
@@ -274,8 +289,8 @@ export type AssignRoleMutationHookResult = ReturnType<typeof useAssignRoleMutati
 export type AssignRoleMutationResult = Apollo.MutationResult<AssignRoleMutation>;
 export type AssignRoleMutationOptions = Apollo.BaseMutationOptions<AssignRoleMutation, AssignRoleMutationVariables>;
 export const ChangePasswordDocument = gql`
-    mutation ChangePassword($name: String!, $password: String!) {
-  changePassword(name: $name, password: $password)
+    mutation ChangePassword($name: String!, $password: String!, $newPassword: String!) {
+  changePassword(name: $name, password: $password, newPassword: $newPassword)
 }
     `;
 export type ChangePasswordMutationFn = Apollo.MutationFunction<ChangePasswordMutation, ChangePasswordMutationVariables>;
@@ -295,6 +310,7 @@ export type ChangePasswordMutationFn = Apollo.MutationFunction<ChangePasswordMut
  *   variables: {
  *      name: // value for 'name'
  *      password: // value for 'password'
+ *      newPassword: // value for 'newPassword'
  *   },
  * });
  */
@@ -337,6 +353,37 @@ export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const DeleteUserDocument = gql`
+    mutation DeleteUser($name: String!) {
+  deleteUser(name: $name)
+}
+    `;
+export type DeleteUserMutationFn = Apollo.MutationFunction<DeleteUserMutation, DeleteUserMutationVariables>;
+
+/**
+ * __useDeleteUserMutation__
+ *
+ * To run a mutation, you first call `useDeleteUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteUserMutation, { data, loading, error }] = useDeleteUserMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useDeleteUserMutation(baseOptions?: Apollo.MutationHookOptions<DeleteUserMutation, DeleteUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteUserMutation, DeleteUserMutationVariables>(DeleteUserDocument, options);
+      }
+export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutation>;
+export type DeleteUserMutationResult = Apollo.MutationResult<DeleteUserMutation>;
+export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<DeleteUserMutation, DeleteUserMutationVariables>;
 export const RebuildZoomsDocument = gql`
     mutation rebuildZooms($mapId: Int!) {
   rebuildZooms(mapId: $mapId)

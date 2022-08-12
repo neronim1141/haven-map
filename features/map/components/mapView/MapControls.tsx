@@ -14,6 +14,9 @@ import { useCharacters } from "./context/charactersContext";
 import L from "leaflet";
 import { HnHMaxZoom, TileSize } from "features/map/config";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
+import { canAccess } from "features/auth/canAccess";
+import { Role } from "@prisma/client";
 type MarkerShortType = { x: number; y: number; map: number };
 
 export function MapControls({
@@ -30,7 +33,7 @@ export function MapControls({
   map?: L.Map;
 }) {
   const router = useRouter();
-
+  const session = useSession();
   const [show, setShow] = useState(false);
   const maps = useMaps();
   const handleSelect = (marker: MarkerShortType) => {
@@ -129,7 +132,9 @@ export function MapControls({
                 />
               </Tooltip>
             )}
-            <SelectCharacters onSelect={handleSelect} />
+            {canAccess(Role.VILLAGER, session.data?.user.role) && (
+              <SelectCharacters onSelect={handleSelect} />
+            )}
             <SelectMarkers onSelect={handleSelect} />
             <SelectQuestgivers onSelect={handleSelect} />
           </div>

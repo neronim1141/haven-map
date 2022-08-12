@@ -2,7 +2,6 @@ import React from "react";
 
 import { Role } from "@prisma/client";
 import { NavLink } from "components/NavLink/NavLink";
-import { Dropdown } from "flowbite-react";
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";

@@ -40,7 +40,7 @@ const Login = () => {
     }
     if (res && res.url) {
       setError(false);
-      router.push(res.url);
+      router.push(`/profile/${values.login.toLowerCase()}`);
     }
   };
   return (

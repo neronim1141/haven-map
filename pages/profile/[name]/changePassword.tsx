@@ -3,19 +3,20 @@ import React from "react";
 import { SubmitButton } from "components/controls/buttons/SubmitButton";
 import { Input } from "components/controls/inputs/FormInput";
 import { ErrorMessage } from "components/errorMessage";
-import { signIn } from "next-auth/react";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import * as yup from "yup";
-import { useCreateUserMutation } from "graphql/client/graphql";
+import { useChangePasswordMutation } from "graphql/client/graphql";
 import Head from "next/head";
+import { useSession, signOut } from "next-auth/react";
+import { Role } from "@prisma/client";
 
 const schema = yup.object({
   login: yup.string().required(),
+  oldPassword: yup.string().required().min(3),
   password: yup.string().required().min(3),
   repeatPassword: yup
     .string()
@@ -23,88 +24,95 @@ const schema = yup.object({
     .min(3)
     .oneOf([yup.ref("password"), null], "Passwords must match"),
 });
-type RegisterFormData = yup.InferType<typeof schema>;
+type ChangePasswordFormData = yup.InferType<typeof schema>;
 
-const Register = () => {
+const ChangePassword = () => {
   const router = useRouter();
-  const [mutation] = useCreateUserMutation();
+  const session = useSession();
+
+  const [mutation] = useChangePasswordMutation();
   const [error, setError] = useState("");
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterFormData>({
+  } = useForm<ChangePasswordFormData>({
     resolver: yupResolver(schema),
   });
+  if (session.status === "loading") {
+    return <>loading</>;
+  }
+
+  if (
+    !session.data ||
+    (session.data.user.name !== router.query.name &&
+      session.data.user.role !== Role.ADMIN)
+  ) {
+    router.push("/");
+    return;
+  }
   const onSubmit = async (values: any) => {
-    const user = await mutation({
-      variables: { name: values.login, password: values.password },
+    await mutation({
+      variables: {
+        name: values.login,
+        password: values.oldPassword,
+        newPassword: values.password,
+      },
       onError: (e) => {
         setError(e.message);
       },
       onCompleted: () => {
         setError("");
+        signOut({ redirect: false }).then(() => router.push("/login"));
       },
     });
-    if (!user.data?.createUser) return;
-    const res = await signIn("credentials", {
-      redirect: false,
-      login: user.data.createUser,
-      password: values.password,
-    });
-    if (res?.error) {
-    }
-    if (res && res.url) {
-      router.push(`/profile/${values.login.toLowerCase()}`);
-    }
   };
   return (
     <>
       <Head>
-        <title>Login</title>
+        <title>Change Password</title>
       </Head>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="w-full h-full flex items-center justify-center text-white"
       >
         <section className="flex  p-6 sm:p-0 w-[30rem] flex-col space-y-8">
-          <div className="text-center text-4xl font-bold">Sign In</div>
+          <div className="text-center text-4xl font-bold">Change Password</div>
 
-          <Input<RegisterFormData>
+          <Input<ChangePasswordFormData>
             id="login"
-            placeholder="Type login..."
+            type="hidden"
+            value={router.query.name}
             register={register}
-            error={errors.login}
+            className="hidden"
           />
-          <Input<RegisterFormData>
+          <Input<ChangePasswordFormData>
+            id="oldPassword"
+            type="password"
+            placeholder="Type old password..."
+            register={register}
+            error={errors.oldPassword}
+          />
+          <Input<ChangePasswordFormData>
             id="password"
             type="password"
-            placeholder="Type password..."
+            placeholder="Type new password..."
             register={register}
             error={errors.password}
           />
-          <Input<RegisterFormData>
+          <Input<ChangePasswordFormData>
             id="repeatPassword"
             type="password"
-            placeholder="Type password again..."
+            placeholder="Type new password again..."
             register={register}
             error={errors.repeatPassword}
           />
-          <SubmitButton>Sign In</SubmitButton>
+          <SubmitButton>Change your password</SubmitButton>
           {error && <ErrorMessage>{error}</ErrorMessage>}
-
-          <p className="text-center text-lg">
-            Already have an account?{" "}
-            <Link href="/login">
-              <a className="font-medium text-indigo-500 underline-offset-4 hover:underline">
-                Log In.
-              </a>
-            </Link>
-          </p>
         </section>
       </form>
     </>
   );
 };
 
-export default Register;
+export default ChangePassword;

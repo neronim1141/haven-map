@@ -18,7 +18,7 @@ export const Query: QueryResolvers<GraphqlContext> = {
   },
   user: async (_, { name }, ctx) => {
     if (
-      ctx?.session?.user?.role !== name &&
+      ctx?.session?.user?.name !== name &&
       !canAccess(Role.ADMIN, ctx?.session?.user?.role)
     ) {
       handleForbidden();
