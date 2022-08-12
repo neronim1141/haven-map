@@ -5,7 +5,6 @@ import {
   Observable,
   ApolloClient,
   InMemoryCache,
-  gql,
 } from "@apollo/client/core";
 import { split } from "@apollo/client/link/core";
 import { HttpLink } from "@apollo/client/link/http";
@@ -19,7 +18,7 @@ class SSELink extends ApolloLink {
   }
 
   public request(operation: Operation): Observable<FetchResult> {
-    const url = new URL(document.location.origin + this.options.uri);
+    const url = new URL(document?.location?.origin + this.options.uri);
     url.searchParams.append("query", print(operation.query));
     url.searchParams.append("variables", JSON.stringify(operation.variables));
     if (operation.extensions) {

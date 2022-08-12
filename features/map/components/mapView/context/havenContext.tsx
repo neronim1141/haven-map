@@ -51,15 +51,15 @@ export const HavenProvider: FunctionComponent<{
   children?: ReactNode;
   maps: Map[];
   onMerge: () => void;
-}> = ({ children, maps, onMerge }) => {
+}> = ({ children, maps = [], onMerge }) => {
   const router = useRouter();
-  const routerId = Number(router.query.mapId);
+  const routerId = Number(router.query.mapId ?? 1);
   const [coord, setCoord] = useState({
     x: Number(router.query.x ?? 0),
     y: Number(router.query.y ?? 0),
   });
   const zoom = Number(router.query.z ?? 1);
-  if (!maps.map((v) => v.id).includes(routerId)) {
+  if (maps.length && !maps.map((v) => v.id).includes(routerId)) {
     router.push(
       {
         pathname: "/map/[mapId]/[z]/[x]/[y]",
