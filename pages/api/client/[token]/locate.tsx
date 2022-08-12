@@ -2,16 +2,21 @@ import { createRouter } from "next-connect";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "lib/prisma";
-
+import * as logger from "lib/logger";
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 router.get(async (req, res) => {
-  if (!req.query.token) return res.status(403).end();
+  if (!req.query.token) {
+    logger.error("gridUpdate from: no token");
+    return res.status(403).end();
+  }
   const user = await prisma.user.findFirst({
     where: {
       token: req.query.token as string,
     },
   });
+  logger.log("markerUpdate from: " + user?.name);
+
   if (!user) return res.status(403).end();
 
   const gridId = req.query.gridID as string | undefined;
