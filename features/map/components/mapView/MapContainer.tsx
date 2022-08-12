@@ -1,10 +1,11 @@
-import { ReactNode, useCallback, useRef } from "react";
+import React, { ReactNode, useCallback, useRef } from "react";
 import { MapContainer as Map } from "react-leaflet";
 import L, { LatLngTuple, LeafletMouseEvent } from "leaflet";
 import { useRouter } from "next/router";
 import { MapEvents } from "./mapEvents";
 import { HnHCRS } from "./utils";
 import { HnHMaxZoom, HnHMinZoom } from "features/map/config";
+import { useMap } from "./context/havenContext";
 
 export const MapContainer = (props: {
   zoom: number;
@@ -13,20 +14,25 @@ export const MapContainer = (props: {
 }) => {
   const router = useRouter();
   const routerRef = useRef(router);
+  const { setMap } = useMap();
 
   const mapRef = useRef<L.Map | null>(null);
-  const setupMapwithRef = useCallback((node: L.Map | null) => {
-    if (node) {
-      mapRef.current = node;
-      const newCoords: LatLngTuple = [
-        Number(routerRef.current.query.x) * 100,
-        Number(routerRef.current.query.y) * 100,
-      ];
-      node.setView(node.unproject(newCoords), undefined, {
-        animate: false,
-      });
-    }
-  }, []);
+  const setupMapwithRef = useCallback(
+    (node: L.Map | null) => {
+      if (node) {
+        mapRef.current = node;
+        const newCoords: LatLngTuple = [
+          Number(routerRef.current.query.x) * 100,
+          Number(routerRef.current.query.y) * 100,
+        ];
+        setMap(node);
+        node.setView(node.unproject(newCoords), undefined, {
+          animate: false,
+        });
+      }
+    },
+    [setMap]
+  );
 
   return (
     <Map

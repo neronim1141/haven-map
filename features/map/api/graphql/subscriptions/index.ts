@@ -33,16 +33,11 @@ export const Subscriptions: SubscriptionResolvers<GraphqlContext, {}> = {
     resolve: (payload: MapMerge) => payload,
   },
   characters: {
-    subscribe: (_, { ids }, ctx) => {
+    subscribe: (_, {}, ctx) => {
       if (!canAccess(Role.ALLY, ctx?.session?.user?.role)) {
         handleForbidden();
       }
-      return pipe(
-        pubsub.subscribe("characters"),
-        map((characters) =>
-          characters.filter((character) => ids.includes(character.inMap))
-        )
-      );
+      return pipe(pubsub.subscribe("characters"));
     },
     resolve: (payload: Character[]) => payload,
   },

@@ -1,10 +1,11 @@
-query Markers($hidden: Boolean = false, $ids: [Int]!) {
-  markers(hidden: $hidden, ids: $ids) {
+query Markers($hidden: Boolean = false) {
+  markers(hidden: $hidden) {
     id
     name
     x
     y
     image
     mapId
+    type
   }
 }

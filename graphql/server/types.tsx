@@ -57,6 +57,7 @@ export type Marker = {
   image?: Maybe<Scalars['String']>;
   mapId: Scalars['Int'];
   name: Scalars['String'];
+  type: Scalars['String'];
   x: Scalars['Int'];
   y: Scalars['Int'];
 };
@@ -116,7 +117,6 @@ export type QueryMapArgs = {
 
 export type QueryMarkersArgs = {
   hidden: Scalars['Boolean'];
-  ids: Array<InputMaybe<Scalars['Int']>>;
 };
 
 
@@ -129,11 +129,6 @@ export type Subscription = {
   characters: Array<Character>;
   mapMerges: MapMerge;
   mapUpdates: Tile;
-};
-
-
-export type SubscriptionCharactersArgs = {
-  ids: Array<InputMaybe<Scalars['Int']>>;
 };
 
 
@@ -299,6 +294,7 @@ export type MarkerResolvers<ContextType = any, ParentType extends ResolversParen
   image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   mapId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   x?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   y?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -315,13 +311,13 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   map?: Resolver<Array<ResolversTypes['Tile']>, ParentType, ContextType, RequireFields<QueryMapArgs, 'id'>>;
   maps?: Resolver<Array<ResolversTypes['Map']>, ParentType, ContextType>;
-  markers?: Resolver<Array<ResolversTypes['Marker']>, ParentType, ContextType, RequireFields<QueryMarkersArgs, 'hidden' | 'ids'>>;
+  markers?: Resolver<Array<ResolversTypes['Marker']>, ParentType, ContextType, RequireFields<QueryMarkersArgs, 'hidden'>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'name'>>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
 };
 
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
-  characters?: SubscriptionResolver<Array<ResolversTypes['Character']>, "characters", ParentType, ContextType, RequireFields<SubscriptionCharactersArgs, 'ids'>>;
+  characters?: SubscriptionResolver<Array<ResolversTypes['Character']>, "characters", ParentType, ContextType>;
   mapMerges?: SubscriptionResolver<ResolversTypes['MapMerge'], "mapMerges", ParentType, ContextType>;
   mapUpdates?: SubscriptionResolver<ResolversTypes['Tile'], "mapUpdates", ParentType, ContextType, RequireFields<SubscriptionMapUpdatesArgs, 'id'>>;
 };

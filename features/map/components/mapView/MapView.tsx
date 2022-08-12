@@ -1,26 +1,30 @@
+import React, { useRef } from "react";
 import { MapLayer } from "./layers/MapLayer";
 import { GridLayer } from "./layers/GridLayer";
 import _ from "lodash";
-import { Marker } from "./marker";
 import { MapContainer } from "./MapContainer";
 import { MapControls } from "./MapControls";
-import L, { LeafletMouseEvent } from "leaflet";
-import { CharacterMarker } from "./characterMarker";
+import { LeafletMouseEvent } from "leaflet";
 import {
   useCoords,
   useGrid,
   useMain,
+  useMap,
+  useMaps,
   useOverlay,
 } from "./context/havenContext";
-import { useCharacters } from "./hooks/useCharacters";
 import { CharactersProvider } from "./context/charactersContext";
+import Head from "next/head";
+import L from "leaflet";
 
 export default function MapView() {
   const coords = useCoords();
   const main = useMain();
   const overlay = useOverlay();
   const grid = useGrid();
-
+  const maps = useMaps();
+  const { map } = useMap();
+  const mainMap = maps.find((map) => map.id === main.id);
   // const [mutation] = useSetCenterCoordMutation();
   // const [contextMenu, setContextMenu] = useState<{ x: number; y: number }>();
   const onContextMenu = (e: LeafletMouseEvent) => {
@@ -28,23 +32,29 @@ export default function MapView() {
     console.log(e);
   };
   return (
-    <div className="h-full relative w-full text-black">
-      <MapContainer zoom={coords.z} onContextMenu={onContextMenu}>
-        <CharactersProvider ids={[main.id, overlay.id]}>
-          <MapLayer mapId={main.id} markers={main.markers} />
+    <CharactersProvider>
+      <Head>
+        <title>Map {mainMap?.name ?? main.id} </title>
+      </Head>
+      <div className="h-full relative w-full text-black">
+        <MapContainer zoom={coords.z} onContextMenu={onContextMenu}>
+          <MapLayer mapId={main.id} />
           {overlay.id && (
-            <MapLayer
-              mapId={overlay.id}
-              opacity={overlay.opacity}
-              markers={overlay.markers}
-            />
+            <MapLayer mapId={overlay.id} opacity={overlay.opacity} />
           )}
-        </CharactersProvider>
-        {grid.show && <GridLayer />}
-      </MapContainer>
-      <div className="leaflet-top leaflet-left ">
-        <MapControls main={main} overlay={overlay} grid={grid} />
+
+          {grid.show && <GridLayer />}
+        </MapContainer>
+        <div className="leaflet-top leaflet-left ">
+          <MapControls
+            main={main}
+            overlay={overlay}
+            grid={grid}
+            zoom={coords.z}
+            map={map}
+          />
+        </div>
       </div>
-    </div>
+    </CharactersProvider>
   );
 }

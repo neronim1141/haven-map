@@ -27,6 +27,7 @@ type Marker {
   mapId: Int!
   hidden: Boolean!
   image: String
+  type: String!
 }
 type Character {
   id: String!
@@ -51,7 +52,7 @@ input CoordInput {
 type Query {
   map(id: Int!): [Tile!]!
   maps: [Map!]!
-  markers(hidden: Boolean!, ids: [Int]!): [Marker!]!
+  markers(hidden: Boolean!): [Marker!]!
   users: [User!]!
   user(name: String!): User
 }
@@ -59,7 +60,7 @@ type Query {
 type Subscription {
   mapUpdates(id: Int!): Tile!
   mapMerges: MapMerge!
-  characters(ids: [Int]!): [Character!]!
+  characters: [Character!]!
 }
 
 type Mutation {

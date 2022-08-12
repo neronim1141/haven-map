@@ -1,20 +1,43 @@
-import { Character, Map } from "graphql/client/graphql";
-import {
+import { Character, useCharactersSubscription } from "graphql/client/graphql";
+import React, {
   Context,
   createContext,
   FunctionComponent,
   ReactNode,
   useContext,
+  useEffect,
+  useState,
 } from "react";
-import { useCharacters } from "../hooks/useCharacters";
 
 const CharactersContext = createContext<Character[] | undefined>(undefined);
 
 export const CharactersProvider: FunctionComponent<{
   children?: ReactNode;
-  ids: number[];
-}> = ({ children, ids }) => {
-  const characters = useCharacters(ids);
+}> = ({ children }) => {
+  const [characters, setCharacters] = useState<Character[]>([]);
+  useCharactersSubscription({
+    onSubscriptionData: ({ subscriptionData }) => {
+      const data = subscriptionData.data?.characters;
+      if (!data) return;
+      setCharacters((prev) => {
+        const filtered = prev.filter(
+          (character) => !data.find((char) => char.id == character.id)
+        );
+
+        return [...filtered, ...data];
+      });
+    },
+  });
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCharacters((prev) => {
+        return prev.filter((character) => character.expire > Date.now());
+      });
+    }, 2500);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   return (
     <CharactersContext.Provider value={characters}>
@@ -23,11 +46,11 @@ export const CharactersProvider: FunctionComponent<{
   );
 };
 
-export const useCharacter = (mapId: number) =>
+export const useCharactersFor = (mapId: number) =>
   useContextFallback(CharactersContext).filter(
     (character) => character.inMap === mapId
   );
-
+export const useCharacters = () => useContextFallback(CharactersContext);
 export const useContextFallback = <T,>(value: Context<T | undefined>): T => {
   const ctx = useContext<T | undefined>(value);
   if (!ctx) {

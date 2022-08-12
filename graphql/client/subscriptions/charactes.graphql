@@ -1,5 +1,5 @@
-subscription Characters($ids: [Int!]!) {
-  characters(ids: $ids) {
+subscription Characters {
+  characters {
     id
     name
     type

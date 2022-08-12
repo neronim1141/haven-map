@@ -1,18 +1,20 @@
+import React from "react";
 import { useHavenMap } from "./hooks/useHavenMap";
 import { HavenLayer } from "./havenLayer";
 import { HnHMaxZoom, HnHMinZoom, TileSize } from "features/map/config";
 import { Marker as GraphqlMarker } from "graphql/client/graphql";
 import { Marker } from "../../marker";
 import Characters from "./characters";
+import { useMarkersFor } from "../../context/havenContext";
 
 interface MapLayerProps {
   mapId: number;
   opacity?: number;
-  markers?: Omit<GraphqlMarker, "hidden">[];
 }
 
-export const MapLayer = ({ mapId, opacity = 1, markers }: MapLayerProps) => {
+export const MapLayer = ({ mapId, opacity = 1 }: MapLayerProps) => {
   const mapData = useHavenMap(mapId);
+  const markers = useMarkersFor(mapId);
   return (
     <>
       <HavenLayer
