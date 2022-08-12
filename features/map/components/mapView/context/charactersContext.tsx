@@ -1,4 +1,7 @@
+import { Role } from "@prisma/client";
+import { canAccess } from "features/auth/canAccess";
 import { Character, useCharactersSubscription } from "graphql/client/graphql";
+import { useSession } from "next-auth/react";
 import React, {
   Context,
   createContext,
@@ -14,8 +17,10 @@ const CharactersContext = createContext<Character[] | undefined>(undefined);
 export const CharactersProvider: FunctionComponent<{
   children?: ReactNode;
 }> = ({ children }) => {
+  const session = useSession();
   const [characters, setCharacters] = useState<Character[]>([]);
   useCharactersSubscription({
+    skip: !canAccess(Role.VILLAGER, session.data?.user.role),
     onSubscriptionData: ({ subscriptionData }) => {
       const data = subscriptionData.data?.characters;
       if (!data) return;

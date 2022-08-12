@@ -34,7 +34,7 @@ export const Subscriptions: SubscriptionResolvers<GraphqlContext, {}> = {
   },
   characters: {
     subscribe: (_, {}, ctx) => {
-      if (!canAccess(Role.ALLY, ctx?.session?.user?.role)) {
+      if (!canAccess(Role.VILLAGER, ctx?.session?.user?.role)) {
         handleForbidden();
       }
       return pipe(pubsub.subscribe("characters"));

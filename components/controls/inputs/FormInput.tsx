@@ -12,6 +12,7 @@ interface InputProps<T extends FieldValues>
   label?: string;
   id: Path<T>;
   error?: FieldError;
+  className?: string;
 }
 
 export const Input = <T extends FieldValues = FieldValues>({
@@ -19,10 +20,11 @@ export const Input = <T extends FieldValues = FieldValues>({
   label,
   id,
   error,
+  className,
   ...rest
 }: InputProps<T>) => {
   return (
-    <div className="flex flex-col ">
+    <div className={`flex flex-col ${className}`}>
       {label && (
         <label className="mb-2 font-bold tracking-wide text-lg">{label}</label>
       )}

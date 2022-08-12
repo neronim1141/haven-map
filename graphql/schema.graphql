@@ -67,6 +67,11 @@ type Mutation {
   shiftCoord(mapId: Int!, shiftBy: CoordInput!): Boolean!
   rebuildZooms(mapId: Int!): Boolean!
   createUser(name: String!, password: String!): String!
+  deleteUser(name: String!): String!
   assignRole(name: String!, role: String!): String!
-  changePassword(name: String!, password: String!): String!
+  changePassword(
+    name: String!
+    password: String!
+    newPassword: String!
+  ): String!
 }

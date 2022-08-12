@@ -1,7 +1,8 @@
 import { Role } from "@prisma/client";
 import { getAccessLevel } from "./getAccessLevel";
 
-export const canAccess = (accessRole: Role, role?: Role) => {
-  if (!role || getAccessLevel(accessRole) > getAccessLevel(role)) return false;
+export const canAccess = (requiredRole: Role, role?: Role) => {
+  if (!role || getAccessLevel(requiredRole) > getAccessLevel(role))
+    return false;
   return true;
 };

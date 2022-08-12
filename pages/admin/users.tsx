@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Role } from "@prisma/client";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -6,6 +6,7 @@ import { Button, Select } from "flowbite-react";
 import { Table } from "components/table";
 import { useAssignRoleMutation, useUsersQuery } from "graphql/client/graphql";
 import { useMemo } from "react";
+import { DeleteUserModal } from "../../components/modals/deleteUserModal";
 interface User {
   name: string;
   role: string;
@@ -16,6 +17,8 @@ const columnHelper = createColumnHelper<User>();
 const Page = () => {
   const users = useUsersQuery();
   const [assignRole] = useAssignRoleMutation();
+  const [userToDelete, setUserToDelete] = useState<string>();
+
   const columns = useMemo(
     () => [
       columnHelper.accessor("name", {
@@ -57,27 +60,37 @@ const Page = () => {
       columnHelper.display({
         id: "actions",
         header: "actions",
-        cell: (props) => (
-          <div className="flex gap-2 items-stretch">
+        cell: ({ row }) =>
+          row.original.name !== "admin" ? (
+            <div className="flex gap-2 items-stretch">
+              <Button
+                size="xs"
+                onClick={() => {
+                  alert("TBD");
+                }}
+              >
+                Change Password
+              </Button>
+              <Button
+                size="xs"
+                color="warning"
+                onClick={() => {
+                  setUserToDelete(row.original.name);
+                }}
+              >
+                Delete
+              </Button>
+            </div>
+          ) : (
             <Button
               size="xs"
               onClick={() => {
-                alert("To be Done");
+                alert("TBD");
               }}
             >
               Change Password
             </Button>
-            <Button
-              size="xs"
-              color="warning"
-              onClick={() => {
-                alert("To be Done");
-              }}
-            >
-              Delete
-            </Button>
-          </div>
-        ),
+          ),
       }),
     ],
     [assignRole, users]
@@ -87,17 +100,26 @@ const Page = () => {
   }
 
   return (
-    <div className="w-full h-full flex justify-center ">
-      <div className=" p-2 overflow-x-auto">
-        <h1 className="mx-auto text-center font-bold text-2xl">Users</h1>
-        <Table
-          columns={columns}
-          data={users.data.users}
-          initialSort={[{ id: "name", desc: false }]}
-          className="mt-2"
-        />
+    <>
+      <div className="w-full h-full flex justify-center ">
+        <div className=" p-2 overflow-x-auto">
+          <h1 className="mx-auto text-center font-bold text-2xl">Users</h1>
+          <Table
+            columns={columns}
+            data={users.data.users}
+            initialSort={[{ id: "name", desc: false }]}
+            className="mt-2"
+          />
+        </div>
       </div>
-    </div>
+      <DeleteUserModal
+        data={userToDelete}
+        onClose={() => {
+          setUserToDelete(undefined);
+          users.refetch();
+        }}
+      />
+    </>
   );
 };
 
