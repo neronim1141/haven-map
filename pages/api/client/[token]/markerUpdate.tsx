@@ -9,12 +9,18 @@ const router = createRouter<NextApiRequest, NextApiResponse>();
 
 router.post(async (req, res) => {
   logger.log("markerUpdate");
-  if (!req.query.token) return res.status(403).end();
+  if (!req.query.token) {
+    logger.error("gridUpdate from: no token");
+    return res.status(403).end();
+  }
   const user = await prisma.user.findFirst({
     where: {
       token: req.query.token as string,
     },
   });
+  logger.log("markerUpdate from: " + user?.name);
+
+  if (!user) return res.status(403).end();
 
   await markerUpdate(req.body as MarkersRequest, user?.role);
 

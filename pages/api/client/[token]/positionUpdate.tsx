@@ -1,5 +1,5 @@
 import { createRouter } from "next-connect";
-
+import { prisma } from "lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as logger from "lib/logger";
 import {
@@ -10,7 +10,17 @@ import {
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 router.post(async (req, res) => {
-  logger.log("positionUpdate");
+  if (!req.query.token) {
+    logger.error("positionUpdate from: no token");
+    return res.status(403).end();
+  }
+  const user = await prisma.user.findFirst({
+    where: {
+      token: req.query.token as string,
+    },
+  });
+  logger.log("positionUpdate from: " + user?.name);
+  if (!user) return res.status(403).end();
 
   await updatePosition(req.body as PositionUpdateRequest);
   res.end();

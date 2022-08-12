@@ -6,17 +6,23 @@ import { promises as fs } from "fs";
 import { fileToString } from "features/map/api/gridUpload/fileToString";
 import { gridUpload, RequestData } from "features/map/api/gridUpload";
 import { prisma } from "lib/prisma";
+import * as logger from "lib/logger";
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 router.post(async (req, res) => {
-  if (!req.query.token) return res.status(403).end();
+  if (!req.query.token) {
+    logger.error("gridUpload from: no token");
+    return res.status(403).end();
+  }
   const user = await prisma.user.findFirst({
     where: {
       token: req.query.token as string,
     },
   });
+  logger.log("gridUpload from: " + user?.name);
   if (!user) return res.status(403).end();
+
   const tile = await getTileFromRequest(req);
   await gridUpload(tile);
   res.end();
