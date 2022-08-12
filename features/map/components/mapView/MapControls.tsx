@@ -157,7 +157,7 @@ const SelectCharacters = ({ onSelect }: SelectProps) => {
   return (
     <Tooltip content="Select characters">
       <SearchSelect
-        value={undefined}
+        value={null}
         options={options}
         placeholder={options.length ? "Search character" : "No characters"}
         isDisabled={!options.length}
@@ -185,7 +185,7 @@ const SelectMarkers = ({ onSelect }: SelectProps) => {
   return (
     <Tooltip content="Select Custom Markers">
       <SearchSelect
-        value={undefined}
+        value={null}
         options={options}
         placeholder={options.length ? "Search  markers" : "No  markers"}
         isDisabled={!options.length}
@@ -210,7 +210,7 @@ const SelectQuestgivers = ({ onSelect }: SelectProps) => {
   return (
     <Tooltip content="Overlay Questgivers">
       <SearchSelect
-        value={undefined}
+        value={null}
         options={options}
         placeholder={options.length ? "Search  questgivers" : "No  questgivers"}
         isDisabled={!options.length}
