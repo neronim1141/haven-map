@@ -5,7 +5,7 @@ import { HavenProvider } from "features/map/components/mapView/context/havenCont
 import { useMapsQuery } from "graphql/client/graphql";
 
 const Page = () => {
-  const { loading, data, refetch } = useMapsQuery();
+  const { loading, data, refetch } = useMapsQuery({ pollInterval: 60 * 1000 });
   if (loading || !data) {
     return <>loading</>;
   }
