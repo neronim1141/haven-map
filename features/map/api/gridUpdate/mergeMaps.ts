@@ -81,7 +81,8 @@ async function cleanupAfterMerge(
           mapId: Number(mergeId),
         },
       });
-      pubsub?.publish("merge", Number(mergeId), {
+      pubsub?.publish("merge", {
+        from: Number(mergeId),
         to: mapId,
         shift: { x: offset.x - merge.x, y: offset.y - merge.y },
       });

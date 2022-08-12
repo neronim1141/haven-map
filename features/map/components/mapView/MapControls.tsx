@@ -1,38 +1,29 @@
-import { useMapData } from "./hooks/useMapData";
-import { Marker, useMapsQuery } from "graphql/client/graphql";
 import _ from "lodash";
-import { useOverlayData } from "./hooks/useOverlayData";
 import { Switch } from "../controls/switch";
+import { MainMap, MapGrid, OverlayMap, useMaps } from "./context/havenContext";
 export function MapControls({
   main,
   overlay,
-  markers,
   grid,
 }: {
-  main: ReturnType<typeof useMapData>;
-  overlay: ReturnType<typeof useOverlayData>;
-  markers?: Omit<Marker, "hidden">[];
-  grid: {
-    show: boolean;
-    setShow: (value: boolean) => void;
-  };
+  main: MainMap;
+  overlay: OverlayMap;
+  grid: MapGrid;
 }) {
-  const { data: maps } = useMapsQuery();
-  if (!maps?.maps) {
-    return <>Loading</>;
-  }
+  const maps = useMaps();
+  console.log("test");
 
   return (
     <>
       <Switch value={grid.show} onChange={grid.setShow} label="Show grid" />
       <select
-        value={main.mapId}
+        value={main.id}
         onChange={(e) => {
           main.setId(Number(e.target.value));
-          overlay.setId("");
+          overlay.setId(0);
         }}
       >
-        {maps.maps.map((map) => (
+        {maps.map((map) => (
           <option value={map.id} key={map.id}>
             {map.name ?? map.id}
           </option>
@@ -41,12 +32,12 @@ export function MapControls({
       <select
         value={overlay.id}
         onChange={(e) => {
-          overlay.setId(e.target.value);
+          overlay.setId(Number(e.target.value));
         }}
       >
-        <option value="">None</option>
-        {maps.maps
-          .filter((map) => map.id !== main.mapId)
+        <option value={0}>None</option>
+        {maps
+          .filter((map) => map.id !== main.id)
           .map((map) => (
             <option value={map.id} key={map.id}>
               {map.name ?? map.id}

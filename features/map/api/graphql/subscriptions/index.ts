@@ -24,11 +24,11 @@ export const Subscriptions: SubscriptionResolvers<GraphqlContext, {}> = {
     },
   },
   mapMerges: {
-    subscribe: (_, { id }, ctx) => {
+    subscribe: (_, {}, ctx) => {
       if (!canAccess(Role.ALLY, ctx?.session?.user?.role)) {
         handleForbidden();
       }
-      return pubsub.subscribe("merge", id);
+      return pubsub.subscribe("merge");
     },
     resolve: (payload: MapMerge) => payload,
   },

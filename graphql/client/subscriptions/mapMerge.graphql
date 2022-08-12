@@ -1,5 +1,6 @@
-subscription MapMerges($mapId: Int!) {
-  mapMerges(id: $mapId) {
+subscription MapMerges {
+  mapMerges {
+    from
     to
     shift {
       x

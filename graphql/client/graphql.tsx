@@ -46,6 +46,7 @@ export type Map = {
 
 export type MapMerge = {
   __typename?: 'MapMerge';
+  from: Scalars['Int'];
   shift: Coord;
   to: Scalars['Int'];
 };
@@ -134,11 +135,6 @@ export type Subscription = {
 
 export type SubscriptionCharactersArgs = {
   ids: Array<InputMaybe<Scalars['Int']>>;
-};
-
-
-export type SubscriptionMapMergesArgs = {
-  id: Scalars['Int'];
 };
 
 
@@ -240,12 +236,10 @@ export type CharactersSubscriptionVariables = Exact<{
 
 export type CharactersSubscription = { __typename?: 'Subscription', characters: Array<{ __typename?: 'Character', id: string, name: string, type: string, inMap: number, expire: number, x: number, y: number }> };
 
-export type MapMergesSubscriptionVariables = Exact<{
-  mapId: Scalars['Int'];
-}>;
+export type MapMergesSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MapMergesSubscription = { __typename?: 'Subscription', mapMerges: { __typename?: 'MapMerge', to: number, shift: { __typename?: 'Coord', x: number, y: number } } };
+export type MapMergesSubscription = { __typename?: 'Subscription', mapMerges: { __typename?: 'MapMerge', from: number, to: number, shift: { __typename?: 'Coord', x: number, y: number } } };
 
 export type MapUpdatesSubscriptionVariables = Exact<{
   mapId: Scalars['Int'];
@@ -640,8 +634,9 @@ export function useCharactersSubscription(baseOptions: Apollo.SubscriptionHookOp
 export type CharactersSubscriptionHookResult = ReturnType<typeof useCharactersSubscription>;
 export type CharactersSubscriptionResult = Apollo.SubscriptionResult<CharactersSubscription>;
 export const MapMergesDocument = gql`
-    subscription MapMerges($mapId: Int!) {
-  mapMerges(id: $mapId) {
+    subscription MapMerges {
+  mapMerges {
+    from
     to
     shift {
       x
@@ -663,11 +658,10 @@ export const MapMergesDocument = gql`
  * @example
  * const { data, loading, error } = useMapMergesSubscription({
  *   variables: {
- *      mapId: // value for 'mapId'
  *   },
  * });
  */
-export function useMapMergesSubscription(baseOptions: Apollo.SubscriptionHookOptions<MapMergesSubscription, MapMergesSubscriptionVariables>) {
+export function useMapMergesSubscription(baseOptions?: Apollo.SubscriptionHookOptions<MapMergesSubscription, MapMergesSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useSubscription<MapMergesSubscription, MapMergesSubscriptionVariables>(MapMergesDocument, options);
       }
