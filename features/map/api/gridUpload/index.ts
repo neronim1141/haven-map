@@ -13,7 +13,6 @@ export type RequestData = {
 };
 export const gridUpload = async (tile: RequestData) => {
   try {
-    logger.log(`map Tile for: ${tile.id}`);
     const tileData = await fs.readFile(tile.file.filepath);
     const grid = await prisma.grid.findUnique({
       where: { id: tile.id },

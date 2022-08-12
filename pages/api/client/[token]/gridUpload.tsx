@@ -7,12 +7,10 @@ import { fileToString } from "features/map/api/gridUpload/fileToString";
 import { gridUpload, RequestData } from "features/map/api/gridUpload";
 import { prisma } from "lib/prisma";
 import * as logger from "lib/logger";
-
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 router.post(async (req, res) => {
   if (!req.query.token) {
-    logger.error("gridUpload from: no token");
     return res.status(403).end();
   }
   const user = await prisma.user.findFirst({
@@ -20,10 +18,11 @@ router.post(async (req, res) => {
       token: req.query.token as string,
     },
   });
-  logger.log("gridUpload from: " + user?.name);
   if (!user) return res.status(403).end();
 
   const tile = await getTileFromRequest(req);
+  logger.log(`map Tile for: ${tile.id} by: ${user.name}`);
+
   await gridUpload(tile);
   res.end();
 });
