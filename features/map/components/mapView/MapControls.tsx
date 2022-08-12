@@ -144,21 +144,23 @@ interface SelectProps {
 }
 const SelectCharacters = ({ onSelect }: SelectProps) => {
   const characters = useCharacters();
-  const options = characters.map((character) => ({
-    label: character.name,
-    value: {
-      x: character.x,
-      y: character.y,
-      map: character.inMap,
-    },
-  }));
+  const options = characters
+    .filter((character) => character.name !== "???")
+    .map((character) => ({
+      label: character.name,
+      value: {
+        x: character.x,
+        y: character.y,
+        map: character.inMap,
+      },
+    }));
   return (
     <Tooltip content="Select characters">
       <SearchSelect
         value={undefined}
         options={options}
-        placeholder={characters.length ? "Search character" : "No characters"}
-        isDisabled={!characters.length}
+        placeholder={options.length ? "Search character" : "No characters"}
+        isDisabled={!options.length}
         className="text-black w-48"
         onChange={(entry) => entry && onSelect(entry.value)}
       />
