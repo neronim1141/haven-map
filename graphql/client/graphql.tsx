@@ -58,6 +58,7 @@ export type Marker = {
   image?: Maybe<Scalars['String']>;
   mapId: Scalars['Int'];
   name: Scalars['String'];
+  type: Scalars['String'];
   x: Scalars['Int'];
   y: Scalars['Int'];
 };
@@ -117,7 +118,6 @@ export type QueryMapArgs = {
 
 export type QueryMarkersArgs = {
   hidden: Scalars['Boolean'];
-  ids: Array<InputMaybe<Scalars['Int']>>;
 };
 
 
@@ -130,11 +130,6 @@ export type Subscription = {
   characters: Array<Character>;
   mapMerges: MapMerge;
   mapUpdates: Tile;
-};
-
-
-export type SubscriptionCharactersArgs = {
-  ids: Array<InputMaybe<Scalars['Int']>>;
 };
 
 
@@ -211,11 +206,10 @@ export type MapsQuery = { __typename?: 'Query', maps: Array<{ __typename?: 'Map'
 
 export type MarkersQueryVariables = Exact<{
   hidden?: InputMaybe<Scalars['Boolean']>;
-  ids: Array<InputMaybe<Scalars['Int']>> | InputMaybe<Scalars['Int']>;
 }>;
 
 
-export type MarkersQuery = { __typename?: 'Query', markers: Array<{ __typename?: 'Marker', id: number, name: string, x: number, y: number, image?: string | null, mapId: number }> };
+export type MarkersQuery = { __typename?: 'Query', markers: Array<{ __typename?: 'Marker', id: number, name: string, x: number, y: number, image?: string | null, mapId: number, type: string }> };
 
 export type UserQueryVariables = Exact<{
   name: Scalars['String'];
@@ -229,9 +223,7 @@ export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type UsersQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', name: string, role: string, token: string }> };
 
-export type CharactersSubscriptionVariables = Exact<{
-  ids: Array<Scalars['Int']> | Scalars['Int'];
-}>;
+export type CharactersSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
 export type CharactersSubscription = { __typename?: 'Subscription', characters: Array<{ __typename?: 'Character', id: string, name: string, type: string, inMap: number, expire: number, x: number, y: number }> };
@@ -484,14 +476,15 @@ export type MapsQueryHookResult = ReturnType<typeof useMapsQuery>;
 export type MapsLazyQueryHookResult = ReturnType<typeof useMapsLazyQuery>;
 export type MapsQueryResult = Apollo.QueryResult<MapsQuery, MapsQueryVariables>;
 export const MarkersDocument = gql`
-    query Markers($hidden: Boolean = false, $ids: [Int]!) {
-  markers(hidden: $hidden, ids: $ids) {
+    query Markers($hidden: Boolean = false) {
+  markers(hidden: $hidden) {
     id
     name
     x
     y
     image
     mapId
+    type
   }
 }
     `;
@@ -509,11 +502,10 @@ export const MarkersDocument = gql`
  * const { data, loading, error } = useMarkersQuery({
  *   variables: {
  *      hidden: // value for 'hidden'
- *      ids: // value for 'ids'
  *   },
  * });
  */
-export function useMarkersQuery(baseOptions: Apollo.QueryHookOptions<MarkersQuery, MarkersQueryVariables>) {
+export function useMarkersQuery(baseOptions?: Apollo.QueryHookOptions<MarkersQuery, MarkersQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<MarkersQuery, MarkersQueryVariables>(MarkersDocument, options);
       }
@@ -598,8 +590,8 @@ export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
 export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
 export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
 export const CharactersDocument = gql`
-    subscription Characters($ids: [Int!]!) {
-  characters(ids: $ids) {
+    subscription Characters {
+  characters {
     id
     name
     type
@@ -623,11 +615,10 @@ export const CharactersDocument = gql`
  * @example
  * const { data, loading, error } = useCharactersSubscription({
  *   variables: {
- *      ids: // value for 'ids'
  *   },
  * });
  */
-export function useCharactersSubscription(baseOptions: Apollo.SubscriptionHookOptions<CharactersSubscription, CharactersSubscriptionVariables>) {
+export function useCharactersSubscription(baseOptions?: Apollo.SubscriptionHookOptions<CharactersSubscription, CharactersSubscriptionVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useSubscription<CharactersSubscription, CharactersSubscriptionVariables>(CharactersDocument, options);
       }

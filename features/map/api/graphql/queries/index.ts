@@ -16,7 +16,7 @@ export const Query: QueryResolvers<GraphqlContext> = {
       },
     });
   },
-  maps: async (_, query, ctx) => {
+  maps: async (_, {}, ctx) => {
     if (!canAccess(Role.ALLY, ctx?.session?.user?.role)) {
       handleForbidden();
     }

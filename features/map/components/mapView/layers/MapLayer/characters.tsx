@@ -1,13 +1,13 @@
 import React from "react";
 import { CharacterMarker } from "../../characterMarker";
-import { useCharacter } from "../../context/charactersContext";
+import { useCharactersFor } from "../../context/charactersContext";
 
 interface CharactersProps {
   opacity: number;
   mapId: number;
 }
 const Characters = ({ opacity, mapId }: CharactersProps) => {
-  const characters = useCharacter(mapId);
+  const characters = useCharactersFor(mapId);
 
   return (
     <>

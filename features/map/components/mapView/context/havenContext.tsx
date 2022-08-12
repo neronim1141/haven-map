@@ -22,14 +22,12 @@ export type MapCoords = {
 export type MainMap = {
   id: number;
   setId: (id: number) => void;
-  markers?: Omit<Marker, "hidden">[];
 };
 export type OverlayMap = {
   id: number;
   setId: (id: number) => void;
   opacity: number;
   setOpacity: (id: number) => void;
-  markers?: Omit<Marker, "hidden">[];
 };
 export type MapGrid = {
   show: boolean;
@@ -41,6 +39,8 @@ type HavenContextType = {
   overlay: OverlayMap;
   grid: MapGrid;
   maps: Map[];
+  markers: Omit<Marker, "hidden">[];
+  map: { map?: L.Map; setMap: (map: L.Map) => void };
 };
 
 const HavenContext = createContext<HavenContextType | undefined>(undefined);
@@ -75,6 +75,7 @@ export const HavenProvider: FunctionComponent<{
   const [main, setMain] = useState(routerId ?? 1);
   const [overlay, setOverlay] = useState<number>(0);
   const [overlayOpacity, setOverlayOpacity] = useState(0.5);
+  const [map, setMap] = useState<L.Map>();
 
   useMapMergesSubscription({
     onSubscriptionData: ({ subscriptionData: merge }) => {
@@ -103,9 +104,7 @@ export const HavenProvider: FunctionComponent<{
       onMerge();
     },
   });
-  const markersQuery = useMarkersQuery({
-    variables: { ids: [main, overlay] },
-  });
+  const markersQuery = useMarkersQuery();
   const [showGrid, setShowGrid] = useState(false);
 
   const value: HavenContextType = {
@@ -117,24 +116,20 @@ export const HavenProvider: FunctionComponent<{
     main: {
       id: main,
       setId: setMain,
-      markers: markersQuery.data?.markers?.filter(
-        (marker) => marker.mapId === main
-      ),
     },
     overlay: {
       id: overlay,
       setId: setOverlay,
       opacity: overlayOpacity,
       setOpacity: setOverlayOpacity,
-      markers: markersQuery.data?.markers?.filter(
-        (marker) => marker.mapId === overlay
-      ),
     },
     grid: {
       show: showGrid,
       setShow: setShowGrid,
     },
     maps,
+    markers: markersQuery.data?.markers ?? [],
+    map: { map, setMap },
   };
 
   return (
@@ -147,7 +142,12 @@ export const useMain = () => useContextFallback(HavenContext).main;
 export const useOverlay = () => useContextFallback(HavenContext).overlay;
 export const useGrid = () => useContextFallback(HavenContext).grid;
 export const useMaps = () => useContextFallback(HavenContext).maps;
-
+export const useMarkers = () => useContextFallback(HavenContext).markers;
+export const useMap = () => useContextFallback(HavenContext).map;
+export const useMarkersFor = (mapId: number) =>
+  useContextFallback(HavenContext).markers.filter(
+    (marker) => marker.mapId === mapId
+  );
 export const useContextFallback = <T,>(value: Context<T | undefined>): T => {
   const ctx = useContext<T | undefined>(value);
   if (!ctx) {
