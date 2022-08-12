@@ -4,13 +4,9 @@ import { Role } from "@prisma/client";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Button, Select } from "flowbite-react";
 import { Table } from "components/table";
-import {
-  useAssignRoleMutation,
-  useDeleteUserMutation,
-  useUsersQuery,
-} from "graphql/client/graphql";
+import { useAssignRoleMutation, useUsersQuery } from "graphql/client/graphql";
 import { useMemo } from "react";
-import { DeleteUserModal } from "./_components/deleteUserModal";
+import { DeleteUserModal } from "../../components/modals/deleteUserModal";
 interface User {
   name: string;
   role: string;
