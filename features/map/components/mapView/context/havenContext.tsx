@@ -53,16 +53,30 @@ export const HavenProvider: FunctionComponent<{
   onMerge: () => void;
 }> = ({ children, maps, onMerge }) => {
   const router = useRouter();
-
-  const [main, setMain] = useState(Number(router.query.mapId ?? maps[0].id));
-  const [overlay, setOverlay] = useState<number>(0);
-  const [overlayOpacity, setOverlayOpacity] = useState(0.5);
-
+  const routerId = Number(router.query.mapId);
   const [coord, setCoord] = useState({
     x: Number(router.query.x ?? 0),
     y: Number(router.query.y ?? 0),
   });
   const zoom = Number(router.query.z ?? 1);
+  if (!maps.map((v) => v.id).includes(routerId)) {
+    router.push(
+      {
+        pathname: "/map/[mapId]/[z]/[x]/[y]",
+        query: {
+          mapId: maps[0].id,
+          x: coord.x,
+          y: coord.y,
+          z: zoom,
+        },
+      },
+      undefined,
+      { shallow: true }
+    );
+  }
+  const [main, setMain] = useState(routerId ?? 1);
+  const [overlay, setOverlay] = useState<number>(0);
+  const [overlayOpacity, setOverlayOpacity] = useState(0.5);
 
   useMapMergesSubscription({
     onSubscriptionData: ({ subscriptionData: merge }) => {

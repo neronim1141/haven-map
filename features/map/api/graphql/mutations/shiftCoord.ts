@@ -2,7 +2,10 @@ import { Tile } from "@prisma/client";
 import { prisma } from "lib/prisma";
 import { Coord, processZoom } from "../../utils";
 
-export async function shiftCoord(mapId: number, shiftBy: Coord) {
+export async function shiftCoord(
+  mapId: number,
+  shiftBy: { x: number; y: number }
+) {
   const grids = await prisma.grid.findMany({
     where: {
       mapId,

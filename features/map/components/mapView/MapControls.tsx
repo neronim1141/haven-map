@@ -11,7 +11,6 @@ export function MapControls({
   grid: MapGrid;
 }) {
   const maps = useMaps();
-  console.log("test");
 
   return (
     <>

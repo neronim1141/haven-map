@@ -3,16 +3,16 @@ import { HavenProvider } from "features/map/components/mapView/context/havenCont
 import { useMapsQuery } from "graphql/client/graphql";
 
 const Page = () => {
-  const { data, refetch } = useMapsQuery();
-  if (!data) {
+  const { loading, data, refetch } = useMapsQuery();
+  const maps = data?.maps || [];
+  if (loading || !maps) {
     <>loading</>;
   }
-  if (data)
-    return (
-      <HavenProvider maps={data.maps} onMerge={refetch}>
-        <Map />
-      </HavenProvider>
-    );
+  return (
+    <HavenProvider maps={maps} onMerge={refetch}>
+      <Map />
+    </HavenProvider>
+  );
 };
 
 export default Page;
