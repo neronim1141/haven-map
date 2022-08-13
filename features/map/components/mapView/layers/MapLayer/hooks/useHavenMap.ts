@@ -18,8 +18,10 @@ export const useHavenMap = (mapId: number) => {
     () => {
       // Update debounced value after delay
       const handler = setTimeout(() => {
-        setData(incomingData);
-        setIncomingData([]);
+        if (incomingData.length) {
+          setData(incomingData);
+          setIncomingData([]);
+        }
       }, 2000);
       // Cancel the timeout if value changes (also on delay change or unmount)
       // This is how we prevent debounced value from updating if value is changed ...
