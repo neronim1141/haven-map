@@ -50,7 +50,6 @@ input CoordInput {
 }
 
 type Query {
-  map(id: Int!): [Tile!]!
   maps(hidden: Boolean!): [Map!]!
   markers(hidden: Boolean!): [Marker!]!
   users: [User!]!
@@ -58,7 +57,7 @@ type Query {
 }
 
 type Subscription {
-  mapUpdates(id: Int!): Tile!
+  mapUpdates(id: Int!): [Tile!]!
   mapMerges: MapMerge!
   characters: [Character!]!
 }

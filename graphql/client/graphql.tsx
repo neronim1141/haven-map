@@ -122,16 +122,10 @@ export type MutationShiftCoordArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  map: Array<Tile>;
   maps: Array<Map>;
   markers: Array<Marker>;
   user?: Maybe<User>;
   users: Array<User>;
-};
-
-
-export type QueryMapArgs = {
-  id: Scalars['Int'];
 };
 
 
@@ -153,7 +147,7 @@ export type Subscription = {
   __typename?: 'Subscription';
   characters: Array<Character>;
   mapMerges: MapMerge;
-  mapUpdates: Tile;
+  mapUpdates: Array<Tile>;
 };
 
 
@@ -224,13 +218,6 @@ export type ShiftCoordMutationVariables = Exact<{
 
 export type ShiftCoordMutation = { __typename?: 'Mutation', shiftCoord: boolean };
 
-export type MapQueryVariables = Exact<{
-  mapId: Scalars['Int'];
-}>;
-
-
-export type MapQuery = { __typename?: 'Query', map: Array<{ __typename?: 'Tile', x: number, y: number, z: number, lastUpdated: string, mapId: number }> };
-
 export type MapsQueryVariables = Exact<{
   hidden?: InputMaybe<Scalars['Boolean']>;
 }>;
@@ -272,7 +259,7 @@ export type MapUpdatesSubscriptionVariables = Exact<{
 }>;
 
 
-export type MapUpdatesSubscription = { __typename?: 'Subscription', mapUpdates: { __typename?: 'Tile', x: number, y: number, z: number, lastUpdated: string, mapId: number } };
+export type MapUpdatesSubscription = { __typename?: 'Subscription', mapUpdates: Array<{ __typename?: 'Tile', x: number, y: number, z: number, lastUpdated: string, mapId: number }> };
 
 
 export const AssignRoleDocument = gql`
@@ -466,45 +453,6 @@ export function useShiftCoordMutation(baseOptions?: Apollo.MutationHookOptions<S
 export type ShiftCoordMutationHookResult = ReturnType<typeof useShiftCoordMutation>;
 export type ShiftCoordMutationResult = Apollo.MutationResult<ShiftCoordMutation>;
 export type ShiftCoordMutationOptions = Apollo.BaseMutationOptions<ShiftCoordMutation, ShiftCoordMutationVariables>;
-export const MapDocument = gql`
-    query Map($mapId: Int!) {
-  map(id: $mapId) {
-    x
-    y
-    z
-    lastUpdated
-    mapId
-  }
-}
-    `;
-
-/**
- * __useMapQuery__
- *
- * To run a query within a React component, call `useMapQuery` and pass it any options that fit your needs.
- * When your component renders, `useMapQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useMapQuery({
- *   variables: {
- *      mapId: // value for 'mapId'
- *   },
- * });
- */
-export function useMapQuery(baseOptions: Apollo.QueryHookOptions<MapQuery, MapQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MapQuery, MapQueryVariables>(MapDocument, options);
-      }
-export function useMapLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MapQuery, MapQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MapQuery, MapQueryVariables>(MapDocument, options);
-        }
-export type MapQueryHookResult = ReturnType<typeof useMapQuery>;
-export type MapLazyQueryHookResult = ReturnType<typeof useMapLazyQuery>;
-export type MapQueryResult = Apollo.QueryResult<MapQuery, MapQueryVariables>;
 export const MapsDocument = gql`
     query Maps($hidden: Boolean = false) {
   maps(hidden: $hidden) {

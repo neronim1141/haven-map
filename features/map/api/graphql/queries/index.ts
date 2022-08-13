@@ -6,16 +6,6 @@ import { Marker, QueryResolvers } from "graphql/server/types";
 import { prisma } from "lib/prisma";
 
 export const Query: QueryResolvers<GraphqlContext> = {
-  map: async (_, { id }, ctx) => {
-    if (!canAccess(Role.ALLY, ctx?.session?.user?.role)) {
-      handleForbidden();
-    }
-    return await prisma.tile.findMany({
-      where: {
-        AND: [{ mapId: id }],
-      },
-    });
-  },
   maps: async (_, {}, ctx) => {
     if (!canAccess(Role.ALLY, ctx?.session?.user?.role)) {
       handleForbidden();

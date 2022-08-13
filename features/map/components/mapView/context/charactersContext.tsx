@@ -19,30 +19,30 @@ export const CharactersProvider: FunctionComponent<{
 }> = ({ children }) => {
   const session = useSession();
   const [characters, setCharacters] = useState<Character[]>([]);
-  // useCharactersSubscription({
-  //   skip: !canAccess(Role.VILLAGER, session.data?.user.role),
-  //   onSubscriptionData: ({ subscriptionData }) => {
-  //     const data = subscriptionData.data?.characters;
-  //     if (!data) return;
-  //     setCharacters((prev) => {
-  //       const filtered = prev.filter(
-  //         (character) => !data.find((char) => char.id == character.id)
-  //       );
+  useCharactersSubscription({
+    skip: !canAccess(Role.VILLAGER, session.data?.user.role),
+    onSubscriptionData: ({ subscriptionData }) => {
+      const data = subscriptionData.data?.characters;
+      if (!data) return;
+      setCharacters((prev) => {
+        const filtered = prev.filter(
+          (character) => !data.find((char) => char.id == character.id)
+        );
 
-  //       return [...filtered, ...data];
-  //     });
-  //   },
-  // });
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setCharacters((prev) => {
-  //       return prev.filter((character) => character.expire > Date.now());
-  //     });
-  //   }, 2500);
-  //   return () => {
-  //     clearInterval(interval);
-  //   };
-  // }, []);
+        return [...filtered, ...data];
+      });
+    },
+  });
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCharacters((prev) => {
+        return prev.filter((character) => character.expire > Date.now());
+      });
+    }, 2500);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   return (
     <CharactersContext.Provider value={characters}>

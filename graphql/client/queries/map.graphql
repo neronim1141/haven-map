@@ -1,9 +1,0 @@
-query Map($mapId: Int!) {
-  map(id: $mapId) {
-    x
-    y
-    z
-    lastUpdated
-    mapId
-  }
-}

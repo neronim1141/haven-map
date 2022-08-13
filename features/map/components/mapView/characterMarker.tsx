@@ -1,7 +1,7 @@
-import { Character, Marker as MarkerType } from "graphql/client/graphql";
-import { useMap, Marker as LeafletMarker, Popup, Tooltip } from "react-leaflet";
+import { Character } from "graphql/client/graphql";
+import { useMap, Marker as LeafletMarker } from "react-leaflet";
 import L from "leaflet";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { HnHMaxZoom } from "features/map/config";
 

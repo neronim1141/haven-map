@@ -7,7 +7,7 @@ interface HavenProps extends LayerProps {
   url?: string;
   map: number;
   opacity?: number;
-  tileData?: Omit<Tile, "mapId">;
+  tileData?: Omit<Tile, "mapId">[];
 
   children?: ReactNode; // PropsWithChildren is not exported by @react-leaflet/core
 }
@@ -24,9 +24,10 @@ export class Haven extends L.TileLayer {
     this.map = map;
     this.redraw();
   }
-  updateTile({ x, y, z }: Tile) {
-    this.refresh(x, y, z);
+  updateTiles(data: Tile[]) {
+    console.log(data);
 
+    for (let { x, y, z } of data) this.refresh(x, y, z);
   }
 
   getTileUrl(coords: L.Coords) {
@@ -78,8 +79,10 @@ const updateHavenLayer = (
   props: HavenProps,
   prevProps: HavenProps
 ) => {
-  if (props.tileData && prevProps.tileData !== props.tileData) {
-    if (instance.updateTile) instance.updateTile(props.tileData);
+  if (prevProps.tileData !== props.tileData) {
+    if (instance.updateTiles) {
+      instance.updateTiles(props.tileData);
+    }
   }
   if (prevProps.map !== props.map) {
     if (instance.setMapId) instance.setMapId(props.map);
