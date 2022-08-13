@@ -2,7 +2,7 @@ import { Coord, processZoom } from "../utils";
 import { Grid, Tile } from "@prisma/client";
 import { prisma } from "lib/prisma";
 import { pubsub } from "../../../../lib/pubsub";
-
+import fs from "fs/promises";
 export async function mergeMaps(
   mapId: number,
   mapsOffsets: { [key: number]: Coord },
@@ -77,11 +77,19 @@ async function cleanupAfterMerge(
           id: Number(mergeId),
         },
       });
-      await prisma.tile.deleteMany({
+      for (let tile of await prisma.tile.findMany({
         where: {
           mapId: Number(mergeId),
         },
-      });
+      })) {
+        await prisma.tile.delete({
+          where: {
+            id: tile.id,
+          },
+        });
+        await fs.rm(tile.tileUrl);
+      }
+
       pubsub?.publish("merge", {
         from: Number(mergeId),
         to: mapId,

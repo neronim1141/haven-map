@@ -1,7 +1,7 @@
 import { Marker as MarkerType } from "graphql/client/graphql";
 import { useMap, Marker as LeafletMarker, Popup, Tooltip } from "react-leaflet";
 import L from "leaflet";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { HnHMaxZoom } from "features/map/config";
 
@@ -16,9 +16,7 @@ export const Marker = ({ marker, opacity = 1 }: MarkerProps) => {
   const Icon = useMemo(() => {
     return marker.image
       ? L.icon({
-          iconUrl: marker.image
-            ? `/api/map/icons/${marker.image}`
-            : "/default.png",
+          iconUrl: `/${marker.image}.png`,
           iconSize: clampSize(zoom, 1.2),
           iconAnchor: clampSize(zoom, 2.4),
           className: "transition-all duration-300",

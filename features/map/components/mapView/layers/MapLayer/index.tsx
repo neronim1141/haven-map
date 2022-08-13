@@ -18,7 +18,7 @@ export const MapLayer = ({ mapId, opacity = 1 }: MapLayerProps) => {
   return (
     <>
       <HavenLayer
-        url="/api/map/grids/{map}/{z}_{x}_{y}"
+        url="/grids/{map}/{z}/{x}_{y}.webp"
         {...{
           minZoom: HnHMinZoom,
           maxZoom: HnHMaxZoom,
@@ -27,7 +27,7 @@ export const MapLayer = ({ mapId, opacity = 1 }: MapLayerProps) => {
         }}
         map={mapId}
         opacity={opacity}
-        tileData={mapData?.map}
+        tileData={mapData}
       />
       {markers?.map((marker) => (
         <Marker key={marker.id} marker={marker} opacity={opacity} />

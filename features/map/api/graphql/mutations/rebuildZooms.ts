@@ -1,5 +1,6 @@
 import { prisma } from "lib/prisma";
 import { Coord, processZoom } from "../../utils";
+import fs from "fs/promises";
 
 export const rebuildZooms = async (mapId: number) => {
   let needProcess = new Map<string, Coord>([]);
@@ -8,12 +9,19 @@ export const rebuildZooms = async (mapId: number) => {
 
     needProcess.set(coord.toString(), coord);
   }
-  await prisma.tile.deleteMany({
+  for (let tile of await prisma.tile.findMany({
     where: {
       mapId,
       gridId: null,
     },
-  });
+  })) {
+    await prisma.tile.delete({
+      where: {
+        id: tile.id,
+      },
+    });
+    await fs.rm(tile.tileUrl);
+  }
 
   await processZoom(needProcess, mapId);
 };
