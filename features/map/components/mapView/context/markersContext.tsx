@@ -17,7 +17,7 @@ export const MarkersProvider: FunctionComponent<{
   const markersQuery = useMarkersQuery({ pollInterval: 60 * 1000 });
 
   return (
-    <MarkersContext.Provider value={markersQuery.data?.markers}>
+    <MarkersContext.Provider value={markersQuery.data?.markers ?? []}>
       {children}
     </MarkersContext.Provider>
   );
