@@ -147,7 +147,7 @@ export type Subscription = {
   __typename?: 'Subscription';
   characters: Array<Character>;
   mapMerges: MapMerge;
-  mapUpdates: Array<Tile>;
+  mapUpdates?: Maybe<Tile>;
 };
 
 
@@ -259,7 +259,7 @@ export type MapUpdatesSubscriptionVariables = Exact<{
 }>;
 
 
-export type MapUpdatesSubscription = { __typename?: 'Subscription', mapUpdates: Array<{ __typename?: 'Tile', x: number, y: number, z: number, lastUpdated: string, mapId: number }> };
+export type MapUpdatesSubscription = { __typename?: 'Subscription', mapUpdates?: { __typename?: 'Tile', x: number, y: number, z: number, lastUpdated: string, mapId: number } | null };
 
 
 export const AssignRoleDocument = gql`

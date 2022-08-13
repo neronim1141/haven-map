@@ -25,10 +25,10 @@ export async function mergeMaps(
   for (let tile of tiles) {
     const coord = new Coord(tile.x, tile.y).parent();
     needProcess.set(coord.toString(), coord);
+    pubsub?.publish("tileUpdate", mapId, tile);
   }
 
-  tiles.concat(await processZoom(needProcess, mapId));
-  pubsub.publish("tileUpdate", mapId, tiles);
+  await processZoom(needProcess, mapId);
 
   await cleanupAfterMerge(mapsOffsets, mapId, offset);
 }

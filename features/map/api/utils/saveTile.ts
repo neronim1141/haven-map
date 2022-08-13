@@ -10,6 +10,10 @@ export const saveTile = async (
   file: Buffer,
   gridId?: string
 ) => {
+  let dir = path.join("public", "grids", mapId.toString(), z.toString());
+  await fs.mkdir(dir, { recursive: true });
+  dir = path.join(dir, `${x}_${y}.webp`);
+  await fs.writeFile(dir, file);
   let tile = await prisma.tile.findFirst({
     where: {
       mapId,
@@ -25,7 +29,6 @@ export const saveTile = async (
       },
       data: {
         tileData: file,
-
         lastUpdated: Date.now().toString(),
       },
     });
@@ -42,6 +45,8 @@ export const saveTile = async (
       },
     });
   }
+
+  pubsub.publish("tileUpdate", mapId, tile);
 
   return tile;
 };

@@ -146,7 +146,7 @@ export type Subscription = {
   __typename?: 'Subscription';
   characters: Array<Character>;
   mapMerges: MapMerge;
-  mapUpdates: Array<Tile>;
+  mapUpdates?: Maybe<Tile>;
 };
 
 
@@ -339,7 +339,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   characters?: SubscriptionResolver<Array<ResolversTypes['Character']>, "characters", ParentType, ContextType>;
   mapMerges?: SubscriptionResolver<ResolversTypes['MapMerge'], "mapMerges", ParentType, ContextType>;
-  mapUpdates?: SubscriptionResolver<Array<ResolversTypes['Tile']>, "mapUpdates", ParentType, ContextType, RequireFields<SubscriptionMapUpdatesArgs, 'id'>>;
+  mapUpdates?: SubscriptionResolver<Maybe<ResolversTypes['Tile']>, "mapUpdates", ParentType, ContextType, RequireFields<SubscriptionMapUpdatesArgs, 'id'>>;
 };
 
 export type TileResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tile'] = ResolversParentTypes['Tile']> = {
