@@ -40,24 +40,6 @@ async function getFiles(dir, files_) {
   return files_;
 }
 
-// const resetIcons = async () => {
-//   const folderPath = "./default_icons";
-//   await prisma.markerIcon.deleteMany();
-//   for (let filepath of await getFiles(folderPath)) {
-//     const file = await fs.readFile(filepath);
-//     const imageCode = filepath
-//       .replace(folderPath + "/", "")
-//       .replace(".png", "");
-//     await prisma.markerIcon.create({
-//       data: {
-//         image: imageCode,
-//         iconData: file,
-//       },
-//     });
-//   }
-//   console.log("Restarted icons");
-// };
-
 const load = async () => {
   try {
     await resetAdmin();
