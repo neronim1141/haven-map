@@ -7,36 +7,37 @@ import { MapUpdatesSubscription, useMapQuery } from "graphql/client/graphql";
 
 export const useHavenMap = (mapId: number) => {
   const { subscribeToMore, data } = useMapQuery({
+    pollInterval: 20 * 1000,
     variables: { mapId },
     fetchPolicy: "network-only", // Used for first execution
     nextFetchPolicy: "cache-and-network",
   });
-  useEffect(() => {
-    subscribeToMore<MapUpdatesSubscription>({
-      document: MAP_DATA_UPDATE,
-      variables: {
-        mapId,
-      },
-      updateQuery: (prev, { subscriptionData }) => {
-        const tileData = subscriptionData.data.mapUpdates;
-        if (!prev || !prev.map) {
-          return { map: [] };
-        }
-        const filtered = prev.map.filter((tile) => {
-          if (
-            tile.x === tileData.x &&
-            tile.y === tileData.y &&
-            tile.z === tileData.z
-          ) {
-            return false;
-          }
-          return true;
-        });
-        return {
-          map: [...filtered, tileData],
-        };
-      },
-    });
-  }, [mapId, subscribeToMore]);
+  // useEffect(() => {
+  //   subscribeToMore<MapUpdatesSubscription>({
+  //     document: MAP_DATA_UPDATE,
+  //     variables: {
+  //       mapId,
+  //     },
+  //     updateQuery: (prev, { subscriptionData }) => {
+  //       const tileData = subscriptionData.data.mapUpdates;
+  //       if (!prev || !prev.map) {
+  //         return { map: [] };
+  //       }
+  //       const filtered = prev.map.filter((tile) => {
+  //         if (
+  //           tile.x === tileData.x &&
+  //           tile.y === tileData.y &&
+  //           tile.z === tileData.z
+  //         ) {
+  //           return false;
+  //         }
+  //         return true;
+  //       });
+  //       return {
+  //         map: [...filtered, tileData],
+  //       };
+  //     },
+  //   });
+  // }, [mapId, subscribeToMore]);
   return useDebounce(data, 1000);
 };
