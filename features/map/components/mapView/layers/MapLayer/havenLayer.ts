@@ -26,6 +26,7 @@ export class Haven extends L.TileLayer {
   }
   updateTile({ x, y, z }: Tile) {
     this.refresh(x, y, z);
+
   }
 
   getTileUrl(coords: L.Coords) {
