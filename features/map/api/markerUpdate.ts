@@ -18,7 +18,6 @@ export const markerUpdate = async (markers: MarkersRequest, role?: Role) => {
 
   for (let marker of markers) {
     const { gridID, color, ...data } = marker;
-    console.log(color);
     const grid = await prisma.grid.findUnique({ where: { id: gridID } });
     if (!grid) continue;
 
