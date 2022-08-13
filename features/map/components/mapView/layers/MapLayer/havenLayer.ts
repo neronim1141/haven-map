@@ -7,7 +7,7 @@ interface HavenProps extends LayerProps {
   url?: string;
   map: number;
   opacity?: number;
-  tileData?: Omit<Tile, "mapId">[];
+  tileData?: Omit<Tile, "mapId">;
 
   children?: ReactNode; // PropsWithChildren is not exported by @react-leaflet/core
 }
@@ -24,18 +24,9 @@ export class Haven extends L.TileLayer {
     this.map = map;
     this.redraw();
   }
-  setMapData(data: Tile[]) {
-    console.log("dataSet");
-    for (let { x, y, z, lastUpdated, mapId } of data) {
-      let cache = this.cache[`${mapId}:${x}:${y}:${z}`];
+  updateTile({ x, y, z }: Tile) {
+    this.refresh(x, y, z);
 
-      if (cache && cache === lastUpdated) {
-        continue;
-      }
-
-      this.cache[`${mapId}:${x}:${y}:${z}`] = lastUpdated;
-      this.refresh(x, y, z);
-    }
   }
 
   getTileUrl(coords: L.Coords) {
@@ -48,20 +39,6 @@ export class Haven extends L.TileLayer {
       map: this.map,
       z: zoom,
     };
-    if (this._map && !this._map?.options?.crs?.infinite) {
-      //@ts-ignore
-      var invertedY = this._globalTileRange.max.y - coords.y;
-      if (this.options.tms) {
-        data["y"] = invertedY;
-      }
-      data["-y"] = invertedY;
-    }
-
-    const cache = this.cache[`${this.map}:${data.x}:${data.y}:${data.z}`];
-
-    if (!cache || cache == "-1") {
-      return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
-    }
 
     //@ts-ignore
     return Util.template(this._url, Util.extend(this.options, data));
@@ -101,8 +78,8 @@ const updateHavenLayer = (
   props: HavenProps,
   prevProps: HavenProps
 ) => {
-  if (prevProps.tileData !== props.tileData) {
-    if (instance.setMapData) instance.setMapData(props.tileData);
+  if (props.tileData && prevProps.tileData !== props.tileData) {
+    if (instance.updateTile) instance.updateTile(props.tileData);
   }
   if (prevProps.map !== props.map) {
     if (instance.setMapId) instance.setMapId(props.map);
