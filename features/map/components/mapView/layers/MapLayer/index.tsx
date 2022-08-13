@@ -4,7 +4,7 @@ import { HavenLayer } from "./havenLayer";
 import { HnHMaxZoom, HnHMinZoom, TileSize } from "features/map/config";
 import { Marker } from "../../marker";
 import Characters from "./characters";
-import { useMarkersFor } from "../../context/havenContext";
+import { useMarkersFor } from "../../context/markersContext";
 
 interface MapLayerProps {
   mapId: number;

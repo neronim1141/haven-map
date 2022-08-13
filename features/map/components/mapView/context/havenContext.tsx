@@ -39,7 +39,6 @@ type HavenContextType = {
   overlay: OverlayMap;
   grid: MapGrid;
   maps: Map[];
-  markers: Omit<Marker, "hidden">[];
   map: { map?: L.Map; setMap: (map: L.Map) => void };
 };
 
@@ -104,7 +103,6 @@ export const HavenProvider: FunctionComponent<{
       onMerge();
     },
   });
-  const markersQuery = useMarkersQuery();
   const [showGrid, setShowGrid] = useState(false);
 
   const value: HavenContextType = {
@@ -128,7 +126,6 @@ export const HavenProvider: FunctionComponent<{
       setShow: setShowGrid,
     },
     maps,
-    markers: markersQuery.data?.markers ?? [],
     map: { map, setMap },
   };
 
@@ -142,12 +139,8 @@ export const useMain = () => useContextFallback(HavenContext).main;
 export const useOverlay = () => useContextFallback(HavenContext).overlay;
 export const useGrid = () => useContextFallback(HavenContext).grid;
 export const useMaps = () => useContextFallback(HavenContext).maps;
-export const useMarkers = () => useContextFallback(HavenContext).markers;
 export const useMap = () => useContextFallback(HavenContext).map;
-export const useMarkersFor = (mapId: number) =>
-  useContextFallback(HavenContext).markers.filter(
-    (marker) => marker.mapId === mapId
-  );
+
 export const useContextFallback = <T,>(value: Context<T | undefined>): T => {
   const ctx = useContext<T | undefined>(value);
   if (!ctx) {

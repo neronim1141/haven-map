@@ -2,13 +2,7 @@ import React from "react";
 import { Checkbox, Label, Select, Tooltip } from "flowbite-react";
 import _ from "lodash";
 import { useState } from "react";
-import {
-  MainMap,
-  MapGrid,
-  OverlayMap,
-  useMaps,
-  useMarkers,
-} from "./context/havenContext";
+import { MainMap, MapGrid, OverlayMap, useMaps } from "./context/havenContext";
 import SearchSelect from "react-select";
 import { useCharacters } from "./context/charactersContext";
 import L from "leaflet";
@@ -17,6 +11,7 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { canAccess } from "features/auth/canAccess";
 import { Role } from "@prisma/client";
+import { useMarkers } from "./context/markersContext";
 type MarkerShortType = { x: number; y: number; map: number };
 
 export function MapControls({
@@ -87,6 +82,19 @@ export function MapControls({
                   onChange={(e) => {
                     main.setId(Number(e.target.value));
                     overlay.setId(0);
+                    router.push(
+                      {
+                        pathname: "/map/[mapId]/[z]/[x]/[y]",
+                        query: {
+                          mapId: Number(e.target.value),
+                          x: router.query.x,
+                          y: router.query.y,
+                          z: router.query.z,
+                        },
+                      },
+                      undefined,
+                      { shallow: true }
+                    );
                   }}
                 >
                   {maps.map((map) => (

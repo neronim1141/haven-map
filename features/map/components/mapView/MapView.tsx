@@ -16,6 +16,7 @@ import {
 import { CharactersProvider } from "./context/charactersContext";
 import Head from "next/head";
 import L from "leaflet";
+import { MarkersProvider } from "./context/markersContext";
 
 export default function MapView() {
   const coords = useCoords();
@@ -33,28 +34,30 @@ export default function MapView() {
   };
   return (
     <CharactersProvider>
-      <Head>
-        <title>Map {mainMap?.name ?? main.id} </title>
-      </Head>
-      <div className="h-full relative w-full text-black">
-        <MapContainer zoom={coords.z} onContextMenu={onContextMenu}>
-          <MapLayer mapId={main.id} />
-          {overlay.id && (
-            <MapLayer mapId={overlay.id} opacity={overlay.opacity} />
-          )}
+      <MarkersProvider>
+        <Head>
+          <title>Map {mainMap?.name ?? main.id} </title>
+        </Head>
+        <div className="h-full relative w-full text-black">
+          <MapContainer zoom={coords.z} onContextMenu={onContextMenu}>
+            <MapLayer mapId={main.id} />
+            {overlay.id && (
+              <MapLayer mapId={overlay.id} opacity={overlay.opacity} />
+            )}
 
-          {grid.show && <GridLayer />}
-        </MapContainer>
-        <div className="leaflet-top leaflet-left ">
-          <MapControls
-            main={main}
-            overlay={overlay}
-            grid={grid}
-            zoom={coords.z}
-            map={map}
-          />
+            {grid.show && <GridLayer />}
+          </MapContainer>
+          <div className="leaflet-top leaflet-left ">
+            <MapControls
+              main={main}
+              overlay={overlay}
+              grid={grid}
+              zoom={coords.z}
+              map={map}
+            />
+          </div>
         </div>
-      </div>
+      </MarkersProvider>
     </CharactersProvider>
   );
 }
