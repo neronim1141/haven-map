@@ -97,11 +97,18 @@ export function MapControls({
                     );
                   }}
                 >
-                  {maps.map((map) => (
-                    <option value={map.id} key={map.id}>
-                      {map.name ?? map.id}
-                    </option>
-                  ))}
+                  {maps
+                    .filter((map) => !map.hidden)
+                    .sort((a, b) => {
+                      if (!a.name) return 1;
+                      if (!b.name) return -1;
+                      return 0;
+                    })
+                    .map((map) => (
+                      <option value={map.id} key={map.id}>
+                        {map.name ?? map.id}
+                      </option>
+                    ))}
                 </Select>
               </div>
             </Tooltip>
@@ -116,7 +123,13 @@ export function MapControls({
                 >
                   <option value={0}>None</option>
                   {maps
+                    .filter((map) => !map.hidden)
                     .filter((map) => map.id !== main.id)
+                    .sort((a, b) => {
+                      if (!a.name) return 1;
+                      if (!b.name) return -1;
+                      return 0;
+                    })
                     .map((map) => (
                       <option value={map.id} key={map.id}>
                         {map.name ?? map.id}
