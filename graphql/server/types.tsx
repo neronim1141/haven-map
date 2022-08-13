@@ -53,7 +53,7 @@ export type MapMerge = {
 export type Marker = {
   __typename?: 'Marker';
   hidden: Scalars['Boolean'];
-  id: Scalars['Int'];
+  id: Scalars['String'];
   image?: Maybe<Scalars['String']>;
   mapId: Scalars['Int'];
   name: Scalars['String'];
@@ -308,7 +308,7 @@ export type MapMergeResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type MarkerResolvers<ContextType = any, ParentType extends ResolversParentTypes['Marker'] = ResolversParentTypes['Marker']> = {
   hidden?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   mapId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

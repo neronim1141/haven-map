@@ -54,7 +54,7 @@ export type MapMerge = {
 export type Marker = {
   __typename?: 'Marker';
   hidden: Scalars['Boolean'];
-  id: Scalars['Int'];
+  id: Scalars['String'];
   image?: Maybe<Scalars['String']>;
   mapId: Scalars['Int'];
   name: Scalars['String'];
@@ -230,7 +230,7 @@ export type MarkersQueryVariables = Exact<{
 }>;
 
 
-export type MarkersQuery = { __typename?: 'Query', markers: Array<{ __typename?: 'Marker', id: number, name: string, x: number, y: number, image?: string | null, mapId: number, type: string }> };
+export type MarkersQuery = { __typename?: 'Query', markers: Array<{ __typename?: 'Marker', id: string, name: string, x: number, y: number, image?: string | null, mapId: number, type: string }> };
 
 export type UserQueryVariables = Exact<{
   name: Scalars['String'];

@@ -36,7 +36,7 @@ model Tile {
 }
 
 model Marker {
-  id     Int     @id
+  id     String  @id
   image  String
   x      Int
   y      Int
