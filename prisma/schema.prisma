@@ -32,7 +32,6 @@ model Tile {
   y           Int
   z           Int
   tileData    Bytes
-  tileUrl     String  @default("")
   lastUpdated String
 }
 

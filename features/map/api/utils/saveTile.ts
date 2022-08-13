@@ -60,7 +60,5 @@ export const saveTile = async (
     });
   }
 
-  pubsub.publish("tileUpdate", mapId, tile);
-
   return tile;
 };

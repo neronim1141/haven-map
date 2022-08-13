@@ -19,7 +19,7 @@ export const Subscriptions: SubscriptionResolvers<GraphqlContext, {}> = {
       }
       return pubsub.subscribe("tileUpdate", id);
     },
-    resolve: (payload: Tile) => {
+    resolve: (payload: Tile[]) => {
       return payload;
     },
   },

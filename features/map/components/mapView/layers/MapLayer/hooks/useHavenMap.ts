@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 import { useMapUpdatesSubscription } from "graphql/client/graphql";
 
 export const useHavenMap = (mapId: number) => {

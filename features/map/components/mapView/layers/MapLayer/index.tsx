@@ -18,7 +18,7 @@ export const MapLayer = ({ mapId, opacity = 1 }: MapLayerProps) => {
   return (
     <>
       <HavenLayer
-        url="/grids/{map}/{z}/{x}_{y}.webp"
+        url="/api/grids/{map}/{z}_{x}_{y}"
         {...{
           minZoom: HnHMinZoom,
           maxZoom: HnHMaxZoom,

@@ -121,16 +121,10 @@ export type MutationShiftCoordArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  map: Array<Tile>;
   maps: Array<Map>;
   markers: Array<Marker>;
   user?: Maybe<User>;
   users: Array<User>;
-};
-
-
-export type QueryMapArgs = {
-  id: Scalars['Int'];
 };
 
 
@@ -152,7 +146,7 @@ export type Subscription = {
   __typename?: 'Subscription';
   characters: Array<Character>;
   mapMerges: MapMerge;
-  mapUpdates: Tile;
+  mapUpdates: Array<Tile>;
 };
 
 
@@ -336,7 +330,6 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  map?: Resolver<Array<ResolversTypes['Tile']>, ParentType, ContextType, RequireFields<QueryMapArgs, 'id'>>;
   maps?: Resolver<Array<ResolversTypes['Map']>, ParentType, ContextType, RequireFields<QueryMapsArgs, 'hidden'>>;
   markers?: Resolver<Array<ResolversTypes['Marker']>, ParentType, ContextType, RequireFields<QueryMarkersArgs, 'hidden'>>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryUserArgs, 'name'>>;
@@ -346,7 +339,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 export type SubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = {
   characters?: SubscriptionResolver<Array<ResolversTypes['Character']>, "characters", ParentType, ContextType>;
   mapMerges?: SubscriptionResolver<ResolversTypes['MapMerge'], "mapMerges", ParentType, ContextType>;
-  mapUpdates?: SubscriptionResolver<ResolversTypes['Tile'], "mapUpdates", ParentType, ContextType, RequireFields<SubscriptionMapUpdatesArgs, 'id'>>;
+  mapUpdates?: SubscriptionResolver<Array<ResolversTypes['Tile']>, "mapUpdates", ParentType, ContextType, RequireFields<SubscriptionMapUpdatesArgs, 'id'>>;
 };
 
 export type TileResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tile'] = ResolversParentTypes['Tile']> = {
