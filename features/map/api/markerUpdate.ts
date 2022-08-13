@@ -13,8 +13,9 @@ export type MarkersRequest = {
 }[];
 
 export const markerUpdate = async (markers: MarkersRequest, role?: Role) => {
+  if (!canAccess(Role.VILLAGER, role)) return;
+
   for (let marker of markers) {
-    if (marker.image === "" && !canAccess(Role.VILLAGER, role)) continue;
     const { gridID, ...data } = marker;
     const grid = await prisma.grid.findUnique({ where: { id: gridID } });
     if (!grid) continue;

@@ -177,7 +177,7 @@ const SelectMarkers = ({ onSelect }: SelectProps) => {
   const markers = useMarkers();
 
   const options = markers
-    .filter((marker) => marker.type !== "quest")
+    .filter((marker) => marker.type === "custom")
     .map((marker) => ({
       label: marker.name,
       value: {
