@@ -19,7 +19,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         <ApolloProvider client={apolloClient}>
           <div className="w-full h-screen flex flex-col  bg-gray-900 text-white">
             <Header />
-            <main className="flex-grow flex">
+            <main className="flex-grow flex overflow-y-auto">
               <Component {...pageProps} />
             </main>
           </div>
