@@ -6,7 +6,6 @@ import { GetPriorityMapData } from "./getPriorityMapData";
 
 import { mergeMaps } from "./mergeMaps";
 import * as logger from "lib/logger";
-import { Coord } from "../utils";
 export type HavenGrids = [
   [string, string, string],
   [string, string, string],

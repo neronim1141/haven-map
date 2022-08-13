@@ -1,6 +1,7 @@
 import { Coord, processZoom } from "../utils";
 import { Grid, Tile } from "@prisma/client";
 import { prisma } from "lib/prisma";
+import { pubsub } from "../../../../lib/pubsub";
 
 export async function mergeMaps(
   mapId: number,
