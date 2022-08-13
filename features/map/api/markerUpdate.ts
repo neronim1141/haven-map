@@ -13,13 +13,23 @@ export type MarkersRequest = {
 }[];
 
 export const markerUpdate = async (markers: MarkersRequest, role?: Role) => {
+  if (!canAccess(Role.VILLAGER, role)) return;
+
   for (let marker of markers) {
-    if (marker.image === "" && !canAccess(Role.VILLAGER, role)) continue;
     const { gridID, ...data } = marker;
     const grid = await prisma.grid.findUnique({ where: { id: gridID } });
     if (!grid) continue;
 
     if (data.type === "player") continue;
+    if (!data.image.startsWith("gfx")) {
+      data.type = "custom";
+    }
+    if (
+      data.image === "gfx/invobjs/small/bush" ||
+      data.image === "gfx/invobjs/small/bumling"
+    ) {
+      data.type = "quest";
+    }
     if (data.image == "") {
       data.image = "gfx/terobjs/mm/custom";
       data.type = "custom";
