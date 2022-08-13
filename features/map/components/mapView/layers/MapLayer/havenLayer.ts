@@ -25,6 +25,7 @@ export class Haven extends L.TileLayer {
     this.redraw();
   }
   updateTiles(data: Tile[]) {
+    console.log(data);
     for (let { x, y, z } of data) this.refresh(x, y, z);
   }
 

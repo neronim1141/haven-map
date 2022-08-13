@@ -23,17 +23,13 @@ export const gridUpload = async (tile: RequestData) => {
       throw new Error(`Unknown grid id: ${tile.id}`);
     }
     const tiles: Tile[] = [];
-    tiles.push(
-      await saveTile(grid.mapId, grid.x, grid.y, 0, tileData, grid.id)
-    );
+    await saveTile(grid.mapId, grid.x, grid.y, 0, tileData, grid.id);
     let coord = { x: grid.x, y: grid.y };
 
     for (let z = HnHMinZoom; z < HnHMaxZoom; z++) {
       coord = new Coord(coord.x, coord.y).parent();
-      const tile = await updateZoomLevel(grid.mapId, coord.x, coord.y, z);
-      if (tile) tiles.push(tile);
+      await updateZoomLevel(grid.mapId, coord.x, coord.y, z);
     }
-    pubsub.publish("tileUpdate", grid.mapId, tiles);
   } catch (e) {
     logger.error(e);
   } finally {
