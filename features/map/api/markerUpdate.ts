@@ -20,7 +20,6 @@ export const markerUpdate = async (markers: MarkersRequest, role?: Role) => {
     const grid = await prisma.grid.findUnique({ where: { id: gridID } });
     if (!grid) continue;
 
-    if (data.type === "player") continue;
     if (!data.image.startsWith("gfx")) {
       data.type = "custom";
     }
