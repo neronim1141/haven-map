@@ -46,7 +46,7 @@ export function MapControls({
         {
           pathname: "/map/[mapId]/[z]/[x]/[y]",
           query: {
-            mapId: maps[0].id,
+            mapId: marker.map,
             x: ~~(point.x / TileSize),
             y: ~~(point.y / TileSize),
             z: HnHMaxZoom,

@@ -20,6 +20,15 @@ export const markerUpdate = async (markers: MarkersRequest, role?: Role) => {
     if (!grid) continue;
 
     if (data.type === "player") continue;
+    if (!data.image.startsWith("gfx")) {
+      data.type = "custom";
+    }
+    if (
+      data.image === "gfx/invobjs/small/bush" ||
+      data.image === "gfx/invobjs/small/bumling"
+    ) {
+      data.type = "quest";
+    }
     if (data.image == "") {
       data.image = "gfx/terobjs/mm/custom";
       data.type = "custom";
