@@ -23,23 +23,14 @@ export const Query: QueryResolvers<GraphqlContext> = {
     const toSend: Marker[] = [];
     //TODO: optimize
     for (let marker of markers) {
-      if (
-        marker.type === "custom" &&
-        !canAccess(Role.VILLAGER, ctx?.session?.user?.role)
-      ) {
-        continue;
-      }
       const grid = await prisma.grid.findUnique({
         where: { id: marker.gridId },
-      });
-      const icon = await prisma.markerIcon.findUnique({
-        where: { image: marker.image },
       });
 
       if (grid)
         toSend.push({
           ...marker,
-          image: !!icon ? marker.image : undefined,
+          image: marker.image,
           mapId: grid.mapId,
           x: marker.x + grid.x * 100,
           y: marker.y + grid.y * 100,

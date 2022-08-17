@@ -37,7 +37,7 @@ model Tile {
 
 model Marker {
   id     String  @id
-  image  String
+  image  String?
   x      Int
   y      Int
   gridId String

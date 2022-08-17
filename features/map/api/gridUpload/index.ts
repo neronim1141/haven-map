@@ -1,5 +1,4 @@
 import { prisma } from "lib/prisma";
-import { pubsub } from "lib/pubsub";
 
 import { File } from "formidable";
 import { promises as fs } from "fs";

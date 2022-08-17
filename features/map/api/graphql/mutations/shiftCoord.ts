@@ -1,4 +1,5 @@
 import { Tile } from "@prisma/client";
+import { cache } from "lib/cache";
 import { prisma } from "lib/prisma";
 import { pubsub } from "lib/pubsub";
 import { Coord, processZoom } from "../../utils";
@@ -45,7 +46,9 @@ export async function shiftCoord(
     const coord = new Coord(tile.x, tile.y).parent();
 
     needProcess.set(coord.toString(), coord);
-    pubsub?.publish("tileUpdate", mapId, tile);
+    const key = `${tile.mapId}_${tile.x}_${tile.y}_${tile.z}`;
+    cache.del(key);
+    pubsub.publish("tileUpdate", mapId, tile);
   }
 
   await processZoom(needProcess, mapId);
