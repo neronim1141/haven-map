@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev ",
     "build": "next build",
-    "start": "next start -p 8080",
+    "start": "next start -p 8000",
     "cli:lint": "next lint",
     "cli:tsc": "tsc",
     "generate": "graphql-codegen --config codegen.yml",
@@ -28,7 +28,6 @@
     "jszip": "^3.10.0",
     "leaflet": "^1.8.0",
     "lodash": "^4.17.21",
-    "memory-cache": "^0.2.0",
     "next": "12.2.2",
     "next-auth": "^4.10.3",
     "next-connect": "^1.0.0-next.3",

@@ -2,7 +2,6 @@ import { prisma } from "lib/prisma";
 import { pubsub } from "lib/pubsub";
 import fs from "fs/promises";
 import path from "path";
-import { cache } from "lib/cache";
 export const saveTile = async (
   mapId: number,
   x: number,
@@ -46,8 +45,6 @@ export const saveTile = async (
       },
     });
   }
-  const key = `${tile.mapId}_${tile.x}_${tile.y}_${tile.z}`;
-  cache.del(key);
   pubsub.publish("tileUpdate", mapId, tile);
 
   return tile;

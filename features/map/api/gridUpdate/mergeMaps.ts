@@ -2,7 +2,6 @@ import { Coord, processZoom } from "../utils";
 import { Grid, Tile } from "@prisma/client";
 import { prisma } from "lib/prisma";
 import { pubsub } from "../../../../lib/pubsub";
-import { cache } from "lib/cache";
 export async function mergeMaps(
   mapId: number,
   mapsOffsets: { [key: number]: Coord },
@@ -26,8 +25,6 @@ export async function mergeMaps(
   for (let tile of tiles) {
     const coord = new Coord(tile.x, tile.y).parent();
     needProcess.set(coord.toString(), coord);
-    const key = `${tile.mapId}_${tile.x}_${tile.y}_${tile.z}`;
-    cache.del(key);
     pubsub.publish("tileUpdate", mapId, tile);
   }
 
