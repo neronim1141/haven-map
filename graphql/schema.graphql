@@ -58,7 +58,7 @@ type Query {
 
 type Subscription {
   mapUpdates(id: Int!): Tile
-  mapMerges: MapMerge!
+  mapMerges: MapMerge
   characters: [Character!]!
 }
 

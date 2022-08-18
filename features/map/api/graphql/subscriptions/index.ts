@@ -1,4 +1,4 @@
-import { map, pipe } from "@graphql-yoga/node";
+import { map, pipe, Repeater } from "@graphql-yoga/node";
 import { Role } from "@prisma/client";
 import { canAccess } from "features/auth/canAccess";
 import { handleForbidden } from "features/auth/handleForbidden";
@@ -17,7 +17,13 @@ export const Subscriptions: SubscriptionResolvers<GraphqlContext, {}> = {
       if (!canAccess(Role.ALLY, ctx?.session?.user?.role)) {
         handleForbidden();
       }
-      return pubsub.subscribe("tileUpdate", id);
+      return Repeater.merge([
+        // cause an initial event so the
+        // globalCounter is streamed to the client
+        // upon initiating the subscription
+        undefined,
+        pubsub.subscribe("tileUpdate", id),
+      ]);
     },
     resolve: (payload: Tile) => {
       return payload;
@@ -28,7 +34,13 @@ export const Subscriptions: SubscriptionResolvers<GraphqlContext, {}> = {
       if (!canAccess(Role.ALLY, ctx?.session?.user?.role)) {
         handleForbidden();
       }
-      return pubsub.subscribe("merge");
+      return Repeater.merge([
+        // cause an initial event so the
+        // globalCounter is streamed to the client
+        // upon initiating the subscription
+        undefined,
+        pubsub.subscribe("merge"),
+      ]);
     },
     resolve: (payload: MapMerge) => payload,
   },

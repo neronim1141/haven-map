@@ -146,7 +146,7 @@ export type QueryUserArgs = {
 export type Subscription = {
   __typename?: 'Subscription';
   characters: Array<Character>;
-  mapMerges: MapMerge;
+  mapMerges?: Maybe<MapMerge>;
   mapUpdates?: Maybe<Tile>;
 };
 
@@ -252,7 +252,7 @@ export type CharactersSubscription = { __typename?: 'Subscription', characters: 
 export type MapMergesSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MapMergesSubscription = { __typename?: 'Subscription', mapMerges: { __typename?: 'MapMerge', from: number, to: number, shift: { __typename?: 'Coord', x: number, y: number } } };
+export type MapMergesSubscription = { __typename?: 'Subscription', mapMerges?: { __typename?: 'MapMerge', from: number, to: number, shift: { __typename?: 'Coord', x: number, y: number } } | null };
 
 export type MapUpdatesSubscriptionVariables = Exact<{
   mapId: Scalars['Int'];
