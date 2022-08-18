@@ -18,7 +18,7 @@ const mapMarkerType = ({
 }: Omit<Marker, "hidden">) => {
   let type = markerType;
   if (["cave", "exit"].includes(name.toLowerCase())) {
-    image = "gfx/invobjs/small/cavein";
+    image = "gfx/terobjs/mm/cavein";
     name = "cave";
     type = "shared";
   }
