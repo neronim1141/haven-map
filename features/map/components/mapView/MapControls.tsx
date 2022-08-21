@@ -116,6 +116,7 @@ export function MapControls({
                     .filter((map) => !map.hidden)
                     .filter((map) => map.id !== main.id)
                     .sort((a, b) => {
+                      if (a.name && b.name) return a.name.localeCompare(b.name);
                       if (!a.name) return 1;
                       if (!b.name) return -1;
                       return 0;
@@ -161,7 +162,8 @@ interface SelectProps {
 const SelectCharacters = ({ onSelect }: SelectProps) => {
   const characters = useCharacters();
   const options = characters
-    .filter((character) => character.name !== "???")
+    .filter((character) => character.name && character.name !== "???")
+    .sort((a, b) => a.name.localeCompare(b.name))
     .map((character) => ({
       label: character.name,
       value: {
@@ -189,6 +191,7 @@ const SelectMarkers = ({ onSelect }: SelectProps) => {
 
   const options = markers
     .filter((marker) => marker.type === "player")
+    .sort((a, b) => a.name.localeCompare(b.name))
     .map((marker) => ({
       label: marker.name,
       value: {
@@ -215,6 +218,7 @@ const SelectQuestgivers = ({ onSelect }: SelectProps) => {
   const markers = useMarkers();
   const options = markers
     .filter((marker) => marker.type === "quest")
+    .sort((a, b) => a.name.localeCompare(b.name))
     .map((marker) => ({
       label: marker.name,
       value: {

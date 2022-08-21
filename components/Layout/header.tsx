@@ -14,7 +14,11 @@ export const Header = () => {
     <header className="flex shadow-2xl bg-gray-800 pl-2   w-full">
       <nav className="flex justify-between w-full ">
         <div className="flex gap-1">
-          <NavLink requiredRole={Role.ALLY} href="/map/1/6/0/0">
+          <NavLink
+            requiredRole={Role.ALLY}
+            href="/map/mapId]/[z]/[x]/[y]"
+            as="/map/1/6/0/0"
+          >
             Map
           </NavLink>
         </div>
