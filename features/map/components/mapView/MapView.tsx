@@ -36,7 +36,7 @@ export default function MapView() {
     <CharactersProvider>
       <MarkersProvider>
         <Head>
-          <title>Map {mainMap?.name ?? main.id} </title>
+          <title>{mainMap?.name ?? main.id} </title>
         </Head>
         <div className="h-full relative w-full text-black">
           <MapContainer zoom={coords.z} onContextMenu={onContextMenu}>

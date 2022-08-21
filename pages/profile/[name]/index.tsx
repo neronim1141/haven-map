@@ -34,7 +34,7 @@ const Page = () => {
     <div className="p-2 flex flex-col gap-2">
       <div>Your token is: {user.data.user.token}</div>
       <div>
-        Paste this into client: {window.location.origin}/api/client/
+        Paste this into client: {process.env.NEXT_PUBLIC_PREFIX}/api/client/
         {user.data?.user?.token}
       </div>
       <Button

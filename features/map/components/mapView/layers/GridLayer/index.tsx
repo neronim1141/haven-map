@@ -1,3 +1,4 @@
+import React from "react";
 import { HnHMaxZoom, HnHMinZoom } from "features/map/config";
 import { GridLayer as Layer } from "./gridLayer";
 

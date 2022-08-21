@@ -2,10 +2,20 @@ import { createRouter } from "next-connect";
 import { prisma } from "lib/prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as logger from "lib/logger";
-import {
-  PositionUpdateRequest,
-  updatePosition,
-} from "features/map/api/positionUpdate";
+import { Character } from "graphql/server/types";
+import { pubsub } from "lib/pubsub";
+
+export type PositionUpdateRequest = {
+  [id: string]: {
+    name: string;
+    gridID: string;
+    type: string;
+    coords: {
+      x: number;
+      y: number;
+    };
+  };
+};
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
@@ -22,7 +32,26 @@ router.post(async (req, res) => {
   logger.log("positionUpdate from: " + user?.name);
   if (!user) return res.status(403).end();
 
-  await updatePosition(req.body as PositionUpdateRequest);
+  const flatData: Character[] = [];
+  for (let [id, { coords, gridID, ...characterData }] of Object.entries(
+    req.body as PositionUpdateRequest
+  )) {
+    const grid = await prisma?.grid.findUnique({
+      where: { id: gridID },
+    });
+    if (grid && characterData.name) {
+      logger.log("position for: " + characterData.name);
+      flatData.push({
+        ...characterData,
+        id,
+        inMap: grid.mapId,
+        x: coords.x + grid.x * 100,
+        y: coords.y + grid.y * 100,
+        expire: new Date(Date.now() + 10000).getTime(),
+      });
+    }
+  }
+  pubsub.publish("characters", flatData);
   res.end();
 });
 

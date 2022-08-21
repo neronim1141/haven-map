@@ -27,10 +27,11 @@ export const Query: QueryResolvers<GraphqlContext> = {
         where: { id: marker.gridId },
       });
 
+      const mappedMarker = mapMarkerType(marker);
       if (grid)
         toSend.push({
-          ...marker,
-          image: marker.image,
+          ...mappedMarker,
+          image: mappedMarker.image,
           mapId: grid.mapId,
           x: marker.x + grid.x * 100,
           y: marker.y + grid.y * 100,
@@ -38,4 +39,30 @@ export const Query: QueryResolvers<GraphqlContext> = {
     }
     return toSend;
   },
+};
+
+const mapMarkerType = ({
+  type: markerType,
+  image,
+  name,
+  ...rest
+}: Omit<Marker, "mapId">) => {
+  let type = markerType;
+  if (["cave", "exit"].includes(name.toLowerCase())) {
+    image = "gfx/terobjs/mm/cavein";
+    name = "Cave";
+    type = "shared";
+  }
+  if (name.toLowerCase() === "tarpit") {
+    image = "gfx/terobjs/mm/tarpit";
+    name = "Tarpit";
+    type = "shared";
+  }
+  if (
+    image === "gfx/invobjs/small/bush" ||
+    image === "gfx/invobjs/small/bumling"
+  ) {
+    type = "quest";
+  }
+  return { ...rest, name, image, type };
 };

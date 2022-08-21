@@ -10,26 +10,6 @@ import React, {
 const MarkersContext = createContext<Omit<Marker, "hidden">[] | undefined>(
   undefined
 );
-const mapMarkerType = ({
-  type: markerType,
-  image,
-  name,
-  ...rest
-}: Omit<Marker, "hidden">) => {
-  let type = markerType;
-  if (["cave", "exit"].includes(name.toLowerCase())) {
-    image = "gfx/terobjs/mm/cavein";
-    name = "cave";
-    type = "shared";
-  }
-  if (
-    image === "gfx/invobjs/small/bush" ||
-    image === "gfx/invobjs/small/bumling"
-  ) {
-    type = "quest";
-  }
-  return { ...rest, name, image, type };
-};
 
 export const MarkersProvider: FunctionComponent<{
   children?: ReactNode;
@@ -37,9 +17,7 @@ export const MarkersProvider: FunctionComponent<{
   const markersQuery = useMarkersQuery({ pollInterval: 60 * 1000 });
 
   return (
-    <MarkersContext.Provider
-      value={markersQuery.data?.markers.map(mapMarkerType) ?? []}
-    >
+    <MarkersContext.Provider value={markersQuery.data?.markers ?? []}>
       {children}
     </MarkersContext.Provider>
   );

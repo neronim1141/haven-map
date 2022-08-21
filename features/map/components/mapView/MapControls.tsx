@@ -34,22 +34,17 @@ export function MapControls({
   const handleSelect = (marker: MarkerShortType) => {
     if (map) {
       map.setView(map.unproject([marker.x, marker.y], HnHMaxZoom), HnHMaxZoom);
-      main.setId(marker.map);
       overlay.setId(0);
       const point = map.project(map.getCenter(), HnHMaxZoom);
-      router.push(
-        {
-          pathname: "/map/[mapId]/[z]/[x]/[y]",
-          query: {
-            mapId: marker.map,
-            x: ~~(point.x / TileSize),
-            y: ~~(point.y / TileSize),
-            z: HnHMaxZoom,
-          },
+      router.replace({
+        pathname: "/map/[mapId]/[z]/[x]/[y]",
+        query: {
+          mapId: marker.map,
+          x: ~~(point.x / TileSize),
+          y: ~~(point.y / TileSize),
+          z: HnHMaxZoom,
         },
-        undefined,
-        { shallow: true }
-      );
+      });
     }
   };
 
@@ -80,21 +75,16 @@ export function MapControls({
                   sizing="sm"
                   value={main.id}
                   onChange={(e) => {
-                    main.setId(Number(e.target.value));
                     overlay.setId(0);
-                    router.push(
-                      {
-                        pathname: "/map/[mapId]/[z]/[x]/[y]",
-                        query: {
-                          mapId: Number(e.target.value),
-                          x: router.query.x,
-                          y: router.query.y,
-                          z: router.query.z,
-                        },
+                    router.replace({
+                      pathname: "/map/[mapId]/[z]/[x]/[y]",
+                      query: {
+                        mapId: Number(e.target.value),
+                        x: router.query.x,
+                        y: router.query.y,
+                        z: router.query.z,
                       },
-                      undefined,
-                      { shallow: true }
-                    );
+                    });
                   }}
                 >
                   {maps

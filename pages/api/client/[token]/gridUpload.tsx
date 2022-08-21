@@ -3,11 +3,18 @@ import { createRouter } from "next-connect";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { File, IncomingForm } from "formidable";
 import { promises as fs } from "fs";
-import { fileToString } from "features/map/api/gridUpload/fileToString";
-import { gridUpload, RequestData } from "features/map/api/gridUpload";
 import { prisma } from "lib/prisma";
 import * as logger from "lib/logger";
+import { Coord, saveTile, updateZoomLevel } from "features/map/api/utils";
+import { Tile } from "@prisma/client";
+import { HnHMaxZoom, HnHMinZoom } from "features/map/config";
 const router = createRouter<NextApiRequest, NextApiResponse>();
+
+export type RequestData = {
+  id: string;
+  extraData: { season: number };
+  file: File;
+};
 
 router.post(async (req, res) => {
   if (!req.query.token) {
@@ -23,7 +30,27 @@ router.post(async (req, res) => {
   const tile = await getTileFromRequest(req);
   logger.log(`map Tile for: ${tile.id} by: ${user.name}`);
 
-  await gridUpload(tile);
+  try {
+    const tileData = await fs.readFile(tile.file.filepath);
+    const grid = await prisma.grid.findUnique({
+      where: { id: tile.id },
+    });
+    if (!grid) {
+      throw new Error(`Unknown grid id: ${tile.id}`);
+    }
+    const tiles: Tile[] = [];
+    await saveTile(grid.mapId, grid.x, grid.y, 0, tileData, grid.id);
+    let coord = { x: grid.x, y: grid.y };
+
+    for (let z = HnHMinZoom; z < HnHMaxZoom; z++) {
+      coord = new Coord(coord.x, coord.y).parent();
+      await updateZoomLevel(grid.mapId, coord.x, coord.y, z);
+    }
+  } catch (e) {
+    logger.error(e);
+  } finally {
+    await fs.rm(tile.file.filepath);
+  }
   res.end();
 });
 
@@ -84,4 +111,8 @@ const getTileFromRequest = async (req: NextApiRequest) => {
       }
     });
   });
+};
+
+export const fileToString = async (path: string) => {
+  return (await fs.readFile(path)).toString("utf-8");
 };

@@ -21,7 +21,6 @@ export type MapCoords = {
 };
 export type MainMap = {
   id: number;
-  setId: (id: number) => void;
 };
 export type OverlayMap = {
   id: number;
@@ -50,28 +49,7 @@ export const HavenProvider: FunctionComponent<{
   onMerge: () => void;
 }> = ({ children, maps = [], onMerge }) => {
   const router = useRouter();
-  const routerId = Number(router.query.mapId ?? 1);
-  const [coord, setCoord] = useState({
-    x: Number(router.query.x ?? 0),
-    y: Number(router.query.y ?? 0),
-  });
-  const zoom = Number(router.query.z ?? 1);
-  if (maps.length && !maps.map((v) => v.id).includes(routerId)) {
-    router.push(
-      {
-        pathname: "/map/[mapId]/[z]/[x]/[y]",
-        query: {
-          mapId: maps[0].id,
-          x: coord.x,
-          y: coord.y,
-          z: zoom,
-        },
-      },
-      undefined,
-      { shallow: true }
-    );
-  }
-  const [main, setMain] = useState(routerId ?? 1);
+
   const [overlay, setOverlay] = useState<number>(0);
   const [overlayOpacity, setOverlayOpacity] = useState(0.5);
   const [map, setMap] = useState<L.Map>();
@@ -80,25 +58,16 @@ export const HavenProvider: FunctionComponent<{
     onSubscriptionData: ({ subscriptionData: merge }) => {
       const mapMergeData = merge.data?.mapMerges;
       if (mapMergeData?.from === overlay) setOverlay(mapMergeData.to);
-      if (mapMergeData?.from === main) {
-        setMain(mapMergeData.to);
-        setCoord({
-          x: coord.x + mapMergeData.shift.x,
-          y: coord.y + mapMergeData.shift.y,
-        });
-        router.push(
-          {
-            pathname: "/map/[mapId]/[z]/[x]/[y]",
-            query: {
-              mapId: mapMergeData.to,
-              x: coord.x + mapMergeData.shift.x,
-              y: coord.y + mapMergeData.shift.y,
-              z: zoom,
-            },
+      if (mapMergeData?.from === Number(router.query.mapId)) {
+        router.replace({
+          pathname: "/map/[mapId]/[z]/[x]/[y]",
+          query: {
+            mapId: mapMergeData!.to,
+            x: Number(router.query.x) + mapMergeData!.shift.x,
+            y: Number(router.query.y) + mapMergeData!.shift.y,
+            z: Number(router.query.z),
           },
-          undefined,
-          { shallow: true }
-        );
+        });
       }
       onMerge();
     },
@@ -106,14 +75,13 @@ export const HavenProvider: FunctionComponent<{
   const [showGrid, setShowGrid] = useState(false);
 
   const value: HavenContextType = {
-    coord: {
-      x: coord.x,
-      y: coord.y,
-      z: zoom,
-    },
     main: {
-      id: main,
-      setId: setMain,
+      id: Number(router.query.mapId),
+    },
+    coord: {
+      x: Number(router.query.x),
+      y: Number(router.query.y),
+      z: Number(router.query.z),
     },
     overlay: {
       id: overlay,

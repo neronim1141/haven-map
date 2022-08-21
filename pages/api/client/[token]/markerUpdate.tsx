@@ -2,8 +2,20 @@ import { createRouter } from "next-connect";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import * as logger from "lib/logger";
-import { MarkersRequest, markerUpdate } from "features/map/api/markerUpdate";
 import { prisma } from "lib/prisma";
+import { canAccess } from "features/auth/canAccess";
+import { Role } from "@prisma/client";
+
+export type MarkersRequest = {
+  id: number;
+  image: string;
+  x: number;
+  y: number;
+  gridID: string;
+  name: string;
+  type: string;
+  color?: string;
+}[];
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
@@ -22,7 +34,30 @@ router.post(async (req, res) => {
 
   if (!user) return res.status(403).end();
 
-  await markerUpdate(req.body as MarkersRequest, user?.role);
+  if (!canAccess(Role.VILLAGER, user?.role)) return;
+
+  for (let marker of req.body as MarkersRequest) {
+    const { gridID, color, ...data } = marker;
+    const grid = await prisma.grid.findUnique({ where: { id: gridID } });
+    if (!grid) continue;
+
+    const id = `${grid.id}_${data.x}_${data.y}`;
+    await prisma.marker.upsert({
+      where: {
+        id,
+      },
+      update: {
+        ...data,
+        id,
+        gridId: gridID,
+      },
+      create: {
+        ...data,
+        id,
+        gridId: gridID,
+      },
+    });
+  }
 
   res.end();
 });

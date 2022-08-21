@@ -23,7 +23,7 @@ export const MapEvents = ({ onContextMenu }: MapEvents) => {
         z: map.getZoom(),
       };
 
-      router.push(
+      router.replace(
         {
           pathname: "/map/[mapId]/[z]/[x]/[y]",
           query: {
