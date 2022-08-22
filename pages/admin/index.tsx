@@ -2,17 +2,14 @@ import React from "react";
 
 import axios from "axios";
 import { useForm } from "react-hook-form";
+import { useImportMapMutation } from "graphql/client/graphql";
 
 const Page = () => {
   const { register, handleSubmit } = useForm();
+  const [mutation] = useImportMapMutation();
   const onSubmit = (data: any) => {
-    let formData = new FormData();
-    formData.append("file", data.merge[0]);
-    return axios.post("api/upload", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    console.log(data.merge[0]);
+    mutation({ variables: { zipFile: data.merge[0] } });
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
