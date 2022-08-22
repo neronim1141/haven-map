@@ -1,0 +1,3 @@
+mutation ImportMap($zipFile: File!) {
+  importMap(file: $zipFile)
+}

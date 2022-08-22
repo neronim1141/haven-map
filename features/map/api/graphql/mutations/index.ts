@@ -5,6 +5,7 @@ import { GraphqlContext } from "graphql/server";
 import { MutationResolvers } from "graphql/server/types";
 import { deleteMap } from "./deleteMap";
 import { hideMap } from "./hideMap";
+import { importMap } from "./importMap";
 import { rebuildZooms } from "./rebuildZooms";
 import { shiftCoord } from "./shiftCoord";
 
@@ -36,5 +37,9 @@ export const Mutations: MutationResolvers<GraphqlContext> = {
     }
     await hideMap(mapId);
     return true;
+  },
+  importMap: async (_, { file }: { file: File }) => {
+    await importMap(file);
+    return "test";
   },
 };

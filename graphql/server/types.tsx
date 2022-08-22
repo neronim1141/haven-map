@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -12,6 +12,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  File: any;
 };
 
 export type Character = {
@@ -70,6 +71,7 @@ export type Mutation = {
   deleteMap: Scalars['Boolean'];
   deleteUser: Scalars['String'];
   hideMap: Scalars['Boolean'];
+  importMap: Scalars['String'];
   rebuildZooms: Scalars['Boolean'];
   shiftCoord: Scalars['Boolean'];
 };
@@ -106,6 +108,11 @@ export type MutationDeleteUserArgs = {
 
 export type MutationHideMapArgs = {
   mapId: Scalars['Int'];
+};
+
+
+export type MutationImportMapArgs = {
+  file: Scalars['File'];
 };
 
 
@@ -243,6 +250,7 @@ export type ResolversTypes = {
   Character: ResolverTypeWrapper<Character>;
   Coord: ResolverTypeWrapper<Coord>;
   CoordInput: CoordInput;
+  File: ResolverTypeWrapper<Scalars['File']>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Map: ResolverTypeWrapper<Map>;
@@ -262,6 +270,7 @@ export type ResolversParentTypes = {
   Character: Character;
   Coord: Coord;
   CoordInput: CoordInput;
+  File: Scalars['File'];
   Float: Scalars['Float'];
   Int: Scalars['Int'];
   Map: Map;
@@ -291,6 +300,10 @@ export type CoordResolvers<ContextType = any, ParentType extends ResolversParent
   y?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
+
+export interface FileScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['File'], any> {
+  name: 'File';
+}
 
 export type MapResolvers<ContextType = any, ParentType extends ResolversParentTypes['Map'] = ResolversParentTypes['Map']> = {
   hidden?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -325,6 +338,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteMap?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteMapArgs, 'mapId'>>;
   deleteUser?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'name'>>;
   hideMap?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationHideMapArgs, 'mapId'>>;
+  importMap?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationImportMapArgs, 'file'>>;
   rebuildZooms?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationRebuildZoomsArgs, 'mapId'>>;
   shiftCoord?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationShiftCoordArgs, 'mapId' | 'shiftBy'>>;
 };
@@ -361,6 +375,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 export type Resolvers<ContextType = any> = {
   Character?: CharacterResolvers<ContextType>;
   Coord?: CoordResolvers<ContextType>;
+  File?: GraphQLScalarType;
   Map?: MapResolvers<ContextType>;
   MapMerge?: MapMergeResolvers<ContextType>;
   Marker?: MarkerResolvers<ContextType>;

@@ -7,6 +7,7 @@ import { prisma } from "lib/prisma";
 import { pubsub } from "lib/pubsub";
 import { Coord, processZoom } from "features/map/api/utils";
 import { Grid, Tile } from "@prisma/client";
+import { defaultHidden } from "features/map/config";
 export type HavenGrids = [
   [string, string, string],
   [string, string, string],
@@ -96,7 +97,7 @@ export const createNewMap = async (grids: HavenGrids) => {
   const toUpload = [];
   const map = await prisma.map.create({
     data: {
-      hidden: true,
+      hidden: defaultHidden,
     },
   });
 
@@ -243,6 +244,11 @@ async function cleanupAfterMerge(
       await prisma.map.delete({
         where: {
           id: Number(mergeId),
+        },
+      });
+      await prisma.grid.deleteMany({
+        where: {
+          mapId: Number(mergeId),
         },
       });
       await prisma.tile.deleteMany({

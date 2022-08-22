@@ -7,8 +7,8 @@ import {
   InMemoryCache,
 } from "@apollo/client/core";
 import { split } from "@apollo/client/link/core";
-import { HttpLink } from "@apollo/client/link/http";
 import { print, getOperationAST } from "graphql";
+import { createUploadLink } from "apollo-upload-client";
 
 type SSELinkOptions = EventSourceInit & { uri: string };
 
@@ -51,7 +51,7 @@ const sseLink = new SSELink({
   uri,
 });
 
-const httpLink = new HttpLink({
+const httpLink = createUploadLink({
   uri,
 });
 

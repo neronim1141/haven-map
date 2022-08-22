@@ -13,6 +13,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  File: any;
 };
 
 export type Character = {
@@ -71,6 +72,7 @@ export type Mutation = {
   deleteMap: Scalars['Boolean'];
   deleteUser: Scalars['String'];
   hideMap: Scalars['Boolean'];
+  importMap: Scalars['String'];
   rebuildZooms: Scalars['Boolean'];
   shiftCoord: Scalars['Boolean'];
 };
@@ -107,6 +109,11 @@ export type MutationDeleteUserArgs = {
 
 export type MutationHideMapArgs = {
   mapId: Scalars['Int'];
+};
+
+
+export type MutationImportMapArgs = {
+  file: Scalars['File'];
 };
 
 
@@ -202,6 +209,13 @@ export type DeleteUserMutationVariables = Exact<{
 
 
 export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser: string };
+
+export type ImportMapMutationVariables = Exact<{
+  zipFile: Scalars['File'];
+}>;
+
+
+export type ImportMapMutation = { __typename?: 'Mutation', importMap: string };
 
 export type RebuildZoomsMutationVariables = Exact<{
   mapId: Scalars['Int'];
@@ -390,6 +404,37 @@ export function useDeleteUserMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutation>;
 export type DeleteUserMutationResult = Apollo.MutationResult<DeleteUserMutation>;
 export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<DeleteUserMutation, DeleteUserMutationVariables>;
+export const ImportMapDocument = gql`
+    mutation ImportMap($zipFile: File!) {
+  importMap(file: $zipFile)
+}
+    `;
+export type ImportMapMutationFn = Apollo.MutationFunction<ImportMapMutation, ImportMapMutationVariables>;
+
+/**
+ * __useImportMapMutation__
+ *
+ * To run a mutation, you first call `useImportMapMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useImportMapMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [importMapMutation, { data, loading, error }] = useImportMapMutation({
+ *   variables: {
+ *      zipFile: // value for 'zipFile'
+ *   },
+ * });
+ */
+export function useImportMapMutation(baseOptions?: Apollo.MutationHookOptions<ImportMapMutation, ImportMapMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ImportMapMutation, ImportMapMutationVariables>(ImportMapDocument, options);
+      }
+export type ImportMapMutationHookResult = ReturnType<typeof useImportMapMutation>;
+export type ImportMapMutationResult = Apollo.MutationResult<ImportMapMutation>;
+export type ImportMapMutationOptions = Apollo.BaseMutationOptions<ImportMapMutation, ImportMapMutationVariables>;
 export const RebuildZoomsDocument = gql`
     mutation rebuildZooms($mapId: Int!) {
   rebuildZooms(mapId: $mapId)

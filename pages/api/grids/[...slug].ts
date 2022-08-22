@@ -8,7 +8,6 @@ const router = createRouter<NextApiRequest, NextApiResponse>();
 router.get(async (req, res) => {
   const [map, data] = req.query.slug as String[];
   const [z, x, y] = data.split("_").map(Number);
-  const key = `${map}_${x}_${y}_${z}`;
   res.setHeader("Content-Type", "image/webp");
 
   const tile = await getMapTile(Number(map), Number(x), Number(y), Number(z));
