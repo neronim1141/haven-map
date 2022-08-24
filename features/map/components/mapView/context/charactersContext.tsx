@@ -28,10 +28,12 @@ export const CharactersProvider: FunctionComponent<{
       setCharacters((prev) => {
         const updated = prev.map((character) => {
           const found = data.find((char) => char.id === character.id);
-          return {
-            ...character,
-            expire: found ? found.expire : character.expire,
-          };
+          if (found)
+            return {
+              ...found,
+              name: character.name,
+            };
+          else return character;
         });
         const filtered = data.filter(
           (character) => !updated.find((char) => char.id === character.id)
