@@ -24,7 +24,7 @@ export const Marker = ({ marker, opacity = 1 }: MarkerProps) => {
       : L.divIcon({
           iconSize: clampSize(zoom),
           iconAnchor: clampSize(zoom, 2),
-          className: "transition-all duration-300 fill-gray-200",
+          className: "transition-all duration-300 fill-gray-200 opacity-80",
           html: renderToStaticMarkup(
             <svg viewBox="0 0 100 100">
               <circle

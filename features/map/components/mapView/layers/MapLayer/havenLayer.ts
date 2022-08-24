@@ -25,25 +25,31 @@ export class Haven extends L.TileLayer {
     this.redraw();
   }
   updateTiles(data: Tile[]) {
-    for (let { x, y, z } of data) this.refresh(x, y, z);
+    for (let { x, y, z, lastUpdated } of data)
+      this.refresh(x, y, z, lastUpdated);
   }
 
   getTileUrl(coords: L.Coords) {
     return this.getTrueTileUrl(coords, this._getZoomForUrl());
   }
-  getTrueTileUrl(coords: { x: number; y: number }, zoom: number) {
+  getTrueTileUrl(
+    coords: { x: number; y: number },
+    zoom: number,
+    cache = Date.now().toString()
+  ) {
     var data: any = {
       x: coords.x,
       y: coords.y,
       map: this.map,
       z: zoom,
+      cache,
     };
 
     //@ts-ignore
     return Util.template(this._url, Util.extend(this.options, data));
   }
 
-  refresh(x: number, y: number, z: number) {
+  refresh(x: number, y: number, z: number, lastUpdated: string) {
     var zoom = z,
       maxZoom = this.options.maxZoom,
       zoomReverse = this.options.zoomReverse,
@@ -61,7 +67,8 @@ export class Haven extends L.TileLayer {
     if (tile) {
       (tile.el as HTMLImageElement).src = this.getTrueTileUrl(
         { x: x, y: y },
-        z
+        z,
+        lastUpdated
       );
     }
   }

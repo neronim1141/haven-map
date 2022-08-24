@@ -24,12 +24,13 @@ export const CharactersProvider: FunctionComponent<{
     onSubscriptionData: ({ subscriptionData }) => {
       const data = subscriptionData.data?.characters;
       if (!data) return;
+
       setCharacters((prev) => {
-        const filtered = prev.filter(
-          (character) => !data.find((char) => char.id == character.id)
+        const filtered = data.filter(
+          (character) => !prev.find((char) => char.id == character.id)
         );
 
-        return [...filtered, ...data];
+        return [...prev, ...filtered];
       });
     },
   });
@@ -38,7 +39,7 @@ export const CharactersProvider: FunctionComponent<{
       setCharacters((prev) => {
         return prev.filter((character) => character.expire > Date.now());
       });
-    }, 2500);
+    }, 5000);
     return () => {
       clearInterval(interval);
     };

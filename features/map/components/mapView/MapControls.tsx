@@ -134,8 +134,8 @@ export function MapControls({
                 <input
                   type="range"
                   className="w-48 slider-thumb "
-                  min={0.2}
-                  max={0.8}
+                  min={0.1}
+                  max={0.9}
                   step={0.1}
                   value={overlay.opacity}
                   onChange={(e) => {

@@ -17,7 +17,7 @@ export const MapLayer = ({ mapId, opacity = 1 }: MapLayerProps) => {
   return (
     <>
       <HavenLayer
-        url="/api/grids/{map}/{z}_{x}_{y}"
+        url="/api/grids/{map}/{z}_{x}_{y}?{cache}"
         {...{
           minZoom: HnHMinZoom,
           maxZoom: HnHMaxZoom,
