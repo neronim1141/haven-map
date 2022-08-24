@@ -38,7 +38,6 @@ export const CharactersProvider: FunctionComponent<{
         const filtered = data.filter(
           (character) => !updated.find((char) => char.id === character.id)
         );
-        console.log([...updated, ...filtered]);
         return [...updated, ...filtered];
       });
     },
