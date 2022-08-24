@@ -26,11 +26,18 @@ export const CharactersProvider: FunctionComponent<{
       if (!data) return;
 
       setCharacters((prev) => {
+        const updated = prev.map((character) => {
+          const found = data.find((char) => char.id === character.id);
+          return {
+            ...character,
+            expire: found ? found.expire : character.expire,
+          };
+        });
         const filtered = data.filter(
-          (character) => !prev.find((char) => char.id == character.id)
+          (character) => !updated.find((char) => char.id === character.id)
         );
-
-        return [...prev, ...filtered];
+        console.log([...updated, ...filtered]);
+        return [...updated, ...filtered];
       });
     },
   });
