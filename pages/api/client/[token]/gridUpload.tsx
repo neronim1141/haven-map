@@ -17,6 +17,7 @@ export type RequestData = {
 };
 
 router.post(async (req, res) => {
+  return res.end();
   if (!req.query.token) {
     return res.status(403).end();
   }
