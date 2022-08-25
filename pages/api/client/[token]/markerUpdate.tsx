@@ -20,8 +20,6 @@ export type MarkersRequest = {
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 router.post(async (req, res) => {
-  return res.end();
-
   logger.log("markerUpdate");
   if (!req.query.token) {
     logger.error("gridUpdate from: no token");
