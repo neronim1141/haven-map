@@ -18,41 +18,41 @@ export type RequestData = {
 
 router.post(async (req, res) => {
   return res.end();
-  if (!req.query.token) {
-    return res.status(403).end();
-  }
-  const user = await prisma.user.findFirst({
-    where: {
-      token: req.query.token as string,
-    },
-  });
-  if (!user) return res.status(403).end();
+  // if (!req.query.token) {
+  //   return res.status(403).end();
+  // }
+  // const user = await prisma.user.findFirst({
+  //   where: {
+  //     token: req.query.token as string,
+  //   },
+  // });
+  // if (!user) return res.status(403).end();
 
-  const tile = await getTileFromRequest(req);
-  logger.log(`map Tile for: ${tile.id} by: ${user.name}`);
+  // const tile = await getTileFromRequest(req);
+  // logger.log(`map Tile for: ${tile.id} by: ${user.name}`);
 
-  try {
-    const tileData = await fs.readFile(tile.file.filepath);
-    const grid = await prisma.grid.findUnique({
-      where: { id: tile.id },
-    });
-    if (!grid) {
-      throw new Error(`Unknown grid id: ${tile.id}`);
-    }
-    const tiles: Tile[] = [];
-    await saveTile(grid.mapId, grid.x, grid.y, 0, tileData, grid.id);
-    let coord = { x: grid.x, y: grid.y };
+  // try {
+  //   const tileData = await fs.readFile(tile.file.filepath);
+  //   const grid = await prisma.grid.findUnique({
+  //     where: { id: tile.id },
+  //   });
+  //   if (!grid) {
+  //     throw new Error(`Unknown grid id: ${tile.id}`);
+  //   }
+  //   const tiles: Tile[] = [];
+  //   await saveTile(grid.mapId, grid.x, grid.y, 0, tileData, grid.id);
+  //   let coord = { x: grid.x, y: grid.y };
 
-    for (let z = HnHMinZoom; z < HnHMaxZoom; z++) {
-      coord = new Coord(coord.x, coord.y).parent();
-      await updateZoomLevel(grid.mapId, coord.x, coord.y, z);
-    }
-  } catch (e) {
-    logger.error(e);
-  } finally {
-    await fs.rm(tile.file.filepath);
-  }
-  res.end();
+  //   for (let z = HnHMinZoom; z < HnHMaxZoom; z++) {
+  //     coord = new Coord(coord.x, coord.y).parent();
+  //     await updateZoomLevel(grid.mapId, coord.x, coord.y, z);
+  //   }
+  // } catch (e) {
+  //   logger.error(e);
+  // } finally {
+  //   await fs.rm(tile.file.filepath);
+  // }
+  // res.end();
 });
 
 export const config = {

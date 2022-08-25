@@ -22,46 +22,46 @@ const router = createRouter<NextApiRequest, NextApiResponse>();
 router.post(async (req, res) => {
   return res.end();
 
-  logger.log("markerUpdate");
-  if (!req.query.token) {
-    logger.error("gridUpdate from: no token");
-    return res.status(403).end();
-  }
-  const user = await prisma.user.findFirst({
-    where: {
-      token: req.query.token as string,
-    },
-  });
-  logger.log("markerUpdate from: " + user?.name);
+  // logger.log("markerUpdate");
+  // if (!req.query.token) {
+  //   logger.error("gridUpdate from: no token");
+  //   return res.status(403).end();
+  // }
+  // const user = await prisma.user.findFirst({
+  //   where: {
+  //     token: req.query.token as string,
+  //   },
+  // });
+  // logger.log("markerUpdate from: " + user?.name);
 
-  if (!user) return res.status(403).end();
+  // if (!user) return res.status(403).end();
 
-  if (!canAccess(Role.VILLAGER, user?.role)) return;
+  // if (!canAccess(Role.VILLAGER, user?.role)) return;
 
-  for (let marker of req.body as MarkersRequest) {
-    const { gridID, color, ...data } = marker;
-    const grid = await prisma.grid.findUnique({ where: { id: gridID } });
-    if (!grid) continue;
+  // for (let marker of req.body as MarkersRequest) {
+  //   const { gridID, color, ...data } = marker;
+  //   const grid = await prisma.grid.findUnique({ where: { id: gridID } });
+  //   if (!grid) continue;
 
-    const id = `${grid.id}_${data.x}_${data.y}`;
-    await prisma.marker.upsert({
-      where: {
-        id,
-      },
-      update: {
-        ...data,
-        id,
-        gridId: gridID,
-      },
-      create: {
-        ...data,
-        id,
-        gridId: gridID,
-      },
-    });
-  }
+  //   const id = `${grid.id}_${data.x}_${data.y}`;
+  //   await prisma.marker.upsert({
+  //     where: {
+  //       id,
+  //     },
+  //     update: {
+  //       ...data,
+  //       id,
+  //       gridId: gridID,
+  //     },
+  //     create: {
+  //       ...data,
+  //       id,
+  //       gridId: gridID,
+  //     },
+  //   });
+  // }
 
-  res.end();
+  // res.end();
 });
 
 export default router.handler({
