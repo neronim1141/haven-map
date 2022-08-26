@@ -1,5 +1,4 @@
 import { Role } from "@prisma/client";
-import { canAccess } from "features/auth/canAccess";
 import { Character, useCharactersSubscription } from "graphql/client/graphql";
 import { useSession } from "next-auth/react";
 import React, {
@@ -11,6 +10,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import { canAccess } from "~/server/routers/user/utils";
 
 const CharactersContext = createContext<Character[] | undefined>(undefined);
 

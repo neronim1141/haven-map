@@ -1,7 +1,4 @@
 import { map, pipe, Repeater } from "@graphql-yoga/node";
-import { Role } from "@prisma/client";
-import { canAccess } from "features/auth/canAccess";
-import { handleForbidden } from "features/auth/handleForbidden";
 import { GraphqlContext } from "graphql/server/context";
 import {
   Character,
@@ -14,9 +11,6 @@ import { pubsub } from "lib/pubsub";
 export const Subscriptions: SubscriptionResolvers<GraphqlContext, {}> = {
   mapUpdates: {
     subscribe: (_, { id }, ctx) => {
-      if (!canAccess(Role.ALLY, ctx?.session?.user?.role)) {
-        handleForbidden();
-      }
       return Repeater.merge([
         // cause an initial event so the
         // globalCounter is streamed to the client
@@ -31,9 +25,6 @@ export const Subscriptions: SubscriptionResolvers<GraphqlContext, {}> = {
   },
   mapMerges: {
     subscribe: (_, {}, ctx) => {
-      if (!canAccess(Role.ALLY, ctx?.session?.user?.role)) {
-        handleForbidden();
-      }
       return Repeater.merge([
         // cause an initial event so the
         // globalCounter is streamed to the client
@@ -46,9 +37,6 @@ export const Subscriptions: SubscriptionResolvers<GraphqlContext, {}> = {
   },
   characters: {
     subscribe: (_, {}, ctx) => {
-      if (!canAccess(Role.VILLAGER, ctx?.session?.user?.role)) {
-        handleForbidden();
-      }
       return pipe(pubsub.subscribe("characters"));
     },
     resolve: (payload: Character[]) => payload,

@@ -9,9 +9,9 @@ import L from "leaflet";
 import { HnHMaxZoom, TileSize } from "features/map/config";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { canAccess } from "features/auth/canAccess";
 import { Role } from "@prisma/client";
 import { useMarkers } from "./context/markersContext";
+import { canAccess } from "~/server/routers/user/utils";
 type MarkerShortType = { x: number; y: number; map: number };
 
 export function MapControls({

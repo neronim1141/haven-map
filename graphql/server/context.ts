@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Session, unstable_getServerSession } from "next-auth";
-import { authOptions } from "pages/api/auth/[...nextauth]";
+import { authOptions } from "src/pages/api/auth/[...nextauth]";
 import { pubsub } from "lib/pubsub";
 import * as logger from "lib/logger";
 export type GraphqlContext = {
