@@ -23,6 +23,20 @@ export const userRouter = createRouter()
       return await ctx.prisma.user.findMany({ select: defaultUserSelect });
     },
   })
+  .query("byName", {
+    input: z.object({
+      name: z.string(),
+    }),
+    async resolve({ ctx, input: { name } }) {
+      // if (!canAccess(Role.ADMIN, ctx?.session?.user?.role)) {
+      //     handleForbidden();
+      //   }
+      return await ctx.prisma.user.findUnique({
+        where: { name },
+        select: defaultUserSelect,
+      });
+    },
+  })
   .mutation("update", {
     input: z.object({
       name: z.string(),

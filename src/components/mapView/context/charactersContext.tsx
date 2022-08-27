@@ -10,6 +10,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import { trpc } from "utils/trpc";
 import { canAccess } from "~/server/routers/user/utils";
 
 const CharactersContext = createContext<Character[] | undefined>(undefined);
@@ -19,15 +20,15 @@ export const CharactersProvider: FunctionComponent<{
 }> = ({ children }) => {
   const session = useSession();
   const [characters, setCharacters] = useState<Character[]>([]);
-  useCharactersSubscription({
-    skip: !canAccess(Role.VILLAGER, session.data?.user.role),
-    onSubscriptionData: ({ subscriptionData }) => {
-      const data = subscriptionData.data?.characters;
-      if (!data) return;
+
+  trpc.useSubscription(["character.all"], {
+    onNext(characters) {
+      console.log(characters);
+      if (!characters) return;
 
       setCharacters((prev) => {
         const updated = prev.map((character) => {
-          const found = data.find((char) => char.id === character.id);
+          const found = characters.find((char) => char.id === character.id);
           if (found)
             return {
               ...found,
@@ -35,13 +36,14 @@ export const CharactersProvider: FunctionComponent<{
             };
           else return character;
         });
-        const filtered = data.filter(
+        const filtered = characters.filter(
           (character) => !updated.find((char) => char.id === character.id)
         );
         return [...updated, ...filtered];
       });
     },
   });
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCharacters((prev) => {

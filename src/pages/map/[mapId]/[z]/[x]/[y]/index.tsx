@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import Map from "features/map/components/mapView";
-import { HavenProvider } from "features/map/components/mapView/context/havenContext";
+import Map from "~/components/mapView";
+import { HavenProvider } from "~/components/mapView/context/havenContext";
 import { useMapsQuery } from "graphql/client/graphql";
 import { useRouter } from "next/router";
 

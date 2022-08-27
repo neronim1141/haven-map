@@ -16,7 +16,7 @@ export const Header = () => {
         <div className="flex gap-1">
           <NavLink
             requiredRole={Role.ALLY}
-            href="/map/mapId]/[z]/[x]/[y]"
+            href="/map/[mapId]/[z]/[x]/[y]"
             as="/map/1/6/0/0"
           >
             Map

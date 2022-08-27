@@ -5,18 +5,20 @@ import { useUserQuery } from "graphql/client/graphql";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { Button } from "flowbite-react";
+import { trpc } from "utils/trpc";
 
 const Page = () => {
   const session = useSession();
   const router = useRouter();
   const queryName = router.query.name as string;
-  const user = useUserQuery({
-    variables: {
+  const user = trpc.useQuery([
+    "user.byName",
+    {
       name: queryName,
     },
-  });
+  ]);
 
-  if (session.status === "loading" || user.loading || !user?.data?.user) {
+  if (session.status === "loading" || !user.data) {
     return <>loading</>;
   }
 
@@ -30,15 +32,15 @@ const Page = () => {
   }
   return (
     <div className="p-2 flex flex-col gap-2">
-      <div>Your token is: {user.data.user.token}</div>
+      <div>Your token is: {user.data.token}</div>
       <div>
         Paste this into client: {process.env.NEXT_PUBLIC_PREFIX}/api/client/
-        {user.data?.user?.token}
+        {user.data.token}
       </div>
       <Button
         onClick={() => {
-          if (user.data?.user?.role)
-            router.push(`/profile/${user.data.user.name}/changePassword`);
+          if (user?.data?.role)
+            router.push(`/profile/${user.data.name}/changePassword`);
         }}
       >
         Change Password

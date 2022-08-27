@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import * as logger from "lib/logger";
 import { Character } from "graphql/server/types";
 import { pubsub } from "lib/pubsub";
-
+import { eventEmitter } from "~/server/eventEmitter";
 export type PositionUpdateRequest = {
   [id: string]: {
     name: string;
@@ -51,6 +51,8 @@ router.post(async (req, res) => {
       });
     }
   }
+  eventEmitter.emit("characters", flatData);
+
   pubsub.publish("characters", flatData);
   res.end();
 });
