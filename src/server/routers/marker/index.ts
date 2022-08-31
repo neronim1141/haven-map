@@ -57,7 +57,7 @@ const mapMarkerType = ({
     name = "Tarpit";
     type = "shared";
   }
-  if (name.toLowerCase().includes("thingwall")) {
+  if (image?.toLowerCase().includes("thingwall")) {
     type = "thingwall";
   }
   if (
