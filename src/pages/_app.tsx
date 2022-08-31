@@ -9,6 +9,9 @@ import { Header } from "src/components/Layout/header";
 import Head from "next/head";
 import { withTRPC } from "@trpc/next";
 import { AppRouter } from "~/server/routers";
+import getConfig from "next/config";
+const { publicRuntimeConfig } = getConfig();
+const { APP_URL } = publicRuntimeConfig;
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
@@ -34,8 +37,7 @@ export default withTRPC<AppRouter>({
      * If you want to use SSR, you need to use the server's full URL
      * @link https://trpc.io/docs/ssr
      */
-    const url =
-      (process.env.NEXT_PUBLIC_PREFIX ?? "http://localhost:3000") + "/api/trpc";
+    const url = (APP_URL ?? "http://localhost:3000") + "/api/trpc";
     return {
       url,
       transformer: superjson,
