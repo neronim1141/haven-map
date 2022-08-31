@@ -47,8 +47,8 @@ const mapMarkerType = ({
   ...rest
 }: Omit<Marker, "mapId">) => {
   let type = markerType;
-  if (["cave", "exit"].includes(name.toLowerCase())) {
-    image = "gfx/terobjs/mm/cavein";
+  if (["cave", "exit", "cavein", "caveout"].includes(name.toLowerCase())) {
+    image = "gfx/hud/mmap/cave";
     name = "Cave";
     type = "shared";
   }
