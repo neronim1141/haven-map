@@ -1,12 +1,12 @@
-import { Character } from "graphql/client/graphql";
 import { useMap, Marker as LeafletMarker } from "react-leaflet";
 import L from "leaflet";
 import React, { useMemo } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { HnHMaxZoom } from "features/map/config";
+import { CharacterData } from "~/pages/api/client/[token]/positionUpdate";
+import { HnHMaxZoom } from "~/server/routers/map/config";
 
 interface CharacterMarkerProps {
-  character: Character;
+  character: CharacterData;
   opacity?: number;
 }
 

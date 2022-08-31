@@ -1,10 +1,4 @@
 import React from "react";
-import {
-  Map,
-  Marker,
-  useMapMergesSubscription,
-  useMarkersQuery,
-} from "graphql/client/graphql";
 import { useRouter } from "next/router";
 import {
   Context,
@@ -14,6 +8,9 @@ import {
   useContext,
   useState,
 } from "react";
+import { useSocketIO } from "~/hooks/useSocketIO";
+import { Map } from "@prisma/client";
+
 export type MapCoords = {
   x: number;
   y: number;
@@ -54,23 +51,20 @@ export const HavenProvider: FunctionComponent<{
   const [overlayOpacity, setOverlayOpacity] = useState(0.5);
   const [map, setMap] = useState<L.Map>();
 
-  useMapMergesSubscription({
-    onSubscriptionData: ({ subscriptionData: merge }) => {
-      const mapMergeData = merge.data?.mapMerges;
-      if (mapMergeData?.from === overlay) setOverlay(mapMergeData.to);
-      if (mapMergeData?.from === Number(router.query.mapId)) {
-        router.replace({
-          pathname: "/map/[mapId]/[z]/[x]/[y]",
-          query: {
-            mapId: mapMergeData!.to,
-            x: Number(router.query.x) + mapMergeData!.shift.x,
-            y: Number(router.query.y) + mapMergeData!.shift.y,
-            z: Number(router.query.z),
-          },
-        });
-      }
-      onMerge();
-    },
+  useSocketIO("merge", (merge) => {
+    if (merge.from === overlay) setOverlay(merge.to);
+    if (merge.from === Number(router.query.mapId)) {
+      router.replace({
+        pathname: "/map/[mapId]/[z]/[x]/[y]",
+        query: {
+          mapId: merge!.to,
+          x: Number(router.query.x) + merge.shift.x,
+          y: Number(router.query.y) + merge.shift.y,
+          z: Number(router.query.z),
+        },
+      });
+    }
+    onMerge();
   });
   const [showGrid, setShowGrid] = useState(false);
 

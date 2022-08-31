@@ -3,11 +3,9 @@
  */
 import { createRouter } from "../createRouter";
 import { userRouter } from "./user";
-import { Subscription } from "@trpc/server";
+import { markerRouter } from "./marker";
+import { mapRouter } from "./map";
 import superjson from "superjson";
-import { clearInterval } from "timers";
-import { characterRouter } from "./characters";
-import { eventEmitter } from "../eventEmitter";
 /**
  * Create your application's root router
  * If you want to use SSG, you need export this
@@ -31,22 +29,7 @@ export const appRouter = createRouter()
     },
   })
   .merge("user.", userRouter)
-  .merge("character.", characterRouter)
-  .subscription("randomNumber", {
-    resolve() {
-      return new Subscription<number>((emit) => {
-        const onEmit = (n: number) => emit.data(n);
-        eventEmitter.on("random", onEmit);
-
-        const int = setInterval(() => {
-          eventEmitter.emit("random", Math.random());
-        }, 500);
-        return () => {
-          clearInterval(int);
-          eventEmitter.off("random", onEmit);
-        };
-      });
-    },
-  });
+  .merge("marker.", markerRouter)
+  .merge("map.", mapRouter);
 
 export type AppRouter = typeof appRouter;

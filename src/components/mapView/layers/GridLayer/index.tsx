@@ -1,5 +1,5 @@
 import React from "react";
-import { HnHMaxZoom, HnHMinZoom } from "features/map/config";
+import { HnHMaxZoom, HnHMinZoom } from "~/server/routers/map/config";
 import { GridLayer as Layer } from "./gridLayer";
 
 export const GridLayer = () => {

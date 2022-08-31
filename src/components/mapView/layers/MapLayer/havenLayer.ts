@@ -1,8 +1,8 @@
-import { Tile } from "graphql/client/graphql";
 import L, { Util } from "leaflet";
 import { createTileLayerComponent, LayerProps } from "@react-leaflet/core";
 import { ReactNode } from "react";
-import { HnHMaxZoom } from "features/map/config";
+import { Tile } from "@prisma/client";
+import { HnHMaxZoom } from "~/server/routers/map/config";
 interface HavenProps extends LayerProps {
   url?: string;
   map: number;

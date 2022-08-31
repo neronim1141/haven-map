@@ -1,5 +1,4 @@
 import { Role } from "@prisma/client";
-import { Character, useCharactersSubscription } from "graphql/client/graphql";
 import { useSession } from "next-auth/react";
 import React, {
   Context,
@@ -10,38 +9,33 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { trpc } from "utils/trpc";
-import { canAccess } from "~/server/routers/user/utils";
+import { useSocketIO } from "~/hooks/useSocketIO";
+import { CharacterData } from "~/pages/api/client/[token]/positionUpdate";
 
-const CharactersContext = createContext<Character[] | undefined>(undefined);
+const CharactersContext = createContext<CharacterData[] | undefined>(undefined);
 
 export const CharactersProvider: FunctionComponent<{
   children?: ReactNode;
 }> = ({ children }) => {
-  const session = useSession();
-  const [characters, setCharacters] = useState<Character[]>([]);
+  const [characters, setCharacters] = useState<CharacterData[]>([]);
+  useSocketIO("characters", (characters) => {
+    if (!characters) return;
 
-  trpc.useSubscription(["character.all"], {
-    onNext(characters) {
-      console.log(characters);
-      if (!characters) return;
-
-      setCharacters((prev) => {
-        const updated = prev.map((character) => {
-          const found = characters.find((char) => char.id === character.id);
-          if (found)
-            return {
-              ...found,
-              name: character.name,
-            };
-          else return character;
-        });
-        const filtered = characters.filter(
-          (character) => !updated.find((char) => char.id === character.id)
-        );
-        return [...updated, ...filtered];
+    setCharacters((prev) => {
+      const updated = prev.map((character) => {
+        const found = characters.find((char) => char.id === character.id);
+        if (found)
+          return {
+            ...found,
+            name: character.name,
+          };
+        else return character;
       });
-    },
+      const filtered = characters.filter(
+        (character) => !updated.find((char) => char.id === character.id)
+      );
+      return [...updated, ...filtered];
+    });
   });
 
   useEffect(() => {

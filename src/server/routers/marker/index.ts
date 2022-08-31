@@ -1,17 +1,25 @@
-import { Role } from "@prisma/client";
-import { GraphqlContext } from "graphql/server";
-import { Marker, QueryResolvers } from "graphql/server/types";
-import { prisma } from "lib/prisma";
+/**
+ *
+ * This is an example router, you can delete this file and then update `../pages/api/trpc/[trpc].tsx`
+ */
+import { Marker } from "@prisma/client";
 
-export const Query: QueryResolvers<GraphqlContext> = {
-  maps: async (_, {}, ctx) => {
-    return await prisma.map.findMany();
-  },
-  markers: async (_, { hidden }, ctx) => {
+import { createRouter } from "../../createRouter";
+import { prisma } from "lib/prisma";
+import { z } from "zod";
+
+export interface ClientMarker extends Marker {
+  mapId: number;
+}
+export const markerRouter = createRouter().query("all", {
+  input: z.object({
+    hidden: z.boolean(),
+  }),
+  async resolve({ ctx, input: { hidden } }) {
     const markers = await prisma.marker.findMany({
       where: { hidden },
     });
-    const toSend: Marker[] = [];
+    const toSend: ClientMarker[] = [];
     //TODO: optimize
     for (let marker of markers) {
       const grid = await prisma.grid.findUnique({
@@ -30,7 +38,7 @@ export const Query: QueryResolvers<GraphqlContext> = {
     }
     return toSend;
   },
-};
+});
 
 const mapMarkerType = ({
   type: markerType,

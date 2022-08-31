@@ -1,7 +1,7 @@
 import L from "leaflet";
 import { createTileLayerComponent, LayerProps } from "@react-leaflet/core";
 import { ReactNode } from "react";
-import { HnHMaxZoom, TileSize } from "features/map/config";
+import { HnHMaxZoom, TileSize } from "~/server/routers/map/config";
 
 interface GridProps extends LayerProps {
   url?: string;

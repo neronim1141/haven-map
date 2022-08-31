@@ -8,7 +8,8 @@ import { createRouter } from "../../createRouter";
 import bcrypt from "bcrypt";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { TRPCError } from "@trpc/server";
-
+import { logger } from "lib/logger";
+import { prisma } from "lib/prisma";
 const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   name: true,
   role: true,
@@ -20,7 +21,7 @@ export const userRouter = createRouter()
       // if (!canAccess(Role.ADMIN, ctx?.session?.user?.role)) {
       //     handleForbidden();
       //   }
-      return await ctx.prisma.user.findMany({ select: defaultUserSelect });
+      return await prisma.user.findMany({ select: defaultUserSelect });
     },
   })
   .query("byName", {
@@ -31,7 +32,7 @@ export const userRouter = createRouter()
       // if (!canAccess(Role.ADMIN, ctx?.session?.user?.role)) {
       //     handleForbidden();
       //   }
-      return await ctx.prisma.user.findUnique({
+      return await prisma.user.findUnique({
         where: { name },
         select: defaultUserSelect,
       });
@@ -44,7 +45,7 @@ export const userRouter = createRouter()
     }),
     async resolve({ ctx, input: { name, role } }) {
       try {
-        const user = await ctx.prisma.user.update({
+        const user = await prisma.user.update({
           where: {
             name,
           },
@@ -53,7 +54,7 @@ export const userRouter = createRouter()
           },
           select: defaultUserSelect,
         });
-        ctx.logger.log(`updated User Role: ${user.name}`);
+        logger.log(`updated User Role: ${user.name}`);
         return user;
       } catch (e) {
         throw e;
@@ -67,7 +68,7 @@ export const userRouter = createRouter()
     }),
     async resolve({ ctx, input: { name, password } }) {
       try {
-        const user = await ctx.prisma.user.create({
+        const user = await prisma.user.create({
           data: {
             name: name.toLowerCase(),
             password: await bcrypt.hash(password.toLowerCase(), 10),
@@ -75,10 +76,10 @@ export const userRouter = createRouter()
           },
           select: defaultUserSelect,
         });
-        ctx.logger.log(`created User: ${user.name}`);
+        logger.log(`created User: ${user.name}`);
         return user;
       } catch (e) {
-        ctx.logger.error(e);
+        logger.error(e);
         if ((e as PrismaClientKnownRequestError).code === "P2002")
           throw new TRPCError({
             code: "CONFLICT",
@@ -94,14 +95,14 @@ export const userRouter = createRouter()
     }),
     async resolve({ ctx, input: { name } }) {
       try {
-        const user = await ctx.prisma.user.delete({
+        const user = await prisma.user.delete({
           where: { name: name.toLowerCase() },
         });
-        ctx.logger.log(`deleted User : ${user.name}`);
+        logger.log(`deleted User : ${user.name}`);
 
         return user.name;
       } catch (e) {
-        ctx.logger.error(e);
+        logger.error(e);
         throw e;
       }
     },
@@ -114,7 +115,7 @@ export const userRouter = createRouter()
     }),
     async resolve({ ctx, input: { name, oldPassword, newPassword } }) {
       try {
-        const user = await ctx.prisma.user.findUnique({
+        const user = await prisma.user.findUnique({
           where: { name: name.toLowerCase() },
         });
         if (!user) {
@@ -130,7 +131,7 @@ export const userRouter = createRouter()
             message: "Password Missmatch",
           });
         }
-        await ctx.prisma.user.update({
+        await prisma.user.update({
           where: {
             name: name.toLowerCase(),
           },
@@ -139,7 +140,7 @@ export const userRouter = createRouter()
           },
           select: defaultUserSelect,
         });
-        ctx.logger.log(`updated User password: ${user.name}`);
+        logger.log(`updated User password: ${user.name}`);
         return user;
       } catch (e) {
         throw e;

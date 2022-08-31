@@ -1,4 +1,3 @@
-import { Marker, useMarkersQuery } from "graphql/client/graphql";
 import React, {
   Context,
   createContext,
@@ -6,18 +5,20 @@ import React, {
   ReactNode,
   useContext,
 } from "react";
+import { trpc } from "utils/trpc";
+import { ClientMarker } from "~/server/routers/marker";
 
-const MarkersContext = createContext<Omit<Marker, "hidden">[] | undefined>(
-  undefined
-);
+const MarkersContext = createContext<ClientMarker[] | undefined>(undefined);
 
 export const MarkersProvider: FunctionComponent<{
   children?: ReactNode;
 }> = ({ children }) => {
-  const markersQuery = useMarkersQuery({ pollInterval: 60 * 1000 });
+  const markers = trpc.useQuery(["marker.all", { hidden: false }], {
+    refetchInterval: 60 * 1000,
+  });
 
   return (
-    <MarkersContext.Provider value={markersQuery.data?.markers ?? []}>
+    <MarkersContext.Provider value={markers.data ?? []}>
       {children}
     </MarkersContext.Provider>
   );

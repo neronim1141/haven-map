@@ -2,14 +2,12 @@ import React from "react";
 
 import axios from "axios";
 import { useForm } from "react-hook-form";
-import { useImportMapMutation } from "graphql/client/graphql";
+import { trpc } from "utils/trpc";
 
 const Page = () => {
   const { register, handleSubmit } = useForm();
-  const [mutation] = useImportMapMutation();
   const onSubmit = (data: any) => {
-    console.log(data.merge[0]);
-    mutation({ variables: { zipFile: data.merge[0] } });
+    alert("TBD");
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

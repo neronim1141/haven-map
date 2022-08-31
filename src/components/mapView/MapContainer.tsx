@@ -4,8 +4,8 @@ import L, { LatLngTuple, LeafletMouseEvent } from "leaflet";
 import { useRouter } from "next/router";
 import { MapEvents } from "./mapEvents";
 import { HnHCRS } from "./utils";
-import { HnHMaxZoom, HnHMinZoom } from "features/map/config";
 import { useMap } from "./context/havenContext";
+import { HnHMaxZoom, HnHMinZoom } from "~/server/routers/map/config";
 
 export const MapContainer = (props: {
   zoom: number;

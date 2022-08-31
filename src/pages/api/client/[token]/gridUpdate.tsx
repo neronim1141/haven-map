@@ -2,12 +2,12 @@ import { createRouter } from "next-connect";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import * as logger from "lib/logger";
+import { logger } from "lib/logger";
 import { prisma } from "lib/prisma";
-import { pubsub } from "lib/pubsub";
-import { Coord, processZoom } from "features/map/api/utils";
 import { Grid, Tile } from "@prisma/client";
-import { defaultHidden } from "features/map/config";
+import { NextApiResponseServerIO, SocketIO } from "../../socketio";
+import { Coord, processZoom } from "~/server/routers/map/utils";
+import { defaultHidden } from "~/server/routers/map/config";
 export type HavenGrids = [
   [string, string, string],
   [string, string, string],
@@ -20,7 +20,7 @@ type GridRequest = {
   coord: { x: number; y: number };
 };
 
-const router = createRouter<NextApiRequest, NextApiResponse>();
+const router = createRouter<NextApiRequest, NextApiResponseServerIO>();
 
 router.post(async (req, res) => {
   const grids = (
@@ -37,9 +37,9 @@ router.post(async (req, res) => {
       token: req.query.token as string,
     },
   });
-  logger.log("gridUpdate from: " + user?.name);
 
   if (!user) return res.status(403).end();
+  logger.log("gridUpdate from: " + user?.name);
 
   const gridRequests: GridRequest = {
     gridRequests: [],
@@ -47,7 +47,7 @@ router.post(async (req, res) => {
     coord: { x: 0, y: 0 },
   };
   const mapsOffsets = await getMapsOffsets(grids);
-
+  const socket = res?.socket?.server?.io;
   if (Object.keys(mapsOffsets).length === 0) {
     gridRequests.gridRequests = await createNewMap(grids);
     return gridRequests;
@@ -64,7 +64,7 @@ router.post(async (req, res) => {
   gridRequests.map = centerGrid.mapId;
 
   if (Object.keys(mapsOffsets).length > 1) {
-    await mergeMaps(mapId, mapsOffsets, offset);
+    await mergeMaps(mapId, mapsOffsets, offset, socket);
   }
   res.json(gridRequests);
 });
@@ -175,7 +175,8 @@ export const updateExistingMap = async (
 export async function mergeMaps(
   mapId: number,
   mapsOffsets: { [key: number]: Coord },
-  offset: { x: number; y: number }
+  offset: { x: number; y: number },
+  socket: SocketIO
 ) {
   const grids = await prisma.grid.findMany({
     where: {
@@ -195,12 +196,12 @@ export async function mergeMaps(
   for (let tile of tiles) {
     const coord = new Coord(tile.x, tile.y).parent();
     needProcess.set(coord.toString(), coord);
-    pubsub.publish("tileUpdate", mapId, tile);
+    socket.emit("tileUpdate", tile);
   }
 
   await processZoom(needProcess, mapId);
 
-  await cleanupAfterMerge(mapsOffsets, mapId, offset);
+  await cleanupAfterMerge(mapsOffsets, mapId, offset, socket);
 }
 
 async function updateGrid(
@@ -237,7 +238,8 @@ async function updateGrid(
 async function cleanupAfterMerge(
   mapsOffsets: { [key: number]: Coord },
   mapId: number,
-  offset: { x: number; y: number }
+  offset: { x: number; y: number },
+  socket: SocketIO
 ) {
   for (let [mergeId, merge] of Object.entries(mapsOffsets)) {
     if (Number(mergeId) !== mapId) {
@@ -257,7 +259,7 @@ async function cleanupAfterMerge(
         },
       });
 
-      pubsub.publish("merge", {
+      socket.emit("merge", {
         from: Number(mergeId),
         to: mapId,
         shift: { x: offset.x - merge.x, y: offset.y - merge.y },

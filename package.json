@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev:wss": "cross-env PORT=3001 nodemon --watch src --ext .ts,.tsx,js,jsx --signal SIGTERM --exec \"ts-node --project tsconfig.server.json src/server/wssDevServer.ts\"",
     "dev": "next dev ",
     "build": "next build",
     "start": "next start -p 8000",
@@ -50,6 +49,8 @@
     "react-select": "^5.4.0",
     "rxjs": "^7.5.6",
     "sharp": "^0.30.7",
+    "socket.io": "^4.5.1",
+    "socket.io-client": "^4.5.1",
     "superjson": "^1.9.1",
     "ws": "^8.8.1",
     "yup": "^0.32.11",

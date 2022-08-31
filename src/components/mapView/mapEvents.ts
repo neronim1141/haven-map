@@ -1,11 +1,9 @@
-import React from "react";
-
-import { TileSize } from "features/map/config";
 import { LeafletMouseEvent } from "leaflet";
 import _ from "lodash";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
 import { useMapEvents } from "react-leaflet";
+import { TileSize } from "~/server/routers/map/config";
 
 interface MapEvents {
   onContextMenu: (e: LeafletMouseEvent) => void;

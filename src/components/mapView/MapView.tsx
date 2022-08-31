@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { MapLayer } from "./layers/MapLayer";
 import { GridLayer } from "./layers/GridLayer";
 import _ from "lodash";
@@ -15,7 +15,6 @@ import {
 } from "./context/havenContext";
 import { CharactersProvider } from "./context/charactersContext";
 import Head from "next/head";
-import L from "leaflet";
 import { MarkersProvider } from "./context/markersContext";
 
 export default function MapView() {
@@ -48,13 +47,7 @@ export default function MapView() {
             {grid.show && <GridLayer />}
           </MapContainer>
           <div className="leaflet-top leaflet-left ">
-            <MapControls
-              main={main}
-              overlay={overlay}
-              grid={grid}
-              zoom={coords.z}
-              map={map}
-            />
+            <MapControls main={main} overlay={overlay} grid={grid} map={map} />
           </div>
         </div>
       </MarkersProvider>

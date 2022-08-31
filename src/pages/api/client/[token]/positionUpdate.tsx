@@ -1,10 +1,8 @@
 import { createRouter } from "next-connect";
 import { prisma } from "lib/prisma";
-import type { NextApiRequest, NextApiResponse } from "next";
-import * as logger from "lib/logger";
-import { Character } from "graphql/server/types";
-import { pubsub } from "lib/pubsub";
-import { eventEmitter } from "~/server/eventEmitter";
+import type { NextApiRequest } from "next";
+import { logger } from "lib/logger";
+import { NextApiResponseServerIO } from "../../socketio";
 export type PositionUpdateRequest = {
   [id: string]: {
     name: string;
@@ -17,7 +15,17 @@ export type PositionUpdateRequest = {
   };
 };
 
-const router = createRouter<NextApiRequest, NextApiResponse>();
+export interface CharacterData {
+  id: string;
+  name: string;
+  type: string;
+  inMap: number;
+  x: number;
+  y: number;
+  expire: number;
+}
+
+const router = createRouter<NextApiRequest, NextApiResponseServerIO>();
 
 router.post(async (req, res) => {
   if (!req.query.token) {
@@ -32,7 +40,7 @@ router.post(async (req, res) => {
   logger.log("positionUpdate from: " + user?.name);
   if (!user) return res.status(403).end();
 
-  const flatData: Character[] = [];
+  const flatData: CharacterData[] = [];
   for (let [id, { coords, gridID, ...characterData }] of Object.entries(
     req.body as PositionUpdateRequest
   )) {
@@ -51,9 +59,7 @@ router.post(async (req, res) => {
       });
     }
   }
-  eventEmitter.emit("characters", flatData);
-
-  pubsub.publish("characters", flatData);
+  res?.socket?.server?.io?.emit("characters", flatData);
   res.end();
 });
 

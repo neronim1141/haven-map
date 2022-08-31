@@ -1,17 +1,16 @@
-import { Tile, useMapUpdatesSubscription } from "graphql/client/graphql";
+import { Tile } from "@prisma/client";
 import { useEffect, useState } from "react";
+import { useSocketIO } from "~/hooks/useSocketIO";
 
 export const useHavenMap = (mapId: number) => {
   const [data, setData] = useState<Tile[]>([]);
   const [incomingData, setIncomingData] = useState<Tile[]>([]);
-  useMapUpdatesSubscription({
-    variables: { mapId },
-    onSubscriptionData: ({ subscriptionData: sub }) => {
-      const subData = sub.data?.mapUpdates;
-      if (subData) {
-        setIncomingData((prev) => [...prev, subData]);
-      }
-    },
+  useSocketIO("tileUpdate", (mapUpdates) => {
+    console.log(mapUpdates);
+
+    if (mapUpdates && mapId === mapUpdates.mapId) {
+      setIncomingData((prev) => [...prev, mapUpdates]);
+    }
   });
 
   useEffect(() => {

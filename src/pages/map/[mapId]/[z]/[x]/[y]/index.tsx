@@ -2,8 +2,9 @@ import React, { useState } from "react";
 
 import Map from "~/components/mapView";
 import { HavenProvider } from "~/components/mapView/context/havenContext";
-import { useMapsQuery } from "graphql/client/graphql";
 import { useRouter } from "next/router";
+import { SocketProvider } from "~/hooks/useSocketIO";
+import { trpc } from "utils/trpc";
 
 function isNumeric(str: any) {
   if (typeof str != "string") return false; // we only process strings!
@@ -14,11 +15,9 @@ function isNumeric(str: any) {
 }
 const Page = () => {
   const router = useRouter();
-
-  const { loading, data, refetch } = useMapsQuery({ pollInterval: 60 * 1000 });
+  const maps = trpc.useQuery(["map.all"], { refetchInterval: 60 * 1000 });
   if (
-    loading ||
-    !data ||
+    !maps.data ||
     router.query.mapId === undefined ||
     router.query.z === undefined ||
     router.query.x === undefined ||
@@ -32,7 +31,7 @@ const Page = () => {
     !isNumeric(router.query.mapId) ||
     !isNumeric(router.query.z)
   ) {
-    const mapId = data.maps ? data.maps[0].id : 1;
+    const mapId = maps.data ? maps.data[0].id : 1;
     console.log(mapId);
 
     router.replace({
@@ -50,9 +49,11 @@ const Page = () => {
   }
 
   return (
-    <HavenProvider maps={data.maps} onMerge={refetch}>
-      <Map />
-    </HavenProvider>
+    <SocketProvider>
+      <HavenProvider maps={maps.data} onMerge={maps.refetch}>
+        <Map />
+      </HavenProvider>
+    </SocketProvider>
   );
 };
 

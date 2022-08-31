@@ -6,25 +6,23 @@ import { MainMap, MapGrid, OverlayMap, useMaps } from "./context/havenContext";
 import SearchSelect from "react-select";
 import { useCharacters } from "./context/charactersContext";
 import L from "leaflet";
-import { HnHMaxZoom, TileSize } from "features/map/config";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { Role } from "@prisma/client";
 import { useMarkers } from "./context/markersContext";
 import { canAccess } from "~/server/routers/user/utils";
+import { HnHMaxZoom, TileSize } from "~/server/routers/map/config";
 type MarkerShortType = { x: number; y: number; map: number };
 
 export function MapControls({
   main,
   overlay,
   grid,
-  zoom,
   map,
 }: {
   main: MainMap;
   overlay: OverlayMap;
   grid: MapGrid;
-  zoom: number;
   map?: L.Map;
 }) {
   const router = useRouter();

@@ -1,7 +1,6 @@
 import React from "react";
 
 import { Role } from "@prisma/client";
-import { useUserQuery } from "graphql/client/graphql";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { Button } from "flowbite-react";

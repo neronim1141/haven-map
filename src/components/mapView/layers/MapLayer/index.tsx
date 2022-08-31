@@ -1,10 +1,10 @@
 import React from "react";
 import { useHavenMap } from "./hooks/useHavenMap";
 import { HavenLayer } from "./havenLayer";
-import { HnHMaxZoom, HnHMinZoom, TileSize } from "features/map/config";
 import { Marker } from "../../marker";
 import Characters from "./characters";
 import { useMarkersFor } from "../../context/markersContext";
+import { HnHMaxZoom, HnHMinZoom, TileSize } from "~/server/routers/map/config";
 
 interface MapLayerProps {
   mapId: number;

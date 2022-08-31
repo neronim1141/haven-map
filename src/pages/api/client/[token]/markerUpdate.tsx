@@ -1,7 +1,7 @@
 import { createRouter } from "next-connect";
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import * as logger from "lib/logger";
+import { logger } from "lib/logger";
 import { prisma } from "lib/prisma";
 import { Role } from "@prisma/client";
 import { canAccess } from "~/server/routers/user/utils";

@@ -1,14 +1,14 @@
 import { createRouter } from "next-connect";
 
-import type { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest } from "next";
 import { File, IncomingForm } from "formidable";
 import { promises as fs } from "fs";
 import { prisma } from "lib/prisma";
-import * as logger from "lib/logger";
-import { Coord, saveTile, updateZoomLevel } from "features/map/api/utils";
-import { Tile } from "@prisma/client";
-import { HnHMaxZoom, HnHMinZoom } from "features/map/config";
-const router = createRouter<NextApiRequest, NextApiResponse>();
+import { logger } from "lib/logger";
+import { NextApiResponseServerIO } from "../../socketio";
+import { Coord, saveTile, updateZoomLevel } from "~/server/routers/map/utils";
+import { HnHMaxZoom, HnHMinZoom } from "~/server/routers/map/config";
+const router = createRouter<NextApiRequest, NextApiResponseServerIO>();
 
 export type RequestData = {
   id: string;
@@ -20,6 +20,8 @@ router.post(async (req, res) => {
   if (!req.query.token) {
     return res.status(403).end();
   }
+
+  const socket = res?.socket?.server?.io;
   const user = await prisma.user.findFirst({
     where: {
       token: req.query.token as string,
@@ -38,8 +40,8 @@ router.post(async (req, res) => {
     if (!grid) {
       throw new Error(`Unknown grid id: ${tile.id}`);
     }
-    const tiles: Tile[] = [];
-    await saveTile(grid.mapId, grid.x, grid.y, 0, tileData, grid.id);
+
+    await saveTile(grid.mapId, grid.x, grid.y, 0, tileData, socket, grid.id);
     let coord = { x: grid.x, y: grid.y };
 
     for (let z = HnHMinZoom; z < HnHMaxZoom; z++) {
