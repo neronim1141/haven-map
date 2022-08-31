@@ -175,7 +175,7 @@ const SelectCharacters = ({ onSelect }: SelectProps) => {
       <SearchSelect
         value={null}
         options={options}
-        placeholder={options.length ? "Search character" : "No characters"}
+        placeholder={`${options.length} players visible`}
         isDisabled={!options.length}
         className="text-black w-48"
         onChange={(entry) => entry && onSelect(entry.value)}
