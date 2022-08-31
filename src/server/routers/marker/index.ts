@@ -5,7 +5,7 @@
 import { Marker } from "@prisma/client";
 
 import { createRouter } from "../../createRouter";
-import { prisma } from "lib/prisma";
+import { prisma } from "utils/prisma";
 import { z } from "zod";
 
 export interface ClientMarker extends Marker {
@@ -56,6 +56,9 @@ const mapMarkerType = ({
     image = "gfx/terobjs/mm/tarpit";
     name = "Tarpit";
     type = "shared";
+  }
+  if (name.toLowerCase().includes("thingwall")) {
+    type = "thingwall";
   }
   if (
     image === "gfx/invobjs/small/bush" ||

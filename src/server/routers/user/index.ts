@@ -8,8 +8,8 @@ import { createRouter } from "../../createRouter";
 import bcrypt from "bcrypt";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { TRPCError } from "@trpc/server";
-import { logger } from "lib/logger";
-import { prisma } from "lib/prisma";
+import { logger } from "utils/logger";
+import { prisma } from "utils/prisma";
 const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   name: true,
   role: true,

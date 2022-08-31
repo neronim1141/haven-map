@@ -1,7 +1,7 @@
 import { createRouter } from "next-connect";
-import { prisma } from "lib/prisma";
+import { prisma } from "utils/prisma";
 import type { NextApiRequest } from "next";
-import { logger } from "lib/logger";
+import { logger } from "utils/logger";
 import { NextApiResponseServerIO } from "../../socketio";
 export type PositionUpdateRequest = {
   [id: string]: {

@@ -2,8 +2,8 @@ import { createRouter } from "next-connect";
 
 import type { NextApiRequest, NextApiResponse } from "next";
 
-import { logger } from "lib/logger";
-import { prisma } from "lib/prisma";
+import { logger } from "utils/logger";
+import { prisma } from "utils/prisma";
 import { Grid, Tile } from "@prisma/client";
 import { NextApiResponseServerIO, SocketIO } from "../../socketio";
 import { Coord, processZoom } from "~/server/routers/map/utils";

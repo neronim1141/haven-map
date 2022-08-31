@@ -5,7 +5,7 @@
 import { Marker, Tile } from "@prisma/client";
 
 import { createRouter } from "../../createRouter";
-import { prisma } from "lib/prisma";
+import { prisma } from "utils/prisma";
 import { z } from "zod";
 import { Coord, processZoom } from "./utils";
 

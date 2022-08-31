@@ -1,7 +1,7 @@
 import { createCanvas, createImageData } from "canvas";
 import sharp from "sharp";
 import { Tile } from "@prisma/client";
-import { prisma } from "lib/prisma";
+import { prisma } from "utils/prisma";
 import fs from "fs/promises";
 import path from "path";
 import { SocketIO } from "~/pages/api/socketio";

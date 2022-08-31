@@ -25,7 +25,7 @@ export type OverlayMap = {
   opacity: number;
   setOpacity: (id: number) => void;
 };
-export type MapGrid = {
+export type Toggle = {
   show: boolean;
   setShow: (value: boolean) => void;
 };
@@ -33,7 +33,8 @@ type HavenContextType = {
   coord: MapCoords;
   main: MainMap;
   overlay: OverlayMap;
-  grid: MapGrid;
+  grid: Toggle;
+  markers: Toggle;
   maps: Map[];
   map: { map?: L.Map; setMap: (map: L.Map) => void };
 };
@@ -67,6 +68,7 @@ export const HavenProvider: FunctionComponent<{
     onMerge();
   });
   const [showGrid, setShowGrid] = useState(false);
+  const [showMarkers, setShowMarkers] = useState(true);
 
   const value: HavenContextType = {
     main: {
@@ -87,6 +89,10 @@ export const HavenProvider: FunctionComponent<{
       show: showGrid,
       setShow: setShowGrid,
     },
+    markers: {
+      show: showMarkers,
+      setShow: setShowMarkers,
+    },
     maps,
     map: { map, setMap },
   };
@@ -99,7 +105,8 @@ export const HavenProvider: FunctionComponent<{
 export const useCoords = () => useContextFallback(HavenContext).coord;
 export const useMain = () => useContextFallback(HavenContext).main;
 export const useOverlay = () => useContextFallback(HavenContext).overlay;
-export const useGrid = () => useContextFallback(HavenContext).grid;
+export const useGridToggle = () => useContextFallback(HavenContext).grid;
+export const useMarkersToggle = () => useContextFallback(HavenContext).markers;
 export const useMaps = () => useContextFallback(HavenContext).maps;
 export const useMap = () => useContextFallback(HavenContext).map;
 

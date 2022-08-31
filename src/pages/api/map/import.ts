@@ -1,6 +1,6 @@
 import { createRouter } from "next-connect";
-import { prisma } from "lib/prisma";
-import { logger } from "lib/logger";
+import { prisma } from "utils/prisma";
+import { logger } from "utils/logger";
 import type { NextApiRequest, NextApiResponse } from "next";
 import jszip, { JSZipObject } from "jszip";
 import { File, IncomingForm } from "formidable";

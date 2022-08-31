@@ -7,18 +7,24 @@ import React, {
 } from "react";
 import { trpc } from "utils/trpc";
 import { ClientMarker } from "~/server/routers/marker";
+import { useMarkersToggle } from "./havenContext";
 
 const MarkersContext = createContext<ClientMarker[] | undefined>(undefined);
 
 export const MarkersProvider: FunctionComponent<{
   children?: ReactNode;
 }> = ({ children }) => {
+  const markersToggle = useMarkersToggle();
   const markers = trpc.useQuery(["marker.all", { hidden: false }], {
     refetchInterval: 60 * 1000,
   });
-
+  const markersData = markers.data ?? [];
   return (
-    <MarkersContext.Provider value={markers.data ?? []}>
+    <MarkersContext.Provider
+      value={markersData.filter(
+        (marker) => markersToggle.show || marker.type === "thingwall"
+      )}
+    >
       {children}
     </MarkersContext.Provider>
   );

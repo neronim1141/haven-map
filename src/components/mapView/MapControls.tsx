@@ -2,7 +2,13 @@ import React from "react";
 import { Checkbox, Label, Select, Tooltip } from "flowbite-react";
 import _ from "lodash";
 import { useState } from "react";
-import { MainMap, MapGrid, OverlayMap, useMaps } from "./context/havenContext";
+import {
+  MainMap,
+  Toggle,
+  OverlayMap,
+  useMaps,
+  useMarkersToggle,
+} from "./context/havenContext";
 import SearchSelect from "react-select";
 import { useCharacters } from "./context/charactersContext";
 import L from "leaflet";
@@ -22,9 +28,10 @@ export function MapControls({
 }: {
   main: MainMap;
   overlay: OverlayMap;
-  grid: MapGrid;
+  grid: Toggle;
   map?: L.Map;
 }) {
+  const markersToggle = useMarkersToggle();
   const router = useRouter();
   const session = useSession();
   const [show, setShow] = useState(false);
@@ -66,6 +73,16 @@ export function MapControls({
                 }}
               />
               <Label htmlFor="grids">Show grids</Label>
+            </div>
+            <div className="flex gap-1 ">
+              <Checkbox
+                id="markers"
+                checked={markersToggle.show}
+                onChange={() => {
+                  markersToggle.setShow(!markersToggle.show);
+                }}
+              />
+              <Label htmlFor="markers">Show markers</Label>
             </div>
             <Tooltip content="Main map">
               <div className="w-48">

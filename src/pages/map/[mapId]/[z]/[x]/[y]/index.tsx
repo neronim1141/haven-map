@@ -32,7 +32,6 @@ const Page = () => {
     !isNumeric(router.query.z)
   ) {
     const mapId = maps.data ? maps.data[0].id : 1;
-    console.log(mapId);
 
     router.replace({
       pathname: "/map/[mapId]/[z]/[x]/[y]",

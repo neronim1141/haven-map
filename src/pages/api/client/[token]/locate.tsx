@@ -1,8 +1,8 @@
 import { createRouter } from "next-connect";
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import { prisma } from "lib/prisma";
-import { logger } from "lib/logger";
+import { prisma } from "utils/prisma";
+import { logger } from "utils/logger";
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
 router.get(async (req, res) => {

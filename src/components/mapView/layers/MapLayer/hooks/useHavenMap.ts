@@ -6,8 +6,6 @@ export const useHavenMap = (mapId: number) => {
   const [data, setData] = useState<Tile[]>([]);
   const [incomingData, setIncomingData] = useState<Tile[]>([]);
   useSocketIO("tileUpdate", (mapUpdates) => {
-    console.log(mapUpdates);
-
     if (mapUpdates && mapId === mapUpdates.mapId) {
       setIncomingData((prev) => [...prev, mapUpdates]);
     }
