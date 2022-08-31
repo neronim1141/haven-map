@@ -7,7 +7,7 @@ import { MapControls } from "./MapControls";
 import { LeafletMouseEvent } from "leaflet";
 import {
   useCoords,
-  useGrid,
+  useGridToggle,
   useMain,
   useMap,
   useMaps,
@@ -21,7 +21,7 @@ export default function MapView() {
   const coords = useCoords();
   const main = useMain();
   const overlay = useOverlay();
-  const grid = useGrid();
+  const grid = useGridToggle();
   const maps = useMaps();
   const { map } = useMap();
   const mainMap = maps.find((map) => map.id === main.id);
