@@ -17,12 +17,9 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     // connect to socket server
-    const socket: Socket<ServerToClientEvents> = SocketIOClient(
-      process.env.NEXT_PUBLIC_PREFIX ?? "http://localhost:3000",
-      {
-        path: "/api/socketio",
-      }
-    );
+    const socket: Socket<ServerToClientEvents> = SocketIOClient({
+      path: "/api/socketio",
+    });
     // log socket connection
     socket.on("connect", () => {
       setSocket(socket);
