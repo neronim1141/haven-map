@@ -9,10 +9,18 @@ const router = createRouter<NextApiRequest, NextApiResponse>();
 router.get(async (req, res) => {
   const zip = new jszip();
   const maps = await prisma.map.findMany();
+  zip.file(`maps.json`, JSON.stringify(maps));
+
   for (let map of maps) {
     const grids = await prisma.grid.findMany({
       where: {
         mapId: map.id,
+      },
+      select: {
+        id: true,
+        x: true,
+        y: true,
+        mapId: true,
       },
     });
 
@@ -36,7 +44,6 @@ router.get(async (req, res) => {
     }
     zip.file(`${map.id}/grids.json`, JSON.stringify(grids));
   }
-  zip.file(`maps.json`, JSON.stringify(maps));
   const stream = await zip.generateAsync({ type: "nodebuffer" });
   res.setHeader("Content-Type", "application/zip");
   res.setHeader("Content-Disposition", `attachment; filename="export.zip"`);

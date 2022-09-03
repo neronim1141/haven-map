@@ -10,10 +10,16 @@ export const config = {
     bodyParser: false,
   },
 };
-
+export type ClientTile = {
+  x: number;
+  y: number;
+  z: number;
+  mapId: number;
+  lastUpdated: string;
+};
 export interface ServerToClientEvents {
   characters: (character: CharacterData[]) => void;
-  tileUpdate: (tile: Tile) => void;
+  tileUpdate: (tile: ClientTile) => void;
   merge: (mapMerge: {
     from: number;
     to: number;

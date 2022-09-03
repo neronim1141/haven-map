@@ -1,7 +1,7 @@
 import { createRouter } from "next-connect";
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getMapTile } from "~/server/routers/map/utils";
+import { getMapTileData } from "~/server/routers/map/utils";
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
@@ -10,9 +10,14 @@ router.get(async (req, res) => {
   const [z, x, y] = data.split("_").map(Number);
   res.setHeader("Content-Type", "image/webp");
 
-  const tile = await getMapTile(Number(map), Number(x), Number(y), Number(z));
+  const tile = await getMapTileData(
+    Number(map),
+    Number(x),
+    Number(y),
+    Number(z)
+  );
   let response = tile
-    ? Buffer.from(tile.tileData)
+    ? Buffer.from(tile)
     : "data:image/webp;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
   return res.send(response);
 });

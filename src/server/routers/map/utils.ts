@@ -26,20 +26,32 @@ export class Coord {
   };
 }
 
-export async function getMapTile(
+export async function getMapTileData(
   mapId: number,
   x: number,
   y: number,
   z: number
 ) {
-  return await prisma.tile.findFirst({
-    where: {
-      mapId,
-      x,
-      y,
-      z,
-    },
-  });
+  if (z !== 0)
+    return (
+      await prisma.tile.findFirst({
+        where: {
+          mapId,
+          x,
+          y,
+          z,
+        },
+      })
+    )?.tileData;
+  return (
+    await prisma.grid.findFirst({
+      where: {
+        mapId,
+        x,
+        y,
+      },
+    })
+  )?.tileData;
 }
 
 export async function processZoom(
@@ -69,44 +81,52 @@ export const saveTile = async (
 
   gridId?: string
 ) => {
-  let dir = path.join("public", "grids", mapId.toString(), z.toString());
-  await fs.mkdir(dir, { recursive: true });
-  dir = path.join(dir, `${x}_${y}.webp`);
-  await fs.writeFile(dir, file);
-  let tile = await prisma.tile.findFirst({
-    where: {
-      mapId,
-      x,
-      y,
-      z,
-    },
-  });
-  if (tile) {
-    tile = await prisma.tile.update({
+  if (z !== 0) {
+    let tile = await prisma.tile.findFirst({
       where: {
-        id: tile.id,
-      },
-      data: {
-        tileData: file,
-        lastUpdated: Date.now().toString(),
-      },
-    });
-  } else {
-    tile = await prisma.tile.create({
-      data: {
         mapId,
         x,
         y,
         z,
-        tileData: file,
-        lastUpdated: Date.now().toString(),
-        gridId,
       },
     });
+    if (tile) {
+      tile = await prisma.tile.update({
+        where: {
+          id: tile.id,
+        },
+        data: {
+          tileData: file,
+          lastUpdated: Date.now().toString(),
+        },
+      });
+      socket?.emit("tileUpdate", tile);
+      return true;
+    }
   }
-  socket?.emit("tileUpdate", tile);
-
-  return tile;
+  if (gridId) {
+    let grid = await prisma.grid.update({
+      where: {
+        id: gridId,
+      },
+      data: {
+        mapId,
+        x,
+        y,
+        tileData: file,
+        lastUpdated: Date.now().toString(),
+      },
+    });
+    socket?.emit("tileUpdate", {
+      x: grid.x,
+      y: grid.y,
+      z: 0,
+      mapId: grid.mapId,
+      lastUpdated: grid.lastUpdated ?? Date.now().toString(),
+    });
+    return true;
+  }
+  return false;
 };
 
 export const updateZoomLevel = async (
@@ -125,7 +145,7 @@ export const updateZoomLevel = async (
       const newX = coord.x * 2 + x;
       const newY = coord.y * 2 + y;
 
-      const tile = await getMapTile(mapId, newX, newY, z - 1);
+      const tile = await getMapTileData(mapId, newX, newY, z - 1);
 
       if (!tile) continue;
 
@@ -138,8 +158,8 @@ export const updateZoomLevel = async (
   return await saveTile(mapId, coord.x, coord.y, z, canvas.toBuffer());
 };
 
-async function bufferToImageData(tile: Tile) {
-  const buffer = await sharp(tile.tileData)
+async function bufferToImageData(tile: Buffer) {
+  const buffer = await sharp(tile)
     .raw()
     .resize(50, 50)
     .toBuffer({ resolveWithObject: true });

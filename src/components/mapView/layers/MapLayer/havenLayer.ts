@@ -3,11 +3,12 @@ import { createTileLayerComponent, LayerProps } from "@react-leaflet/core";
 import { ReactNode } from "react";
 import { Tile } from "@prisma/client";
 import { HnHMaxZoom } from "~/server/routers/map/config";
+import { ClientTile } from "~/pages/api/socketio";
 interface HavenProps extends LayerProps {
   url?: string;
   map: number;
   opacity?: number;
-  tileData?: Omit<Tile, "mapId">[];
+  tileData?: Omit<ClientTile, "mapId">[];
 
   children?: ReactNode; // PropsWithChildren is not exported by @react-leaflet/core
 }
@@ -24,7 +25,7 @@ export class Haven extends L.TileLayer {
     this.map = map;
     this.redraw();
   }
-  updateTiles(data: Tile[]) {
+  updateTiles(data: ClientTile[]) {
     for (let { x, y, z, lastUpdated } of data)
       this.refresh(x, y, z, lastUpdated);
   }

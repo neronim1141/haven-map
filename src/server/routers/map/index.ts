@@ -67,6 +67,7 @@ export const mapRouter = createRouter()
               where: { id: grid.id },
               data: {
                 tileData: tile.tileData,
+                lastUpdated: Date.now().toString(),
               },
             });
           else {

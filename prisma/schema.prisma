@@ -18,11 +18,12 @@ model Map {
 }
 
 model Grid {
-  id       String @id
-  mapId    Int
-  tileData Bytes?
-  x        Int
-  y        Int
+  id          String  @id
+  mapId       Int
+  tileData    Bytes? // need to be optional because the tileData is uploaded in the next request
+  lastUpdated String?
+  x           Int
+  y           Int
 }
 
 model Tile {
