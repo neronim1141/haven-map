@@ -30,26 +30,30 @@ export async function getMapTileData(
   y: number,
   z: number
 ) {
-  if (z !== 0)
-    return (
-      await prisma.tile.findFirst({
-        where: {
-          mapId,
-          x,
-          y,
-          z,
-        },
-      })
-    )?.tileData;
-  return (
-    await prisma.grid.findFirst({
+  let tileData = undefined;
+  if (z !== 0) {
+    const tile = await prisma.tile.findFirst({
+      where: {
+        mapId,
+        x,
+        y,
+        z,
+      },
+    });
+    tileData = tile?.tileData;
+  }
+  if (z === 0) {
+    const grid = await prisma.grid.findFirst({
       where: {
         mapId,
         x,
         y,
       },
-    })
-  )?.tileData;
+    });
+    logger.log(`${grid?.id} data: ${!!grid?.tileData}`);
+    tileData = grid?.tileData;
+  }
+  return tileData;
 }
 
 export async function processZoom(
