@@ -88,6 +88,8 @@ export const mapRouter = createRouter()
         });
 
         if (tiles.length === 0) {
+          logger.log("deleted Map: " + mapId);
+
           await prisma.map.delete({
             where: { id: mapId },
           });

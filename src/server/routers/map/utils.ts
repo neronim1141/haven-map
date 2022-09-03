@@ -1,9 +1,7 @@
 import { createCanvas, createImageData } from "canvas";
 import sharp from "sharp";
-import { Tile } from "@prisma/client";
 import { prisma } from "utils/prisma";
-import fs from "fs/promises";
-import path from "path";
+import { logger } from "utils/logger";
 import { SocketIO } from "~/pages/api/socketio";
 import { HnHMaxZoom, HnHMinZoom } from "./config";
 
@@ -154,7 +152,10 @@ export const updateZoomLevel = async (
     }
   }
 
-  if (!anyTile) return;
+  if (!anyTile) {
+    logger.log("no tile found");
+    return;
+  }
   return await saveTile(mapId, coord.x, coord.y, z, canvas.toBuffer());
 };
 
