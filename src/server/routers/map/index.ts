@@ -57,7 +57,6 @@ export const mapRouter = createRouter()
     async resolve({ ctx }) {
       const maps = await prisma.map.findMany();
       for (let { id: mapId } of maps) {
-        console.log("rebuild zoom for: " + mapId);
         let needProcess = new Map<string, Coord>([]);
         for (let grid of await prisma.grid.findMany({
           where: { mapId: mapId },

@@ -63,7 +63,6 @@ export async function processZoom(
   for (let z = HnHMinZoom; z < HnHMaxZoom; z++) {
     const process = new Map(needProcess);
     needProcess.clear();
-    if (mapId === 1) console.log(`data for zoom ${z}`);
 
     for (let p of process.values()) {
       const tile = await updateZoomLevel(mapId, p.x, p.y, z);
@@ -100,6 +99,19 @@ export const saveTile = async (
           id: tile.id,
         },
         data: {
+          tileData: file,
+          lastUpdated: Date.now().toString(),
+        },
+      });
+      socket?.emit("tileUpdate", tile);
+      return true;
+    } else {
+      tile = await prisma.tile.create({
+        data: {
+          mapId,
+          x,
+          y,
+          z,
           tileData: file,
           lastUpdated: Date.now().toString(),
         },
@@ -159,7 +171,6 @@ export const updateZoomLevel = async (
   }
 
   if (!anyTile) {
-    console.log("no tile found in MapId: " + mapId);
     return;
   }
   return await saveTile(mapId, coord.x, coord.y, z, canvas.toBuffer());
