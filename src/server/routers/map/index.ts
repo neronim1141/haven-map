@@ -53,35 +53,41 @@ export const mapRouter = createRouter()
       await processZoom(needProcess, mapId);
     },
   })
-  .mutation("fixData", {
-    async resolve() {
-      for (let grid of await prisma.grid.findMany()) {
-        const tile = await prisma.tile.findFirst({
+  .mutation("rebuildAllZooms", {
+    async resolve({ ctx }) {
+      const maps = await prisma.map.findMany();
+      for (let { id: mapId } of maps) {
+        let needProcess = new Map<string, Coord>([]);
+        for (let grid of await prisma.grid.findMany({
+          where: { mapId: mapId },
+        })) {
+          const coord = new Coord(grid.x, grid.y).parent();
+
+          needProcess.set(coord.toString(), coord);
+        }
+        await prisma.tile.deleteMany({
           where: {
-            gridId: grid.id,
+            mapId,
           },
         });
-        if (tile) {
-          if (tile.tileData)
-            await prisma.grid.update({
-              where: { id: grid.id },
-              data: {
-                tileData: tile.tileData,
-                lastUpdated: Date.now().toString(),
-              },
-            });
-          else {
-            await prisma.tile.delete({
-              where: {
-                id: tile.id,
-              },
-            });
-          }
-        } else {
-          await prisma.grid.delete({
-            where: {
-              id: grid.id,
-            },
+
+        await processZoom(needProcess, mapId);
+      }
+    },
+  })
+  .mutation("fixData", {
+    async resolve() {
+      const maps = await prisma.map.findMany();
+      for (let { id: mapId } of maps) {
+        const tiles = await prisma.grid.findMany({
+          where: {
+            OR: [{ mapId }, { tileData: null }],
+          },
+        });
+
+        if (tiles.length === 0) {
+          await prisma.map.delete({
+            where: { id: mapId },
           });
         }
       }

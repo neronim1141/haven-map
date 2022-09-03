@@ -40,7 +40,8 @@ const Page = () => {
   const onSubmit = (data: any) => {
     alert("TBD");
   };
-  const { mutateAsync, isLoading } = trpc.useMutation("map.fixData");
+  const fix = trpc.useMutation("map.fixData");
+  const rebuild = trpc.useMutation("map.rebuildAllZooms");
   const {
     isLoading: fileLoading,
     downloadProgress,
@@ -52,8 +53,12 @@ const Page = () => {
         download maps data {fileLoading && ":" + downloadProgress + "%"}
       </button>
       <br />
-      <button onClick={() => mutateAsync()}>
-        Fix grid data {isLoading ? "O" : ""}
+      <button onClick={() => fix.mutateAsync()}>
+        Fix grid data {fix.isLoading ? "O" : ""}
+      </button>
+      <br />
+      <button onClick={() => rebuild.mutateAsync()}>
+        rebuild All zooms {rebuild.isLoading ? "O" : ""}
       </button>
     </div>
     // <form onSubmit={handleSubmit(onSubmit)}>
