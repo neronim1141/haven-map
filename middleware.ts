@@ -1,7 +1,7 @@
 import { withAuth } from "next-auth/middleware";
 import { NextRequest, NextResponse } from "next/server";
-import { canAccess } from "features/auth/canAccess";
 import { Role } from "@prisma/client";
+import { canAccess } from "~/server/routers/user/utils";
 
 export default withAuth(
   (req: NextRequest) => {

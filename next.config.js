@@ -1,3 +1,8 @@
-const withGraphql = require("next-graphql-loader");
+/**
+ * @type {import('next').NextConfig}
+ */
+const nextConfig = {
+  /* config options here */
+};
 
-module.exports = withGraphql();
+module.exports = nextConfig;

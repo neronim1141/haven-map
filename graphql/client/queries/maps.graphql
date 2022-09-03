@@ -1,7 +1,0 @@
-query Maps($hidden: Boolean = false) {
-  maps(hidden: $hidden) {
-    id
-    name
-    hidden
-  }
-}
