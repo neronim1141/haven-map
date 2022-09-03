@@ -37,14 +37,12 @@ router.get(async (req, res) => {
     zip.file(`${map.id}/grids.json`, JSON.stringify(grids));
   }
   zip.file(`maps.json`, JSON.stringify(maps));
-
+  const stream = await zip.generateAsync({ type: "nodebuffer" });
   res.setHeader("Content-Type", "application/zip");
-  res.setHeader("Content-Disposition", `attachment; filename="export.zip`);
-  if (jszip.support.uint8array) {
-    zip.generateNodeStream({ type: "nodebuffer", streamFiles: true }).pipe(res);
-    return;
-  }
-  return res.end();
+  res.setHeader("Content-Disposition", `attachment; filename="export.zip"`);
+  res.setHeader("Content-Length", stream.byteLength);
+
+  return res.end(stream);
 });
 export const config = {
   api: {

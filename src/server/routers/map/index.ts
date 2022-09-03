@@ -53,6 +53,39 @@ export const mapRouter = createRouter()
       await processZoom(needProcess, mapId);
     },
   })
+  .mutation("fixData", {
+    async resolve() {
+      for (let grid of await prisma.grid.findMany()) {
+        const tile = await prisma.tile.findFirst({
+          where: {
+            gridId: grid.id,
+          },
+        });
+        if (tile) {
+          if (tile.tileData)
+            await prisma.grid.update({
+              where: { id: grid.id },
+              data: {
+                tileData: tile.tileData,
+              },
+            });
+          else {
+            await prisma.tile.delete({
+              where: {
+                id: tile.id,
+              },
+            });
+          }
+        } else {
+          await prisma.grid.delete({
+            where: {
+              id: grid.id,
+            },
+          });
+        }
+      }
+    },
+  })
   .mutation("shiftZooms", {
     input: z.object({
       mapId: z.number(),

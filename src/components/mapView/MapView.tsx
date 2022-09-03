@@ -21,7 +21,7 @@ export default function MapView() {
   const coords = useCoords();
   const main = useMain();
   const overlay = useOverlay();
-  const grid = useGridToggle();
+  const [showGrid] = useGridToggle();
   const maps = useMaps();
   const { map } = useMap();
   const mainMap = maps.find((map) => map.id === main.id);
@@ -44,10 +44,10 @@ export default function MapView() {
               <MapLayer mapId={overlay.id} opacity={overlay.opacity} />
             )}
 
-            {grid.show && <GridLayer />}
+            {showGrid && <GridLayer />}
           </MapContainer>
           <div className="leaflet-top leaflet-left ">
-            <MapControls main={main} overlay={overlay} grid={grid} map={map} />
+            <MapControls main={main} overlay={overlay} map={map} />
           </div>
         </div>
       </MarkersProvider>

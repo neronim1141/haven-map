@@ -18,10 +18,11 @@ model Map {
 }
 
 model Grid {
-  id    String @id
-  mapId Int
-  x     Int
-  y     Int
+  id       String @id
+  mapId    Int
+  tileData Bytes?
+  x        Int
+  y        Int
 }
 
 model Tile {

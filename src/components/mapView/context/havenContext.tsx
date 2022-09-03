@@ -33,8 +33,8 @@ type HavenContextType = {
   coord: MapCoords;
   main: MainMap;
   overlay: OverlayMap;
-  grid: Toggle;
-  markers: Toggle;
+  grid: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
+  markers: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
   maps: Map[];
   map: { map?: L.Map; setMap: (map: L.Map) => void };
 };
@@ -67,8 +67,8 @@ export const HavenProvider: FunctionComponent<{
     }
     onMerge();
   });
-  const [showGrid, setShowGrid] = useState(false);
-  const [showMarkers, setShowMarkers] = useState(true);
+  const showGridState = useState(false);
+  const showMarkersState = useState(true);
 
   const value: HavenContextType = {
     main: {
@@ -85,14 +85,8 @@ export const HavenProvider: FunctionComponent<{
       opacity: overlayOpacity,
       setOpacity: setOverlayOpacity,
     },
-    grid: {
-      show: showGrid,
-      setShow: setShowGrid,
-    },
-    markers: {
-      show: showMarkers,
-      setShow: setShowMarkers,
-    },
+    grid: showGridState,
+    markers: showMarkersState,
     maps,
     map: { map, setMap },
   };

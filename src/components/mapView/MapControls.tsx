@@ -8,6 +8,7 @@ import {
   OverlayMap,
   useMaps,
   useMarkersToggle,
+  useGridToggle,
 } from "./context/havenContext";
 import SearchSelect from "react-select";
 import { useCharacters } from "./context/charactersContext";
@@ -23,15 +24,15 @@ type MarkerShortType = { x: number; y: number; map: number };
 export function MapControls({
   main,
   overlay,
-  grid,
   map,
 }: {
   main: MainMap;
   overlay: OverlayMap;
-  grid: Toggle;
   map?: L.Map;
 }) {
-  const markersToggle = useMarkersToggle();
+  const [showMarkers, setShowMarkers] = useMarkersToggle();
+  const [showGrid, setShowGrid] = useGridToggle();
+
   const router = useRouter();
   const session = useSession();
   const [show, setShow] = useState(false);
@@ -67,9 +68,9 @@ export function MapControls({
             <div className="flex gap-1 ">
               <Checkbox
                 id="grids"
-                checked={grid.show}
+                checked={showGrid}
                 onChange={() => {
-                  grid.setShow(!grid.show);
+                  setShowGrid(!showGrid);
                 }}
               />
               <Label htmlFor="grids">Show grids</Label>
@@ -77,9 +78,9 @@ export function MapControls({
             <div className="flex gap-1 ">
               <Checkbox
                 id="markers"
-                checked={markersToggle.show}
+                checked={showMarkers}
                 onChange={() => {
-                  markersToggle.setShow(!markersToggle.show);
+                  setShowMarkers(!showMarkers);
                 }}
               />
               <Label htmlFor="markers">Show markers</Label>

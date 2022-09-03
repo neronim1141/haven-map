@@ -14,7 +14,7 @@ const MarkersContext = createContext<ClientMarker[] | undefined>(undefined);
 export const MarkersProvider: FunctionComponent<{
   children?: ReactNode;
 }> = ({ children }) => {
-  const markersToggle = useMarkersToggle();
+  const [show] = useMarkersToggle();
   const markers = trpc.useQuery(["marker.all", { hidden: false }], {
     refetchInterval: 60 * 1000,
   });
@@ -22,7 +22,7 @@ export const MarkersProvider: FunctionComponent<{
   return (
     <MarkersContext.Provider
       value={markersData.filter(
-        (marker) => markersToggle.show || marker.type === "thingwall"
+        (marker) => show || marker.type === "thingwall"
       )}
     >
       {children}
