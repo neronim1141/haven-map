@@ -1,6 +1,5 @@
 import React from "react";
 import { Checkbox, Label, Select, Tooltip } from "flowbite-react";
-import _ from "lodash";
 import { useState } from "react";
 import {
   MainMap,

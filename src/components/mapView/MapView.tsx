@@ -1,7 +1,6 @@
 import React from "react";
 import { MapLayer } from "./layers/MapLayer";
 import { GridLayer } from "./layers/GridLayer";
-import _ from "lodash";
 import { MapContainer } from "./MapContainer";
 import { MapControls } from "./MapControls";
 import { LeafletMouseEvent } from "leaflet";

@@ -8,7 +8,7 @@ import { createRouter } from "../../createRouter";
 import { prisma } from "utils/prisma";
 import { z } from "zod";
 import { Coord, processZoom } from "./utils";
-
+import { logger } from "utils/logger";
 export const mapRouter = createRouter()
   .query("all", {
     async resolve({ ctx }) {
@@ -57,6 +57,7 @@ export const mapRouter = createRouter()
     async resolve({ ctx }) {
       const maps = await prisma.map.findMany();
       for (let { id: mapId } of maps) {
+        logger.log("rebuild zoom for: " + mapId);
         let needProcess = new Map<string, Coord>([]);
         for (let grid of await prisma.grid.findMany({
           where: { mapId: mapId },
@@ -73,6 +74,7 @@ export const mapRouter = createRouter()
 
         await processZoom(needProcess, mapId);
       }
+      return true;
     },
   })
   .mutation("fixData", {
