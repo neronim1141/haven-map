@@ -63,7 +63,7 @@ export async function processZoom(
   for (let z = HnHMinZoom; z < HnHMaxZoom; z++) {
     const process = new Map(needProcess);
     needProcess.clear();
-    if (mapId === 1) logger.log(`data for zoom ${z}`);
+    if (mapId === 1) console.log(`data for zoom ${z}`);
 
     for (let p of process.values()) {
       const tile = await updateZoomLevel(mapId, p.x, p.y, z);
@@ -159,7 +159,7 @@ export const updateZoomLevel = async (
   }
 
   if (!anyTile) {
-    logger.log("no tile found in MapId: " + mapId);
+    console.log("no tile found in MapId: " + mapId);
     return;
   }
   return await saveTile(mapId, coord.x, coord.y, z, canvas.toBuffer());
