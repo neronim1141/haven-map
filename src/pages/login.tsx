@@ -8,16 +8,17 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import * as yup from "yup";
 import Head from "next/head";
 
-const schema = yup.object({
-  login: yup.string().required(),
-  password: yup.string().required().min(3),
+const schema = z.object({
+  login: z.string(),
+  password: z.string().min(3),
 });
-type LoginFormData = yup.InferType<typeof schema>;
+
+type LoginFormData = z.infer<typeof schema>;
 
 const Login = () => {
   const router = useRouter();
@@ -27,7 +28,7 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormData>({
-    resolver: yupResolver(schema),
+    resolver: zodResolver(schema),
   });
   const onSubmit = async (values: any) => {
     const res = await signIn("credentials", {

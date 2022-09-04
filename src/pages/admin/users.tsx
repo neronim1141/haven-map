@@ -1,18 +1,15 @@
 import React, { useState } from "react";
 
-import { Role } from "@prisma/client";
+import { Role, User } from "@prisma/client";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Button, Select } from "flowbite-react";
 import { Table } from "src/components/table";
 import { useMemo } from "react";
 import { DeleteUserModal } from "../../components/modals/deleteUserModal";
 import { trpc } from "utils/trpc";
-interface User {
-  name: string;
-  role: string;
-  token: string;
-}
-const columnHelper = createColumnHelper<User>();
+
+const columnHelper =
+  createColumnHelper<Pick<User, "name" | "role" | "token">>();
 
 const Page = () => {
   const users = trpc.useQuery(["user.all"]);
@@ -110,13 +107,15 @@ const Page = () => {
           />
         </div>
       </div>
-      <DeleteUserModal
-        data={userToDelete}
-        onClose={() => {
-          setUserToDelete(undefined);
-          users.refetch();
-        }}
-      />
+      {userToDelete && (
+        <DeleteUserModal
+          data={userToDelete}
+          onClose={() => {
+            setUserToDelete(undefined);
+            users.refetch();
+          }}
+        />
+      )}
     </>
   );
 };

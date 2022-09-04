@@ -8,22 +8,23 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import * as yup from "yup";
 import Head from "next/head";
 import { trpc } from "utils/trpc";
 
-const schema = yup.object({
-  login: yup.string().required(),
-  password: yup.string().required().min(3),
-  repeatPassword: yup
-    .string()
-    .required()
-    .min(3)
-    .oneOf([yup.ref("password"), null], "Passwords must match"),
-});
-type RegisterFormData = yup.InferType<typeof schema>;
+const schema = z
+  .object({
+    login: z.string(),
+    password: z.string().min(3),
+    repeatPassword: z.string().min(3),
+  })
+  .refine((data) => data.password === data.repeatPassword, {
+    message: "Passwords don't match",
+    path: ["repeatPassword"],
+  });
+type RegisterFormData = z.infer<typeof schema>;
 
 const Register = () => {
   const router = useRouter();
@@ -34,7 +35,7 @@ const Register = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterFormData>({
-    resolver: yupResolver(schema),
+    resolver: zodResolver(schema),
   });
   const onSubmit = async (values: any) => {
     const user = await createUser(

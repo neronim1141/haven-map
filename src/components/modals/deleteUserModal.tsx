@@ -3,12 +3,11 @@ import React from "react";
 import { trpc } from "utils/trpc";
 
 interface ModalProps<T extends any = any> {
-  data?: T;
+  data: T;
   onClose: () => void;
 }
 export const DeleteUserModal = ({ data, onClose }: ModalProps<string>) => {
   const { mutateAsync: deleteUser } = trpc.useMutation("user.delete");
-  if (!data) return null;
   const onApprove = async () => {
     deleteUser({ name: data }).then(() => {
       onClose();

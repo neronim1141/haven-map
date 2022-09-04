@@ -23,10 +23,12 @@ export const Header = () => {
           </NavLink>
         </div>
         <div className="flex gap-1">
+          <NavLink href="/admin/maps" requiredRole={Role.ADMIN}>
+            Maps
+          </NavLink>
           <NavLink href="/admin/users" requiredRole={Role.ADMIN}>
             Users
           </NavLink>
-
           <div className="flex gap-1 ml-12">
             {data ? (
               <>

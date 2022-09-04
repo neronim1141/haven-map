@@ -18,15 +18,18 @@ export const mapRouter = createRouter()
   .mutation("update", {
     input: z.object({
       mapId: z.number(),
+      data: z.object({
+        hidden: z.boolean().optional(),
+        priority: z.boolean().optional(),
+        name: z.string().optional(),
+      }),
     }),
-    async resolve({ ctx, input: { mapId } }) {
+    async resolve({ ctx, input: { mapId, data } }) {
       await prisma.map.update({
         where: {
           id: mapId,
         },
-        data: {
-          hidden: true,
-        },
+        data,
       });
     },
   })
@@ -96,6 +99,19 @@ export const mapRouter = createRouter()
       }
     },
   })
+  .mutation("wipeTile", {
+    input: z.object({
+      mapId: z.number(),
+      x: z.number(),
+      y: z.number(),
+    }),
+    async resolve({ input: { mapId, x, y } }) {
+      const grid = await prisma.grid.findFirst({ where: { mapId, x, y } });
+      if (!grid) return;
+      prisma.marker.deleteMany({ where: { gridId: grid.id } });
+      prisma.grid.delete({ where: { id: grid.id } });
+    },
+  })
   .mutation("shiftZooms", {
     input: z.object({
       mapId: z.number(),
@@ -120,32 +136,20 @@ export const mapRouter = createRouter()
             y: { increment: shiftBy.y },
           },
         });
-        tiles.push(
-          await prisma.tile.update({
-            where: { gridId: grid.id },
-            data: {
-              x: { increment: shiftBy.x },
-              y: { increment: shiftBy.y },
-            },
-          })
-        );
+        await prisma.tile.deleteMany({
+          where: {
+            mapId,
+          },
+        });
+        let needProcess = new Map<string, Coord>([]);
+        for (let tile of tiles) {
+          const coord = new Coord(tile.x, tile.y).parent();
+
+          needProcess.set(coord.toString(), coord);
+        }
+
+        await processZoom(needProcess, mapId);
       }
-
-      await prisma.tile.deleteMany({
-        where: {
-          gridId: null,
-
-          mapId,
-        },
-      });
-      let needProcess = new Map<string, Coord>([]);
-      for (let tile of tiles) {
-        const coord = new Coord(tile.x, tile.y).parent();
-
-        needProcess.set(coord.toString(), coord);
-      }
-
-      await processZoom(needProcess, mapId);
     },
   })
   .mutation("delete", {

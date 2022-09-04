@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { MapLayer } from "./layers/MapLayer";
 import { GridLayer } from "./layers/GridLayer";
 import { MapContainer } from "./MapContainer";
@@ -15,6 +15,8 @@ import {
 import { CharactersProvider } from "./context/charactersContext";
 import Head from "next/head";
 import { MarkersProvider } from "./context/markersContext";
+import { HnHMaxZoom, TileSize } from "~/server/routers/map/config";
+import { EditGridModal } from "../modals/shiftMapModal";
 
 export default function MapView() {
   const coords = useCoords();
@@ -24,11 +26,25 @@ export default function MapView() {
   const maps = useMaps();
   const { map } = useMap();
   const mainMap = maps.find((map) => map.id === main.id);
-  // const [mutation] = useSetCenterCoordMutation();
-  // const [contextMenu, setContextMenu] = useState<{ x: number; y: number }>();
+  const [shiftMapModalData, setShiftMapModalData] = useState<{
+    mapId: number;
+    name?: string;
+    x: number;
+    y: number;
+  }>();
   const onContextMenu = (e: LeafletMouseEvent) => {
-    // setContextMenu({ x: e.containerPoint.x, y: e.containerPoint.y });
-    console.log(e);
+    if (map) {
+      let point = map.project(e.latlng, HnHMaxZoom);
+      let coords = {
+        x: Math.floor(point.x / TileSize),
+        y: Math.floor(point.y / TileSize),
+      };
+      setShiftMapModalData({
+        mapId: main.id,
+        name: mainMap?.name ?? undefined,
+        ...coords,
+      });
+    }
   };
   return (
     <CharactersProvider>
@@ -49,6 +65,15 @@ export default function MapView() {
             <MapControls main={main} overlay={overlay} map={map} />
           </div>
         </div>
+        {shiftMapModalData && (
+          <EditGridModal
+            data={shiftMapModalData}
+            onClose={() => {
+              setShiftMapModalData(undefined);
+              window.location.reload();
+            }}
+          />
+        )}
       </MarkersProvider>
     </CharactersProvider>
   );
