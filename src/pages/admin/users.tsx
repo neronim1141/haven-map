@@ -2,14 +2,15 @@ import React, { useState } from "react";
 
 import { Role, User } from "@prisma/client";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Button, Select } from "flowbite-react";
 import { Table } from "src/components/table";
 import { useMemo } from "react";
 import { DeleteUserModal } from "../../components/modals/deleteUserModal";
 import { trpc } from "utils/trpc";
+import { ActionsMenu } from "~/components/actionMenu";
+import { HiTrash, HiPencil } from "react-icons/hi";
+import { Select } from "~/components/controls/select";
 
-const columnHelper =
-  createColumnHelper<Pick<User, "name" | "role" | "token">>();
+const columnHelper = createColumnHelper<Pick<User, "name" | "role">>();
 
 const Page = () => {
   const users = trpc.useQuery(["user.all"]);
@@ -24,69 +25,62 @@ const Page = () => {
         cell: (info) => info.getValue(),
         sortDescFirst: true,
       }),
-      columnHelper.accessor("token", {
-        cell: (info) => info.getValue(),
-      }),
+
       columnHelper.accessor("role", {
         cell: (info) => (
-          <div className="w-36">
-            <Select
-              sizing="sm"
-              value={info.getValue()}
-              onChange={async (e) => {
-                const value = e.target.value;
+          <Select
+            disabled={info.row.original.name === "admin"}
+            value={{
+              value: info.getValue(),
+              label: info.getValue(),
+            }}
+            onChange={async (value) => {
+              if (value !== info.row.original.role) {
                 const name = await updateUser({
                   name: info.row.original.name,
                   role: value as Role,
                 });
+
                 if (name) {
                   users.refetch();
                 }
-              }}
-            >
-              {Object.keys(Role).map((role) => (
-                <option key={role} role={role}>
-                  {role}
-                </option>
-              ))}
-            </Select>
-          </div>
+              }
+            }}
+            className="w-32"
+            options={Object.keys(Role).map((role) => ({
+              value: role,
+              label: role,
+            }))}
+          />
         ),
       }),
       columnHelper.display({
         id: "actions",
-        header: "actions",
-        cell: ({ row }) =>
-          row.original.name !== "admin" ? (
-            <div className="flex gap-2 items-stretch">
-              <Button
-                size="xs"
-                onClick={() => {
+        cell: ({ row }) => (
+          <ActionsMenu
+            actions={[
+              {
+                name: "Change Password",
+                onClick: () => {
                   alert("TBD");
-                }}
-              >
-                Change Password
-              </Button>
-              <Button
-                size="xs"
-                color="warning"
-                onClick={() => {
-                  setUserToDelete(row.original.name);
-                }}
-              >
-                Delete
-              </Button>
-            </div>
-          ) : (
-            <Button
-              size="xs"
-              onClick={() => {
-                alert("TBD");
-              }}
-            >
-              Change Password
-            </Button>
-          ),
+                },
+                icon: HiPencil,
+              },
+              ...(row.original.name !== "admin"
+                ? [
+                    {
+                      name: "Delete",
+                      onClick: () => {
+                        setUserToDelete(row.original.name);
+                      },
+                      variant: "warning" as const,
+                      icon: HiTrash,
+                    },
+                  ]
+                : []),
+            ]}
+          />
+        ),
       }),
     ],
     [updateUser, users]
@@ -96,9 +90,9 @@ const Page = () => {
   }
   return (
     <>
-      <div className="w-full h-full flex justify-center ">
-        <div className=" p-2 overflow-x-auto">
-          <h1 className="mx-auto text-center font-bold text-2xl">Users</h1>
+      <div className="w-full h-full flex">
+        <div className="p-2 mx-auto">
+          <h1 className="text-center font-bold text-2xl">Users</h1>
           <Table
             columns={columns}
             data={users.data}

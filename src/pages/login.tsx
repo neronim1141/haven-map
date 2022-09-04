@@ -22,7 +22,7 @@ type LoginFormData = z.infer<typeof schema>;
 
 const Login = () => {
   const router = useRouter();
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string>();
   const {
     register,
     handleSubmit,
@@ -36,11 +36,12 @@ const Login = () => {
       login: values.login,
       password: values.password,
     });
-    if (res) {
-      setError(true);
+    if (res?.error) {
+      setError(res.error);
+      return;
     }
     if (res && res.url) {
-      setError(false);
+      setError(undefined);
       router.push(`/profile/${values.login.toLowerCase()}`);
     }
   };
@@ -71,7 +72,7 @@ const Login = () => {
           />
           <SubmitButton>Log In</SubmitButton>
 
-          {error && <ErrorMessage>Login and password Mismatch</ErrorMessage>}
+          {error && <ErrorMessage>{error}</ErrorMessage>}
           <p className="text-center text-lg">
             No account?{" "}
             <Link href="/register">

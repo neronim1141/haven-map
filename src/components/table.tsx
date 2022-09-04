@@ -7,7 +7,7 @@ import {
   SortingState,
   getSortedRowModel,
 } from "@tanstack/react-table";
-import { Table as FlowTable } from "flowbite-react";
+import { HiArrowSmUp, HiArrowSmDown } from "react-icons/hi";
 
 interface TableProps<T extends object = {}> {
   columns: ColumnDef<T, any>[];
@@ -33,52 +33,56 @@ export const Table = <T extends object>({
     getSortedRowModel: getSortedRowModel(),
     getCoreRowModel: getCoreRowModel(),
   });
-
   return (
-    <div className={`overflow-auto ${className}`}>
-      <FlowTable>
+    <div className={`  ${className} `}>
+      <table>
         {table.getHeaderGroups().map((headerGroup) => (
-          <FlowTable.Head key={headerGroup.id}>
-            {headerGroup.headers.map((header) => (
-              <FlowTable.HeadCell key={header.id} className="capitalize">
-                {header.isPlaceholder ? null : (
-                  <div
-                    {...{
-                      className: header.column.getCanSort()
-                        ? "cursor-pointer select-none"
-                        : "",
-                      onClick: header.column.getToggleSortingHandler(),
-                    }}
-                  >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
-                    {{
-                      asc: " ▲",
-                      desc: " ▼",
-                    }[header.column.getIsSorted() as string] ?? null}
-                  </div>
-                )}
-              </FlowTable.HeadCell>
-            ))}
-          </FlowTable.Head>
+          <thead key={headerGroup.id}>
+            <tr>
+              {headerGroup.headers.map((header) => (
+                <th
+                  key={header.id}
+                  className="capitalize p-1 bg-neutral-700  first:rounded-tl last:rounded-tr"
+                >
+                  {header.isPlaceholder ? null : (
+                    <div
+                      {...{
+                        className: header.column.getCanSort()
+                          ? "cursor-pointer select-none flex items-center"
+                          : "",
+                        onClick: header.column.getToggleSortingHandler(),
+                      }}
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                      {{
+                        asc: <HiArrowSmUp className="w-5 h-5" />,
+                        desc: <HiArrowSmDown className="w-5 h-5" />,
+                      }[header.column.getIsSorted() as string] ?? null}
+                    </div>
+                  )}
+                </th>
+              ))}
+            </tr>
+          </thead>
         ))}
-        <FlowTable.Body className="divide-y">
+        <tbody className="divide-y rounded-b n">
           {table.getRowModel().rows.map((row) => (
-            <FlowTable.Row
+            <tr
               key={row.id}
-              className="bg-white dark:border-gray-700 dark:bg-gray-800 "
+              className="bg-white dark:border-neutral-700 dark:bg-neutral-800"
             >
               {row.getVisibleCells().map((cell) => (
-                <FlowTable.Cell key={cell.id}>
+                <td key={cell.id} className="p-2 px-4">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </FlowTable.Cell>
+                </td>
               ))}
-            </FlowTable.Row>
+            </tr>
           ))}
-        </FlowTable.Body>
-      </FlowTable>
+        </tbody>
+      </table>
     </div>
   );
 };

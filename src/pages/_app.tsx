@@ -17,9 +17,9 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         <title>Hexindustries</title>
       </Head>
       <SessionProvider session={session}>
-        <div className="w-full h-screen flex flex-col  bg-gray-900 text-white">
+        <div className="w-full min-h-screen flex flex-col  bg-neutral-900 text-white ">
           <Header />
-          <main className="flex-grow flex overflow-y-auto">
+          <main className="flex-grow flex overflow-y-auto  ">
             <Component {...pageProps} />
           </main>
         </div>

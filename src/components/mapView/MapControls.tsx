@@ -1,23 +1,24 @@
 import React from "react";
-import { Checkbox, Label, Select, Tooltip } from "flowbite-react";
 import { useState } from "react";
 import {
   MainMap,
-  Toggle,
   OverlayMap,
   useMaps,
   useMarkersToggle,
   useGridToggle,
 } from "./context/havenContext";
-import SearchSelect from "react-select";
 import { useCharacters } from "./context/charactersContext";
 import L from "leaflet";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { Role } from "@prisma/client";
-import { useMarkers } from "./context/markersContext";
 import { canAccess } from "~/server/routers/user/utils";
 import { HnHMaxZoom, TileSize } from "~/server/routers/map/config";
+import { Select } from "../controls/select";
+import { HiAdjustments, HiOutlineX } from "react-icons/hi";
+import { Toggle } from "../controls/switch";
+import { SearchSelect } from "../controls/searchSelect";
+import { useMarkers } from "./context/markersContext";
 type MarkerShortType = { x: number; y: number; map: number };
 
 export function MapControls({
@@ -57,107 +58,105 @@ export function MapControls({
     <div className="leaflet-control shadow-none leaflet-bar p-2 flex flex-col gap-2">
       <button
         onClick={() => setShow((prev) => !prev)}
-        className="text-white  bg-gray-700 pb-1  rounded-lg w-7 border border-gray-600"
+        className="text-white  bg-neutral-700 rounded-lg p-1 w-8 border border-neutral-600 flex items-center justify-center"
       >
-        {show ? "▲" : "▼"}
+        {show ? (
+          <HiOutlineX className="w-5 h-5" />
+        ) : (
+          <HiAdjustments className="w-5 h-5" />
+        )}
       </button>
       {show && (
-        <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-gray-700 dark:bg-gray-800 flex-col">
+        <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-neutral-700 dark:bg-neutral-800 flex-col">
           <div className="p-2 flex flex-col gap-2">
-            <div className="flex gap-1 ">
-              <Checkbox
-                id="grids"
-                checked={showGrid}
-                onChange={() => {
-                  setShowGrid(!showGrid);
-                }}
+            <div className="flex gap-1">
+              <Toggle
+                label="show grid"
+                value={showGrid}
+                onToggle={() => setShowGrid((prev) => !prev)}
               />
-              <Label htmlFor="grids">Show grids</Label>
             </div>
-            <div className="flex gap-1 ">
-              <Checkbox
-                id="markers"
-                checked={showMarkers}
-                onChange={() => {
-                  setShowMarkers(!showMarkers);
-                }}
+            <div className="flex gap-1">
+              <Toggle
+                label="show markers"
+                value={showMarkers}
+                onToggle={() => setShowMarkers((prev) => !prev)}
               />
-              <Label htmlFor="markers">Show markers</Label>
             </div>
-            <Tooltip content="Main map">
-              <div className="w-48">
-                <Select
-                  sizing="sm"
-                  value={main.id}
-                  onChange={(e) => {
-                    overlay.setId(0);
-                    router.replace({
-                      pathname: "/map/[mapId]/[z]/[x]/[y]",
-                      query: {
-                        mapId: Number(e.target.value),
-                        x: router.query.x,
-                        y: router.query.y,
-                        z: router.query.z,
-                      },
-                    });
-                  }}
-                >
-                  {maps
-                    .filter((map) => !map.hidden)
+            <div className="w-48">
+              <Select
+                value={{
+                  value: main.id,
+                  label:
+                    maps.find((map) => map.id === main.id)?.name ?? main.id,
+                }}
+                onChange={(value) => {
+                  overlay.setId(0);
+                  router.replace({
+                    pathname: "/map/[mapId]/[z]/[x]/[y]",
+                    query: {
+                      mapId: value,
+                      x: router.query.x,
+                      y: router.query.y,
+                      z: router.query.z,
+                    },
+                  });
+                }}
+                options={maps
+                  .sort((a, b) => {
+                    if (a.name && isNaN(+a.name) && b.name && isNaN(+b.name))
+                      return a.name.localeCompare(b.name);
+                    if (!a.name) return 1;
+                    if (!b.name) return -1;
+                    return 0;
+                  })
+                  .map((map) => ({
+                    value: map.id,
+                    label: map.name ?? map.id + "",
+                  }))}
+              />
+            </div>
+            <div className="w-48">
+              <Select
+                value={{
+                  value: overlay.id,
+                  label:
+                    maps.find((map) => map.id === overlay.id)?.name ??
+                    (overlay.id === 0 ? "none" : overlay.id),
+                }}
+                onChange={(value) => {
+                  overlay.setId(value);
+                }}
+                options={[
+                  { value: 0, label: "none" },
+                  ...maps
+                    .filter((map) => !map.hidden && map.id !== main.id)
                     .sort((a, b) => {
+                      if (a.name && isNaN(+a.name) && b.name && isNaN(+b.name))
+                        return a.name.localeCompare(b.name);
                       if (!a.name) return 1;
                       if (!b.name) return -1;
                       return 0;
                     })
-                    .map((map) => (
-                      <option value={map.id} key={map.id}>
-                        {map.name ?? map.id}
-                      </option>
-                    ))}
-                </Select>
-              </div>
-            </Tooltip>
-            <Tooltip content="Overlay map">
-              <div className="w-48">
-                <Select
-                  sizing="sm"
-                  value={overlay.id}
-                  onChange={(e) => {
-                    overlay.setId(Number(e.target.value));
-                  }}
-                >
-                  <option value={0}>None</option>
-                  {maps
-                    .filter((map) => !map.hidden)
-                    .filter((map) => map.id !== main.id)
-                    .sort((a, b) => {
-                      if (a.name && b.name) return a.name.localeCompare(b.name);
-                      if (!a.name) return 1;
-                      if (!b.name) return -1;
-                      return 0;
-                    })
-                    .map((map) => (
-                      <option value={map.id} key={map.id}>
-                        {map.name ?? map.id}
-                      </option>
-                    ))}
-                </Select>
-              </div>
-            </Tooltip>
+                    .map((map) => ({
+                      value: map.id,
+                      label: map.name ?? map.id + "",
+                    })),
+                ]}
+              />
+            </div>
             {overlay.id !== 0 && (
-              <Tooltip content="Overlay opacity">
-                <input
-                  type="range"
-                  className="w-48 slider-thumb "
-                  min={0.1}
-                  max={0.9}
-                  step={0.1}
-                  value={overlay.opacity}
-                  onChange={(e) => {
-                    overlay.setOpacity(Number(e.target.value));
-                  }}
-                />
-              </Tooltip>
+              <input
+                type="range"
+                className="w-48 slider-thumb"
+                min={0.1}
+                max={0.9}
+                step={0.1}
+                value={overlay.opacity}
+                onChange={(e) => {
+                  overlay.setOpacity(Number(e.target.value));
+                }}
+              />
             )}
             {canAccess(Role.VILLAGER, session.data?.user.role) && (
               <SelectCharacters onSelect={handleSelect} />
@@ -188,16 +187,12 @@ const SelectCharacters = ({ onSelect }: SelectProps) => {
       },
     }));
   return (
-    <Tooltip content="Select characters">
-      <SearchSelect
-        value={null}
-        options={options}
-        placeholder={`${options.length} players visible`}
-        isDisabled={!options.length}
-        className="text-black w-48"
-        onChange={(entry) => entry && onSelect(entry.value)}
-      />
-    </Tooltip>
+    <SearchSelect
+      value={null}
+      options={options}
+      placeholder={`${options.length} players visible`}
+      onChange={(value) => value && onSelect(value)}
+    />
   );
 };
 
@@ -217,16 +212,12 @@ const SelectMarkers = ({ onSelect }: SelectProps) => {
     }));
 
   return (
-    <Tooltip content="Select Custom Markers">
-      <SearchSelect
-        value={null}
-        options={options}
-        placeholder={options.length ? "Search  markers" : "No  markers"}
-        isDisabled={!options.length}
-        className="text-black w-48"
-        onChange={(entry) => entry && onSelect(entry.value)}
-      />
-    </Tooltip>
+    <SearchSelect
+      value={null}
+      options={options}
+      placeholder={options.length ? "Search  markers" : "No  markers"}
+      onChange={(value) => value && onSelect(value)}
+    />
   );
 };
 const SelectQuestgivers = ({ onSelect }: SelectProps) => {
@@ -243,15 +234,11 @@ const SelectQuestgivers = ({ onSelect }: SelectProps) => {
       },
     }));
   return (
-    <Tooltip content="Overlay Questgivers">
-      <SearchSelect
-        value={null}
-        options={options}
-        placeholder={options.length ? "Search  questgivers" : "No  questgivers"}
-        isDisabled={!options.length}
-        className="text-black w-48"
-        onChange={(entry) => entry && onSelect(entry.value)}
-      />
-    </Tooltip>
+    <SearchSelect
+      value={null}
+      options={options}
+      placeholder={options.length ? "Search  questgivers" : "No  questgivers"}
+      onChange={(value) => value && onSelect(value)}
+    />
   );
 };

@@ -1,9 +1,11 @@
-import { Button, Modal, Spinner } from "flowbite-react";
 import React from "react";
 import { trpc } from "utils/trpc";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Dialog } from "@headlessui/react";
+import { Button } from "../controls/buttons";
+import { Spinner } from "../spinner";
 
 const schema = z.object({
   mapId: z.number(),
@@ -51,64 +53,70 @@ export const EditGridModal = ({
     onClose();
   };
   return (
-    <Modal show={!!data} onClose={onClose}>
-      <Modal.Header>
-        Edit Grid {data.x},{data.y} in{" "}
-        <span className="text-amber-400 bold">{data.name ?? data.mapId}</span>
-      </Modal.Header>
-      <Modal.Body>
-        <h1 className="text-white">Set Tile Coords to:</h1>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex gap-1">
-          <input
-            type="hidden"
-            {...register("mapId", { valueAsNumber: true })}
-          />
-          <div>
-            <>
-              <div className="flex gap-1">
-                <input
-                  type="number"
-                  placeholder="x"
-                  className="p-1 rounded"
-                  {...register("x", { valueAsNumber: true })}
-                />
-                <input
-                  type="number"
-                  placeholder="y"
-                  className="p-1 rounded"
-                  {...register("y", { valueAsNumber: true })}
-                />
+    <Dialog open={!!data} onClose={onClose}>
+      <div className="fixed top-0 left-0 h-screen w-screen flex justify-center items-start p-40 bg-black bg-opacity-50">
+        <Dialog.Panel className=" px-4 py-2 flex flex-col rounded-lg bg-neutral-800 divide-y-2  shadow-xl">
+          <Dialog.Title className="text-white text-xl font bold py-2">
+            Edit Grid {data.x},{data.y} in{" "}
+            <span className="text-amber-400 bold">
+              {data.name ?? data.mapId}
+            </span>
+          </Dialog.Title>
+          <Dialog.Description as="div" className="py-5  text-lg">
+            <h1 className="text-white">Set Tile Coords to:</h1>
+            <form onSubmit={handleSubmit(onSubmit)} className="flex gap-1">
+              <input
+                type="hidden"
+                {...register("mapId", { valueAsNumber: true })}
+              />
+              <div>
+                <>
+                  <div className="flex gap-1">
+                    <input
+                      type="number"
+                      placeholder="x"
+                      className="p-2 rounded"
+                      {...register("x", { valueAsNumber: true })}
+                    />
+                    <input
+                      type="number"
+                      placeholder="y"
+                      className="p-1 rounded"
+                      {...register("y", { valueAsNumber: true })}
+                    />
+                  </div>
+                  {errors.x ||
+                    (errors.y && (
+                      <span
+                        role="alert"
+                        className="mt-1 text-sm text-red-600 font-bold"
+                      >
+                        {"you need to set data"}
+                      </span>
+                    ))}
+                </>
               </div>
-              {errors.x ||
-                (errors.y && (
-                  <span
-                    role="alert"
-                    className="mt-1 text-sm text-red-600 font-bold"
-                  >
-                    {"you need to set data"}
-                  </span>
-                ))}
-            </>
+              <Button type="submit">shift map</Button>
+              {shift.isLoading && <Spinner />}
+            </form>
+          </Dialog.Description>
+          <div className="flex pt-2 gap-2">
+            <Button onClick={onClose}>Close</Button>
+            <Button
+              onClick={async () => {
+                await wipe.mutateAsync({
+                  mapId: data.mapId,
+                  x: data.x,
+                  y: data.y,
+                });
+              }}
+              variant="danger"
+            >
+              WipeTile
+            </Button>
           </div>
-          <Button color="info" type="submit">
-            shift map
-          </Button>
-          {shift.isLoading && <Spinner />}
-        </form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button color="gray" onClick={onClose}>
-          Close
-        </Button>
-        <Button
-          onClick={async () => {
-            await wipe.mutateAsync({ mapId: data.mapId, x: data.x, y: data.y });
-          }}
-          color="failure"
-        >
-          WipeTile
-        </Button>
-      </Modal.Footer>
-    </Modal>
+        </Dialog.Panel>
+      </div>
+    </Dialog>
   );
 };

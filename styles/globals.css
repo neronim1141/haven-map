@@ -17,6 +17,7 @@
 }
 .leaflet-container {
   background: #000;
+  cursor: crosshair;
 }
 .leaflet-control { z-index: 0 !important}
 .leaflet-pane { z-index: 0 !important}
@@ -27,17 +28,21 @@
   left: 10px;
   z-index: 502;
 }
-.slider-thumb::-webkit-slider-thumb {
-  @apply  h-6 w-6  rounded-full bg-blue-400 !important ;
+input[type="range"]::-webkit-slider-thumb {
+  @apply w-5 h-5 bg-neutral-600 border-2 border-neutral-400 border-solid relative -top-1;
+
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: ew-resize;
+  border-radius: 50%;
+  
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  @apply bg-neutral-600 rounded h-full;
+
+  
 }
 
-.slider-thumb::-webkit-slider-thumb:hover {
-  @apply  bg-blue-500 !important ;
-}
-
-.slider-thumb::-webkit-slider-runnable-track {
-  @apply bg-transparent;
-}
 .slider-thumb{
-  @apply  appearance-none border h-4 rounded-lg bg-gray-700   border-gray-600;
+  @apply rounded-lg relative  appearance-none bg-gray-400 h-3 
 }

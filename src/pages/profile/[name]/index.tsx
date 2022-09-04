@@ -3,19 +3,22 @@ import React from "react";
 import { Role } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { Button } from "flowbite-react";
 import { trpc } from "utils/trpc";
-
+import { Button } from "~/components/controls/buttons";
+import { HiClipboardCopy } from "react-icons/hi";
 const Page = () => {
   const session = useSession();
   const router = useRouter();
   const queryName = router.query.name as string;
-  const user = trpc.useQuery([
-    "user.byName",
-    {
-      name: queryName,
-    },
-  ]);
+  const user = trpc.useQuery(
+    [
+      "user.byName",
+      {
+        name: queryName,
+      },
+    ],
+    { enabled: !!queryName }
+  );
 
   if (session.status === "loading" || !user.data) {
     return <>loading</>;
@@ -29,17 +32,37 @@ const Page = () => {
     router.push("/");
     return null;
   }
+  if (user.data === null) {
+    router.push("/404");
+    return null;
+  }
   return (
     <div className="p-2 flex flex-col gap-2">
-      <div>Your token is: {user.data.token}</div>
-      <div>
-        Paste this into client: {process.env.NEXT_PUBLIC_PREFIX}/api/client/
+      Paste this into client:
+      <div className="flex items-center gap-1">
+        {process.env.NEXT_PUBLIC_PREFIX}/api/client/
         {user.data.token}
+        <Button
+          variant="outline"
+          className="text-xs"
+          onClick={() =>
+            navigator.clipboard
+              .writeText(
+                process.env.NEXT_PUBLIC_PREFIX +
+                  "/api/client/" +
+                  user.data!.token
+              )
+              .then(function () {
+                alert("copied!");
+              })
+          }
+        >
+          Copy <HiClipboardCopy />
+        </Button>
       </div>
       <Button
         onClick={() => {
-          if (user?.data?.role)
-            router.push(`/profile/${user.data.name}/changePassword`);
+          router.push(`/profile/${user.data!.name}/changePassword`);
         }}
       >
         Change Password

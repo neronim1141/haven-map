@@ -21,10 +21,11 @@ export const mapRouter = createRouter()
       data: z.object({
         hidden: z.boolean().optional(),
         priority: z.boolean().optional(),
-        name: z.string().optional(),
+        name: z.string().optional().nullable(),
       }),
     }),
     async resolve({ ctx, input: { mapId, data } }) {
+      console.log(data);
       await prisma.map.update({
         where: {
           id: mapId,

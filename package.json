@@ -12,6 +12,7 @@
     "reset:admin": "node ./prisma/seed.js"
   },
   "dependencies": {
+    "@headlessui/react": "^1.6.6",
     "@hookform/resolvers": "^2.9.7",
     "@prisma/client": "^4.1.1",
     "@tanstack/react-table": "^8.5.11",
@@ -21,11 +22,9 @@
     "@trpc/server": "^9.27.2",
     "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
-    "canvas": "^2.9.3",
+    "canvas": "^2.10.0",
     "clsx": "^1.2.1",
     "devalue": "^3.1.2",
-    "flowbite": "^1.5.2",
-    "flowbite-react": "^0.1.6",
     "formidable": "^3.2.4",
     "jszip": "^3.10.0",
     "leaflet": "^1.8.0",
@@ -39,6 +38,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.34.0",
+    "react-icons": "^4.4.0",
     "react-leaflet": "^4.0.1",
     "react-query": "^3.39.2",
     "react-select": "^5.4.0",

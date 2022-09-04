@@ -7,8 +7,9 @@ import { useMemo } from "react";
 import { trpc } from "utils/trpc";
 import _ from "lodash";
 import useDebounce from "~/hooks/useDebounce";
-import { Button, Spinner } from "flowbite-react";
-
+import { ActionsMenu } from "~/components/actionMenu";
+import { HiSearch, HiPencil, HiOutlineX, HiCheck } from "react-icons/hi";
+import { Spinner } from "~/components/spinner";
 const columnHelper = createColumnHelper<Map>();
 
 const NameChangeInput = ({
@@ -16,19 +17,18 @@ const NameChangeInput = ({
   onUpdate,
 }: {
   initialValue: string;
-  onUpdate: (name: string) => void;
+  onUpdate: (name: string) => Promise<void>;
 }) => {
   const [value, setValue] = useState(initialValue);
   const [loading, setLoading] = useState(false);
-  const debouncedValue = useDebounce<string>(value, 1000);
+  const debouncedValue = useDebounce<string>(value, 2000);
   useEffect(() => {
     if (debouncedValue !== initialValue) {
-      onUpdate(debouncedValue);
-      setLoading(false);
+      onUpdate(debouncedValue).then(() => setLoading(false));
     }
   }, [initialValue, debouncedValue, onUpdate]);
   return (
-    <>
+    <div className="relative w-36  flex items-center">
       <input
         type="text"
         value={value}
@@ -36,9 +36,12 @@ const NameChangeInput = ({
           setValue(e.target.value);
           setLoading(true);
         }}
+        className="bg-neutral-600 rounded p-2 pr-7 relative w-full truncate ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm "
       />
-      {loading ? "O" : ""}
-    </>
+      <span className="absolute right-1 animate-bounce">
+        {loading && <HiPencil />}
+      </span>
+    </div>
   );
 };
 
@@ -56,11 +59,12 @@ const Page = () => {
         id: "name",
         cell: (info) => (
           <NameChangeInput
-            initialValue={info.row.original.name ?? ""}
+            initialValue={info.getValue() ?? info.row.original.id + ""}
             onUpdate={async (name) => {
+              const trimmedName = name.trim();
               await update.mutateAsync({
                 mapId: info.row.original.id,
-                data: { name },
+                data: { name: trimmedName !== "" ? trimmedName : null },
               });
               maps.refetch();
             }}
@@ -70,6 +74,7 @@ const Page = () => {
         enableSorting: false,
       }),
       columnHelper.accessor("hidden", {
+        header: "show",
         cell: (info) => (
           <button
             onClick={async () => {
@@ -79,11 +84,15 @@ const Page = () => {
               });
               maps.refetch();
             }}
-            className={`uppercase font-bold border rounded border-gray-600 p-1 hover:bg-gray-600 ${
-              info.getValue() ? "text-red-500" : "text-green-500"
+            className={`uppercase font-bold border rounded border-neutral-600 p-1 hover:bg-neutral-600  w-9 flex justify-center ${
+              info.getValue() ? "text-red-700" : "text-green-700"
             }`}
           >
-            {info.getValue() ? "yes" : "no"}
+            {info.getValue() ? (
+              <HiOutlineX className="w-5 h-5 font-extrabold" />
+            ) : (
+              <HiCheck className="w-5 h-5 font-extrabold" />
+            )}
           </button>
         ),
       }),
@@ -97,31 +106,37 @@ const Page = () => {
               });
               maps.refetch();
             }}
-            className={`uppercase font-bold border rounded border-gray-600 p-1 hover:bg-gray-600  ${
-              info.getValue() ? "text-green-500" : "text-red-500"
+            className={`uppercase font-bold  rounded border border-neutral-600 p-1 hover:bg-neutral-600  w-9 flex justify-center   ${
+              info.getValue() ? "text-green-700" : "text-red-700"
             }`}
           >
-            {info.getValue() ? "yes" : "no"}
+            {info.getValue() ? (
+              <HiCheck className="w-5 h-5 font-extrabold" />
+            ) : (
+              <HiOutlineX className="w-5 h-5 font-extrabold" />
+            )}
           </button>
         ),
       }),
       columnHelper.display({
         id: "actions",
-        header: "actions",
         cell: ({ row }) => {
           const rebuild = trpc.useMutation("map.rebuildZooms");
-
           return (
-            <div className="flex items-center gap-1">
-              <Button
-                size="xs"
-                onClick={() => {
-                  rebuild.mutateAsync({ mapId: row.original.id });
-                }}
-              >
-                rebuild zooms
-              </Button>
-              {rebuild.isLoading && <Spinner />}
+            <div className="flex items-center">
+              {rebuild.isLoading ? <Spinner /> : <div className="w-5 h-5" />}
+
+              <ActionsMenu
+                actions={[
+                  {
+                    name: "rebuild zooms",
+                    onClick: () => {
+                      rebuild.mutateAsync({ mapId: row.original.id });
+                    },
+                    icon: HiSearch,
+                  },
+                ]}
+              />
             </div>
           );
         },
@@ -134,8 +149,8 @@ const Page = () => {
   }
   return (
     <>
-      <div className="w-full h-full flex justify-center ">
-        <div className=" p-2 overflow-x-auto">
+      <div className="w-full h-full flex ">
+        <div className="p-2 mx-auto">
           <h1 className="mx-auto text-center font-bold text-2xl">Maps</h1>
           <Table
             columns={columns}

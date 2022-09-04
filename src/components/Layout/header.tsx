@@ -1,57 +1,64 @@
 import React from "react";
 
 import { Role } from "@prisma/client";
-import { NavLink } from "src/components/NavLink/NavLink";
 import { signOut, useSession } from "next-auth/react";
-import Link from "next/link";
 import { useRouter } from "next/router";
+import { NavBarMenu } from "./navBarMenu";
+import { HiMap, HiOutlineChip, HiUserCircle } from "react-icons/hi";
+import { canAccess } from "~/server/routers/user/utils";
+import Link from "next/link";
 
 export const Header = () => {
   const { data } = useSession();
-  const router = useRouter();
 
   return (
-    <header className="flex shadow-2xl bg-gray-800 pl-2   w-full">
+    <header className="flex shadow-2xl bg-neutral-800 pl-2   w-full">
       <nav className="flex justify-between w-full ">
-        <div className="flex gap-1">
-          <NavLink
-            requiredRole={Role.ALLY}
-            href="/map/[mapId]/[z]/[x]/[y]"
-            as="/map/1/6/0/0"
-          >
-            Map
-          </NavLink>
+        <div className="flex gap-1   items-center">
+          {data && canAccess(Role.ADMIN, data.user.role) && (
+            <Link href="/map/[mapId]/[z]/[x]/[y]" as="/map/1/6/0/0">
+              <a className="flex gap-1 p-2 items-center rounded hover:bg-neutral-400 font-bold hover:text-neutral-900">
+                <HiMap />
+                Map
+              </a>
+            </Link>
+          )}
         </div>
-        <div className="flex gap-1">
-          <NavLink href="/admin/maps" requiredRole={Role.ADMIN}>
-            Maps
-          </NavLink>
-          <NavLink href="/admin/users" requiredRole={Role.ADMIN}>
-            Users
-          </NavLink>
-          <div className="flex gap-1 ml-12">
-            {data ? (
-              <>
-                <div className="p-2 border-b-2">
-                  <Link href={`/profile/${data.user.name}`}>
-                    <a>Hi {data.user.name}</a>
+        <div className="flex gap-4 p-2">
+          {data ? (
+            <>
+              {canAccess(Role.ADMIN, data.user.role) && (
+                <NavBarMenu icon={<HiOutlineChip />}>
+                  <Link href="/admin/maps">
+                    <a>Maps</a>
                   </Link>
-                </div>
+                  <Link href="/admin/users">
+                    <a>Users</a>
+                  </Link>
+                </NavBarMenu>
+              )}
+
+              <NavBarMenu icon={<HiUserCircle />}>
+                <Link href={`/profile/${data.user.name}`}>
+                  <a>Profile</a>
+                </Link>
+
                 <button
-                  className="bg-gray-500 text-black p-1  font-bold  hover:bg-gray-300 transition-colors"
-                  onClick={() =>
-                    signOut({ redirect: false }).then(() =>
-                      router.push("/login")
-                    )
-                  }
+                  onClick={() => {
+                    signOut({ redirect: true });
+                  }}
                 >
                   Log out
                 </button>
-              </>
-            ) : (
-              <NavLink href="/login">Log In</NavLink>
-            )}
-          </div>
+              </NavBarMenu>
+            </>
+          ) : (
+            <Link href="/login">
+              <a className="flex gap-1 p-2 items-center hover:bg-neutral-600">
+                Log In
+              </a>
+            </Link>
+          )}
         </div>
       </nav>
     </header>

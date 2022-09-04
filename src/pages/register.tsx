@@ -50,16 +50,8 @@ const Register = () => {
       }
     );
     if (!user) return;
-    const res = await signIn("credentials", {
-      redirect: false,
-      login: user.name,
-      password: values.password,
-    });
-    if (res?.error) {
-    }
-    if (res && res.url) {
-      router.push(`/profile/${values.login.toLowerCase()}`);
-    }
+
+    router.push(`/`);
   };
   return (
     <>

@@ -1,7 +1,7 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "utils/prisma";
-import { User } from "@prisma/client";
+import { Role, User } from "@prisma/client";
 import { logger } from "utils/logger";
 import bcrypt from "bcrypt";
 
@@ -23,8 +23,14 @@ export const authOptions: NextAuthOptions = {
             where: { name: login },
           });
           if (!data) return null;
+          if (data.role === Role.NEED_CHECK) {
+            return Promise.reject(
+              new Error("Wait until you are checked by admin")
+            );
+          }
           const { password, ...user } = data;
-          if (!(await bcrypt.compare(providedPassowrd, password))) return null;
+          if (!(await bcrypt.compare(providedPassowrd, password)))
+            return Promise.reject(new Error("Password missmatch"));
           return user as Omit<User, "password">;
         } catch (e) {
           logger.error(e);

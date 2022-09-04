@@ -56,7 +56,7 @@ export default function MapView() {
         <Head>
           <title>{mainMap?.name ?? main.id} </title>
         </Head>
-        <div className="h-full relative w-full text-black">
+        <div className=" w-full text-black">
           <MapContainer zoom={coords.z} onContextMenu={onContextMenu}>
             <MapLayer mapId={main.id} />
             {overlay.id && (
@@ -65,7 +65,7 @@ export default function MapView() {
 
             {showGrid && <GridLayer />}
           </MapContainer>
-          <div className="leaflet-top leaflet-left ">
+          <div className="leaflet-top leaflet-left mt-10">
             <MapControls main={main} overlay={overlay} map={map} />
           </div>
         </div>
