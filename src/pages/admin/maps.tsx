@@ -59,7 +59,7 @@ const Page = () => {
         id: "name",
         cell: (info) => (
           <NameChangeInput
-            initialValue={info.getValue() ?? info.row.original.id + ""}
+            initialValue={info.getValue() ?? ""}
             onUpdate={async (name) => {
               const trimmedName = name.trim();
               await update.mutateAsync({

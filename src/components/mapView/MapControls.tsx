@@ -103,6 +103,7 @@ export function MapControls({
                   });
                 }}
                 options={maps
+                  .filter((map) => !map.hidden)
                   .sort((a, b) => {
                     if (a.name && isNaN(+a.name) && b.name && isNaN(+b.name))
                       return a.name.localeCompare(b.name);
