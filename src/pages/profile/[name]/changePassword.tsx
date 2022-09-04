@@ -6,25 +6,26 @@ import { ErrorMessage } from "src/components/errorMessage";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 
-import * as yup from "yup";
 import Head from "next/head";
 import { useSession, signOut } from "next-auth/react";
 import { Role } from "@prisma/client";
 import { trpc } from "utils/trpc";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-const schema = yup.object({
-  login: yup.string().required(),
-  oldPassword: yup.string().required().min(3),
-  password: yup.string().required().min(3),
-  repeatPassword: yup
-    .string()
-    .required()
-    .min(3)
-    .oneOf([yup.ref("password"), null], "Passwords must match"),
-});
-type ChangePasswordFormData = yup.InferType<typeof schema>;
+const schema = z
+  .object({
+    login: z.string(),
+    oldPassword: z.string().min(3),
+    password: z.string().min(3),
+    repeatPassword: z.string().min(3),
+  })
+  .refine((data) => data.password === data.repeatPassword, {
+    message: "Passwords don't match",
+    path: ["repeatPassword"],
+  });
+type ChangePasswordFormData = z.infer<typeof schema>;
 
 const ChangePassword = () => {
   const router = useRouter();
@@ -39,7 +40,7 @@ const ChangePassword = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<ChangePasswordFormData>({
-    resolver: yupResolver(schema),
+    resolver: zodResolver(schema),
   });
   if (session.status === "loading") {
     return <>loading</>;
