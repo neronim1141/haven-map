@@ -1,10 +1,10 @@
 import { createRouter } from "next-connect";
 
-import type { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest } from "next";
 
 import { logger } from "utils/logger";
 import { prisma } from "utils/prisma";
-import { Grid, Tile } from "@prisma/client";
+import { Grid } from "@prisma/client";
 import { NextApiResponseServerIO, SocketIO } from "../../socketio";
 import { Coord, processZoom } from "~/server/routers/map/utils";
 import { defaultHidden } from "~/server/routers/map/config";
@@ -186,17 +186,23 @@ export async function mergeMaps(
       ],
     },
   });
-  const tiles: Tile[] = [];
+  const gridsToUpdate: Grid[] = [];
 
   let needProcess = new Map<string, Coord>([]);
   for (let grid of grids) {
-    tiles.push(await updateGrid(mapsOffsets, grid, mapId, offset));
+    gridsToUpdate.push(await updateGrid(mapsOffsets, grid, mapId, offset));
   }
 
-  for (let tile of tiles) {
-    const coord = new Coord(tile.x, tile.y).parent();
+  for (let grid of gridsToUpdate) {
+    const coord = new Coord(grid.x, grid.y).parent();
     needProcess.set(coord.toString(), coord);
-    socket.emit("tileUpdate", tile);
+    socket.emit("tileUpdate", {
+      x: grid.x,
+      y: grid.y,
+      z: 0,
+      mapId: grid.mapId,
+      lastUpdated: grid.lastUpdated ?? Date.now().toString(),
+    });
   }
 
   await processZoom(needProcess, mapId);
@@ -215,24 +221,15 @@ async function updateGrid(
     mapId,
     x: grid.x + offset.x - mergeOffset.x,
     y: grid.y + offset.y - mergeOffset.y,
+    lastUpdated: Date.now().toString(),
   };
-  const tile = await prisma.tile.update({
-    where: {
-      gridId: grid.id,
-    },
-    data: {
-      ...data,
-      lastUpdated: Date.now().toString(),
-    },
-  });
 
-  await prisma.grid.update({
+  return await prisma.grid.update({
     where: {
       id: grid.id,
     },
     data,
   });
-  return tile;
 }
 
 async function cleanupAfterMerge(
@@ -242,29 +239,28 @@ async function cleanupAfterMerge(
   socket: SocketIO
 ) {
   for (let [mergeId, merge] of Object.entries(mapsOffsets)) {
-    if (Number(mergeId) !== mapId) {
-      await prisma.map.delete({
-        where: {
-          id: Number(mergeId),
-        },
-      });
-      await prisma.grid.deleteMany({
-        where: {
-          mapId: Number(mergeId),
-        },
-      });
-      await prisma.tile.deleteMany({
-        where: {
-          mapId: Number(mergeId),
-        },
-      });
+    if (Number(mergeId) === mapId) continue;
+    await prisma.map.delete({
+      where: {
+        id: Number(mergeId),
+      },
+    });
+    await prisma.grid.deleteMany({
+      where: {
+        mapId: Number(mergeId),
+      },
+    });
+    await prisma.tile.deleteMany({
+      where: {
+        mapId: Number(mergeId),
+      },
+    });
 
-      socket.emit("merge", {
-        from: Number(mergeId),
-        to: mapId,
-        shift: { x: offset.x - merge.x, y: offset.y - merge.y },
-      });
-    }
+    socket.emit("merge", {
+      from: Number(mergeId),
+      to: mapId,
+      shift: { x: offset.x - merge.x, y: offset.y - merge.y },
+    });
   }
 }
 

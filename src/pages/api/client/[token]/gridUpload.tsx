@@ -30,7 +30,6 @@ router.post(async (req, res) => {
   if (!user) return res.status(403).end();
 
   const tile = await getTileFromRequest(req);
-  logger.log(`map Tile for: ${tile.id} by: ${user.name}`);
 
   try {
     const tileData = await fs.readFile(tile.file.filepath);

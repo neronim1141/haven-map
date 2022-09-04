@@ -3,7 +3,6 @@ import { Server as ServerIO } from "socket.io";
 import { Server as NetServer } from "http";
 import { Socket } from "net";
 import { CharacterData } from "./client/[token]/positionUpdate";
-import { Tile } from "@prisma/client";
 import { logger } from "utils/logger";
 export const config = {
   api: {

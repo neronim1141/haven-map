@@ -126,10 +126,10 @@ export const mapRouter = createRouter()
           mapId,
         },
       });
-      const tiles: Tile[] = [];
+      let needProcess = new Map<string, Coord>([]);
 
       for (let grid of grids) {
-        await prisma.grid.update({
+        const updatedGrid = await prisma.grid.update({
           where: { id: grid.id },
           data: {
             x: { increment: shiftBy.x },
@@ -141,15 +141,13 @@ export const mapRouter = createRouter()
             mapId,
           },
         });
-        let needProcess = new Map<string, Coord>([]);
-        for (let tile of tiles) {
-          const coord = new Coord(tile.x, tile.y).parent();
 
-          needProcess.set(coord.toString(), coord);
-        }
+        const coord = new Coord(updatedGrid.x, updatedGrid.y).parent();
 
-        await processZoom(needProcess, mapId);
+        needProcess.set(coord.toString(), coord);
       }
+
+      await processZoom(needProcess, mapId);
     },
   })
   .mutation("delete", {

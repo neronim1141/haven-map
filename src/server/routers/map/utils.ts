@@ -1,7 +1,6 @@
 import { createCanvas, createImageData } from "canvas";
 import sharp from "sharp";
 import { prisma } from "utils/prisma";
-import { logger } from "utils/logger";
 import { SocketIO } from "~/pages/api/socketio";
 import { HnHMaxZoom, HnHMinZoom } from "./config";
 

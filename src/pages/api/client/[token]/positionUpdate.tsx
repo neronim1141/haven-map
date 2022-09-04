@@ -29,7 +29,6 @@ const router = createRouter<NextApiRequest, NextApiResponseServerIO>();
 
 router.post(async (req, res) => {
   if (!req.query.token) {
-    logger.error("positionUpdate from: no token");
     return res.status(403).end();
   }
   const user = await prisma.user.findFirst({
@@ -37,7 +36,6 @@ router.post(async (req, res) => {
       token: req.query.token as string,
     },
   });
-  logger.log("positionUpdate from: " + user?.name);
   if (!user) return res.status(403).end();
 
   const flatData: CharacterData[] = [];
@@ -48,7 +46,6 @@ router.post(async (req, res) => {
       where: { id: gridID },
     });
     if (grid && characterData.name) {
-      logger.log("position for: " + characterData.name);
       flatData.push({
         ...characterData,
         id,
