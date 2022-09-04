@@ -103,7 +103,6 @@ export const EditGridModal = ({
         <Button
           onClick={async () => {
             await wipe.mutateAsync({ mapId: data.mapId, x: data.x, y: data.y });
-            onClose();
           }}
           color="failure"
         >

@@ -108,8 +108,8 @@ export const mapRouter = createRouter()
     async resolve({ input: { mapId, x, y } }) {
       const grid = await prisma.grid.findFirst({ where: { mapId, x, y } });
       if (!grid) return;
-      prisma.marker.deleteMany({ where: { gridId: grid.id } });
-      prisma.grid.delete({ where: { id: grid.id } });
+      await prisma.marker.deleteMany({ where: { gridId: grid.id } });
+      await prisma.grid.delete({ where: { id: grid.id } });
     },
   })
   .mutation("shiftZooms", {

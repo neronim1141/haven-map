@@ -7,7 +7,7 @@ import { useMemo } from "react";
 import { trpc } from "utils/trpc";
 import _ from "lodash";
 import useDebounce from "~/hooks/useDebounce";
-import { Button } from "flowbite-react";
+import { Button, Spinner } from "flowbite-react";
 
 const columnHelper = createColumnHelper<Map>();
 
@@ -45,7 +45,6 @@ const NameChangeInput = ({
 const Page = () => {
   const maps = trpc.useQuery(["map.all"]);
   const update = trpc.useMutation("map.update");
-  const rebuild = trpc.useMutation("map.rebuildZooms");
 
   const columns = useMemo(
     () => [
@@ -109,19 +108,26 @@ const Page = () => {
       columnHelper.display({
         id: "actions",
         header: "actions",
-        cell: ({ row }) => (
-          <Button
-            size="xs"
-            onClick={() => {
-              rebuild.mutateAsync({ mapId: row.original.id });
-            }}
-          >
-            rebuild zooms
-          </Button>
-        ),
+        cell: ({ row }) => {
+          const rebuild = trpc.useMutation("map.rebuildZooms");
+
+          return (
+            <div className="flex items-center gap-1">
+              <Button
+                size="xs"
+                onClick={() => {
+                  rebuild.mutateAsync({ mapId: row.original.id });
+                }}
+              >
+                rebuild zooms
+              </Button>
+              {rebuild.isLoading && <Spinner />}
+            </div>
+          );
+        },
       }),
     ],
-    [maps, update, rebuild]
+    [maps, update]
   );
   if (!maps.data) {
     return <>loading</>;
@@ -130,7 +136,7 @@ const Page = () => {
     <>
       <div className="w-full h-full flex justify-center ">
         <div className=" p-2 overflow-x-auto">
-          <h1 className="mx-auto text-center font-bold text-2xl">Users</h1>
+          <h1 className="mx-auto text-center font-bold text-2xl">Maps</h1>
           <Table
             columns={columns}
             data={maps.data}

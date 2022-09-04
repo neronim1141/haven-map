@@ -70,7 +70,6 @@ export default function MapView() {
             data={shiftMapModalData}
             onClose={() => {
               setShiftMapModalData(undefined);
-              window.location.reload();
             }}
           />
         )}
