@@ -4,6 +4,7 @@ import { logger } from "utils/logger";
 import type { NextApiRequest, NextApiResponse } from "next";
 import jszip, { JSZipObject } from "jszip";
 import { parallel } from "radash/dist/async";
+import { Marker } from "@prisma/client";
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
@@ -25,21 +26,24 @@ router.get(async (req, res) => {
         tileData: true,
       },
     });
+    let markers: Marker[] = [];
     await parallel(25, grids, async (grid) => {
       if (grid.tileData) {
         zip.file(`${map.id}/${grid.id}.png`, grid.tileData);
       } else {
         logger.error("Tile was supposed to be found");
       }
-      const markers = await prisma.marker.findMany({
+
+      const tmp = await prisma.marker.findMany({
         where: {
           gridId: grid.id,
         },
       });
-      zip.file(`${map.id}/markers.json`, JSON.stringify(markers));
+      markers = markers.concat(tmp);
     });
     const gridsWithoutTile = grids.map(({ tileData, ...rest }) => rest);
     zip.file(`${map.id}/grids.json`, JSON.stringify(gridsWithoutTile));
+    zip.file(`${map.id}/markers.json`, JSON.stringify(markers));
   }
   const stream = await zip.generateAsync({ type: "nodebuffer" });
   res.setHeader("Content-Type", "application/zip");
