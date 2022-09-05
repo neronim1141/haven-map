@@ -25,7 +25,7 @@ router.get(async (req, res) => {
         tileData: true,
       },
     });
-    await parallel(10, grids, async (grid) => {
+    await parallel(25, grids, async (grid) => {
       if (grid.tileData) {
         zip.file(`${map.id}/${grid.id}.png`, grid.tileData);
       } else {

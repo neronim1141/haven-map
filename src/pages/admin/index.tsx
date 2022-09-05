@@ -21,7 +21,8 @@ const AdminTab = ({ children }: { children: ReactNode }) => {
 const AdminPage = () => {
   const maps = trpc.useQuery(["map.all"]);
   const users = trpc.useQuery(["user.all"]);
-  const { downloadProgress, getFile } = useFileRequest("/api/map/export");
+  const { loading, downloadProgress, getFile } =
+    useFileRequest("/api/map/export");
   return (
     <div className="max-w-2xl min-w-max w-full  mx-auto p-5">
       <Tab.Group>
@@ -34,6 +35,7 @@ const AdminPage = () => {
           <Tab.Panel className="p-2">
             <div className="flex w-full items-center gap-2">
               <Button onClick={() => getFile()}>Export Data</Button>
+              {loading && "preparing data..."}
               {downloadProgress && (
                 <div className="flex-grow">
                   <ProgressBar completed={downloadProgress} />
