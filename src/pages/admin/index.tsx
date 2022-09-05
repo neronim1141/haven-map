@@ -35,8 +35,8 @@ const AdminPage = () => {
             <div className="flex w-full items-center gap-2">
               <Button onClick={() => getFile()}>Export Data</Button>
               {downloadProgress && (
-                <div className="flex-grow ">
-                  <ProgressBar completed={0} />
+                <div className="flex-grow">
+                  <ProgressBar completed={downloadProgress} />
                 </div>
               )}
             </div>

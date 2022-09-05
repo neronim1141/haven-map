@@ -2,7 +2,6 @@ import React from "react";
 
 import { Role } from "@prisma/client";
 import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import { NavBarMenu } from "./navBarMenu";
 import { HiMap, HiOutlineChip, HiUserCircle } from "react-icons/hi";
 import { canAccess } from "~/server/routers/user/utils";
