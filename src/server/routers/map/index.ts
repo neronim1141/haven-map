@@ -111,6 +111,12 @@ export const mapRouter = createRouter()
       if (!grid) return;
       await prisma.marker.deleteMany({ where: { gridId: grid.id } });
       await prisma.grid.delete({ where: { id: grid.id } });
+      let needProcess = new Map<string, Coord>([]);
+      const coord = new Coord(grid.x, grid.y).parent();
+
+      needProcess.set(coord.toString(), coord);
+
+      await processZoom(needProcess, mapId);
     },
   })
   .mutation("shiftZooms", {

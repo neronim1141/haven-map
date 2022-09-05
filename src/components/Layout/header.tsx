@@ -27,16 +27,11 @@ export const Header = () => {
         <div className="flex gap-4 p-2">
           {data ? (
             <>
-              {canAccess(Role.ADMIN, data.user.role) && (
-                <NavBarMenu icon={<HiOutlineChip />}>
-                  <Link href="/admin/maps">
-                    <a>Maps</a>
-                  </Link>
-                  <Link href="/admin/users">
-                    <a>Users</a>
-                  </Link>
-                </NavBarMenu>
-              )}
+              <Link href="/admin">
+                <a className="flex px-1 items-center rounded hover:bg-neutral-400 font-bold hover:text-neutral-900">
+                  <HiOutlineChip className="w-6 h-6" />
+                </a>
+              </Link>
 
               <NavBarMenu icon={<HiUserCircle />}>
                 <Link href={`/profile/${data.user.name}`}>

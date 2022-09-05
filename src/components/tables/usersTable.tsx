@@ -9,11 +9,20 @@ import { trpc } from "utils/trpc";
 import { ActionsMenu } from "~/components/actionMenu";
 import { HiTrash, HiPencil } from "react-icons/hi";
 import { Select } from "~/components/controls/select";
+import { UseQueryResult } from "react-query";
 
 const columnHelper = createColumnHelper<Pick<User, "name" | "role">>();
 
-const Page = () => {
-  const users = trpc.useQuery(["user.all"]);
+interface UsersTableProps {
+  users: UseQueryResult<
+    {
+      name: string;
+      role: Role;
+      token: string;
+    }[]
+  >;
+}
+export const UsersTable = ({ users }: UsersTableProps) => {
   const { mutateAsync: updateUser } = trpc.useMutation("user.update");
 
   const [userToDelete, setUserToDelete] = useState<string>();
@@ -90,17 +99,12 @@ const Page = () => {
   }
   return (
     <>
-      <div className="w-full h-full flex">
-        <div className="p-2 mx-auto">
-          <h1 className="text-center font-bold text-2xl">Users</h1>
-          <Table
-            columns={columns}
-            data={users.data}
-            initialSort={[{ id: "name", desc: false }]}
-            className="mt-2"
-          />
-        </div>
-      </div>
+      <Table
+        columns={columns}
+        data={users.data}
+        initialSort={[{ id: "name", desc: false }]}
+      />
+
       {userToDelete && (
         <DeleteUserModal
           data={userToDelete}
@@ -113,5 +117,3 @@ const Page = () => {
     </>
   );
 };
-
-export default Page;

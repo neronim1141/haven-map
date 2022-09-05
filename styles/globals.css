@@ -46,3 +46,7 @@ input[type="range"]::-webkit-slider-runnable-track {
 .slider-thumb{
   @apply rounded-lg relative  appearance-none bg-gray-400 h-3 
 }
+
+.progressBarInner{
+  width: calc(100% * var(--completed)/100)
+}

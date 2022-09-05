@@ -9,12 +9,14 @@ import { Header } from "src/components/Layout/header";
 import Head from "next/head";
 import { withTRPC } from "@trpc/next";
 import { AppRouter } from "~/server/routers";
+import favicon from "../../public/favicon.ico";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <>
       <Head>
         <title>Hexindustries</title>
+        <link rel="shortcut icon" href={favicon.src} />
       </Head>
       <SessionProvider session={session}>
         <div className="w-full min-h-screen flex flex-col  bg-neutral-900 text-white ">

@@ -3,6 +3,7 @@ import { prisma } from "utils/prisma";
 import { logger } from "utils/logger";
 import type { NextApiRequest, NextApiResponse } from "next";
 import jszip, { JSZipObject } from "jszip";
+import { parallel } from "radash/dist/async";
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 
@@ -21,17 +22,12 @@ router.get(async (req, res) => {
         x: true,
         y: true,
         mapId: true,
+        tileData: true,
       },
     });
-
-    for (let grid of grids) {
-      const tile = await prisma.tile.findUnique({
-        where: {
-          gridId: grid.id,
-        },
-      });
-      if (tile) {
-        zip.file(`${map.id}/${tile?.gridId}.png`, tile.tileData);
+    await parallel(10, grids, async (grid) => {
+      if (grid.tileData) {
+        zip.file(`${map.id}/${grid.id}.png`, grid.tileData);
       } else {
         logger.error("Tile was supposed to be found");
       }
@@ -41,8 +37,9 @@ router.get(async (req, res) => {
         },
       });
       zip.file(`${map.id}/markers.json`, JSON.stringify(markers));
-    }
-    zip.file(`${map.id}/grids.json`, JSON.stringify(grids));
+    });
+    const gridsWithoutTile = grids.map(({ tileData, ...rest }) => rest);
+    zip.file(`${map.id}/grids.json`, JSON.stringify(gridsWithoutTile));
   }
   const stream = await zip.generateAsync({ type: "nodebuffer" });
   res.setHeader("Content-Type", "application/zip");

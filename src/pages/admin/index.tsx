@@ -1,80 +1,56 @@
-import React, { useCallback, useState } from "react";
+import React, { ReactNode } from "react";
 
-import axios from "axios";
-import { useForm } from "react-hook-form";
+import { Tab } from "@headlessui/react";
+
 import { trpc } from "utils/trpc";
 
-const useFileRequest = (url: string) => {
-  const [percent, setPercent] = useState<number>();
-  const [loading, setLoading] = useState(false);
-  const fetchExport = useCallback(async () => {
-    setLoading(true);
-    setPercent(0);
+import { MapsTable } from "~/components/tables/mapsTable";
+import { UsersTable } from "~/components/tables/usersTable";
+import { useFileRequest } from "~/hooks/useFileRequest";
+import { Button } from "~/components/controls/buttons";
+import { ProgressBar } from "~/components/progressBar";
 
-    const data = await axios.get("/api/map/export", {
-      responseType: "blob",
-      onDownloadProgress(progressEvent) {
-        let percentCompleted = Math.floor(
-          (progressEvent.loaded / progressEvent.total) * 100
-        );
-        setPercent(percentCompleted);
-      },
-    });
-    setPercent(undefined);
-    setLoading(false);
-    const a = document.createElement("a");
-    a.href = window.URL.createObjectURL(data.data);
-    a.download = "export.zip";
-    a.click();
-  }, []);
-
-  return {
-    isLoading: loading,
-    downloadProgress: percent,
-    getFile: fetchExport,
-  };
-};
-
-const Page = () => {
-  const { register, handleSubmit } = useForm();
-  const onSubmit = (data: any) => {
-    alert("TBD");
-  };
-  const fix = trpc.useMutation("map.fixData");
-  const rebuild = trpc.useMutation("map.rebuildAllZooms");
-  const {
-    isLoading: fileLoading,
-    downloadProgress,
-    getFile,
-  } = useFileRequest("/api/map/export");
+const AdminTab = ({ children }: { children: ReactNode }) => {
   return (
-    <div>
-      <button onClick={() => getFile()}>
-        download maps data {fileLoading && ":" + downloadProgress + "%"}
-      </button>
-      <br />
-      <button onClick={() => fix.mutateAsync()}>
-        Fix grid data {fix.isLoading ? "O" : ""}
-      </button>
-      <br />
-      <button onClick={() => rebuild.mutateAsync()}>
-        rebuild All zooms {rebuild.isLoading ? "O" : ""}
-      </button>
-    </div>
-    // <form onSubmit={handleSubmit(onSubmit)}>
-    //   <div className="btn">
-    //     <span>File</span>
-    //     <input type="file" {...register("merge")} />
-    //   </div>
-    //   <button
-    //     className="btn waves-effect waves-light"
-    //     type="submit"
-    //     name="action"
-    //   >
-    //     Merge
-    //   </button>
-    // </form>
+    <Tab className=" border border-neutral-500 bg-neutral-700 hover:bg-neutral-600 w-full p-2 first:rounded-tl first:border-r-transparent last:rounded-tr last:border-l-transparent ">
+      {children}
+    </Tab>
   );
 };
 
-export default Page;
+const AdminPage = () => {
+  const maps = trpc.useQuery(["map.all"]);
+  const users = trpc.useQuery(["user.all"]);
+  const { downloadProgress, getFile } = useFileRequest("/api/map/export");
+  return (
+    <div className="max-w-2xl min-w-max w-full  mx-auto p-5">
+      <Tab.Group>
+        <Tab.List className=" w-full flex justify-evenly overflow-hidden rounded-t">
+          <AdminTab>Actions</AdminTab>
+          <AdminTab>Maps</AdminTab>
+          <AdminTab>Users</AdminTab>
+        </Tab.List>
+        <Tab.Panels>
+          <Tab.Panel className="p-2">
+            <div className="flex w-full items-center gap-2">
+              <Button onClick={() => getFile()}>Export Data</Button>
+              {downloadProgress && (
+                <div className="flex-grow ">
+                  <ProgressBar completed={0} />
+                </div>
+              )}
+            </div>
+          </Tab.Panel>
+          <Tab.Panel className="p-2">
+            <MapsTable maps={maps} />
+          </Tab.Panel>
+          <Tab.Panel className="p-2">
+            <UsersTable users={users} />
+          </Tab.Panel>
+        </Tab.Panels>
+      </Tab.Group>
+    </div>
+  );
+};
+
+export default AdminPage;

@@ -1,6 +1,6 @@
 import { LeafletMouseEvent } from "leaflet";
-import _ from "lodash";
 import { useRouter } from "next/router";
+import { debounce } from "radash";
 import { useCallback } from "react";
 import { useMapEvents } from "react-leaflet";
 import { TileSize } from "~/server/routers/map/config";
@@ -40,8 +40,8 @@ export const MapEvents = ({ onContextMenu }: MapEvents) => {
     contextmenu(e) {
       onContextMenu(e);
     },
-    zoom: _.debounce(() => updateRouter(map), 200),
-    drag: _.debounce(() => updateRouter(map), 200),
+    zoom: debounce({ delay: 200 }, () => updateRouter(map)),
+    drag: debounce({ delay: 200 }, () => updateRouter(map)),
   });
 
   return null;
