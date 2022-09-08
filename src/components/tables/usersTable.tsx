@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { Role, User } from "@prisma/client";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Table } from "src/components/table";
+import { Table } from "~/components/tables/table";
 import { useMemo } from "react";
 import { DeleteUserModal } from "../../components/modals/deleteUserModal";
 import { trpc } from "utils/trpc";

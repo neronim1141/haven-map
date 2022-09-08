@@ -12,7 +12,8 @@
     "reset:admin": "node ./prisma/seed.js"
   },
   "dependencies": {
-    "@headlessui/react": "^1.6.6",
+    "@headlessui/react": "^1.7.0",
+    "@headlessui/tailwindcss": "^0.1.1",
     "@hookform/resolvers": "^2.9.7",
     "@prisma/client": "^4.1.1",
     "@tanstack/react-table": "^8.5.11",

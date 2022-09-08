@@ -33,6 +33,7 @@ export const SearchSelect = ({
       value={undefined}
       onChange={handleChange}
       disabled={disabledInput}
+      nullable
       as="div"
       className="w-full"
     >
@@ -41,12 +42,11 @@ export const SearchSelect = ({
           <div>
             <Combobox.Button className="relative w-full flex items-center cursor-default overflow-hidden rounded bg-neutral-700 text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-500 focus-visible:ring-opacity-75 focus-visible:ring-offset-1  sm:text-sm">
               <Combobox.Input
-                className={`w-full  p-2 border-none  text-sm leading-5 focus:outline-none text-white focus:ring-0 bg-neutral-700 ${
-                  disabledInput ? "opacity-50" : ""
-                }  `}
-                onBlur={() => setQuery("")}
+                className="w-full  p-2 border-none  text-sm leading-5 focus:outline-none text-white focus:ring-0 bg-neutral-700 ui-disabled:opacity-50"
+                onFocus={() => setQuery("")}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder={placeholder}
+                autoComplete="off"
               />
               <span className="absolute right-2 cursor-pointer">
                 {!disabledInput &&
@@ -72,28 +72,21 @@ export const SearchSelect = ({
             leaveTo="opacity-0"
           >
             <div className="relative z-50 w-full">
-              <Combobox.Options className="absolute mt-2 shadow-xl  max-h-60 w-full overflow-auto rounded-md bg-neutral-600  text-base  ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <Combobox.Options
+                unmount={false}
+                className="absolute mt-2 shadow-xl  max-h-60 w-full overflow-auto rounded-md bg-neutral-600  text-base  ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+              >
                 {filteredOptions.map((value, i) => (
                   <Combobox.Option
                     key={i}
-                    className={({ active }) =>
-                      `relative cursor-pointer select-none p-2 ${
-                        active ? "bg-neutral-500 text-white" : "text-white"
-                      }`
-                    }
+                    className="relative cursor-pointer select-none p-2 ui-active:bg-neutral-500 text-white"
                     value={value.value}
                   >
-                    {({ selected }) => (
-                      <>
-                        <span
-                          className={`block truncate ${
-                            selected ? "font-medium" : "font-normal"
-                          }`}
-                        >
-                          {value.label}
-                        </span>
-                      </>
-                    )}
+                    <>
+                      <span className="block truncate  ui-selected:font-medium ui-not-selected:font-normal">
+                        {value.label}
+                      </span>
+                    </>
                   </Combobox.Option>
                 ))}
               </Combobox.Options>

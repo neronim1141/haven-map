@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { Map } from "@prisma/client";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Table } from "src/components/table";
+import { Table } from "~/components/tables/table";
 import { useMemo } from "react";
 import { trpc } from "utils/trpc";
 import useDebounce from "~/hooks/useDebounce";

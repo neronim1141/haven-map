@@ -34,7 +34,7 @@ export const Table = <T extends object>({
     getCoreRowModel: getCoreRowModel(),
   });
   return (
-    <table className={` mx-auto ${className}`}>
+    <table className={` mx-auto bg-blue-500 ${className}`}>
       {table.getHeaderGroups().map((headerGroup) => (
         <thead key={headerGroup.id}>
           <tr>
@@ -66,10 +66,7 @@ export const Table = <T extends object>({
       ))}
       <tbody className="divide-y rounded-b n">
         {table.getRowModel().rows.map((row) => (
-          <tr
-            key={row.id}
-            className="bg-white dark:border-neutral-700 dark:bg-neutral-800"
-          >
+          <tr key={row.id} className="border-neutral-700 bg-neutral-800">
             {row.getVisibleCells().map((cell) => (
               <td key={cell.id} className="p-2 px-4">
                 {flexRender(cell.column.columnDef.cell, cell.getContext())}
