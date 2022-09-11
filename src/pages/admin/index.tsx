@@ -28,6 +28,7 @@ const AdminPage = () => {
       toast.update(exportMapToastId, {
         render: `Downloading progress: \n${percent}%`,
         type: toast.TYPE.INFO,
+        isLoading: false,
         progress: percent,
         autoClose: false,
       });
@@ -53,7 +54,7 @@ const AdminPage = () => {
               <Button
                 onClick={() => {
                   getFile();
-                  toast.loading("File is Processed", {
+                  toast("File is Processed", {
                     toastId: exportMapToastId,
                     autoClose: false,
                   });
