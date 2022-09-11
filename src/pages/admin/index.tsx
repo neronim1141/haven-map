@@ -41,6 +41,7 @@ const AdminPage = () => {
         type: toast.TYPE.SUCCESS,
         progress: 1,
         autoClose: 2500,
+        closeOnClick: true,
       });
     }
   });
