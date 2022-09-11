@@ -42,6 +42,7 @@ const AdminPage = () => {
         progress: 1,
         autoClose: 2500,
         closeOnClick: true,
+        draggable: true,
       });
     }
   });
@@ -63,6 +64,8 @@ const AdminPage = () => {
                   toast.loading("File is Processed", {
                     toastId: exportMapToastId,
                     autoClose: false,
+                    closeOnClick: false,
+                    draggable: false,
                   });
                 }}
               >

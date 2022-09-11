@@ -33,6 +33,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         draggable
         pauseOnHover
         theme="dark"
+        closeOnClick
       />
     </>
   );
