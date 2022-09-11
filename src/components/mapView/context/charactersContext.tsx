@@ -27,7 +27,7 @@ export const CharactersProvider: FunctionComponent<{
         if (found)
           return {
             ...found,
-            name: character.name,
+            name: character.name === "???" ? found.name : character.name,
           };
         else return character;
       });

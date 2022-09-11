@@ -12,7 +12,7 @@ import { ProgressBar } from "~/components/progressBar";
 
 const AdminTab = ({ children }: { children: ReactNode }) => {
   return (
-    <Tab className=" border border-neutral-500 bg-neutral-700 hover:bg-neutral-600 w-full p-2 first:rounded-tl first:border-r-transparent last:rounded-tr last:border-l-transparent ">
+    <Tab className=" w-full border border-neutral-500 bg-neutral-700 p-2 first:rounded-tl first:border-r-transparent last:rounded-tr last:border-l-transparent hover:bg-neutral-600 ">
       {children}
     </Tab>
   );
@@ -24,9 +24,9 @@ const AdminPage = () => {
   const { loading, downloadProgress, getFile } =
     useFileRequest("/api/map/export");
   return (
-    <div className="max-w-2xl min-w-max w-full  mx-auto p-5">
+    <div className="mx-auto w-full min-w-max  max-w-2xl p-5">
       <Tab.Group>
-        <Tab.List className=" w-full flex justify-evenly overflow-hidden rounded-t">
+        <Tab.List className=" flex w-full justify-evenly overflow-hidden rounded-t">
           <AdminTab>Actions</AdminTab>
           <AdminTab>Maps</AdminTab>
           <AdminTab>Users</AdminTab>

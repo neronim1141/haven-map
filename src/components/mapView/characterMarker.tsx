@@ -22,9 +22,9 @@ export const CharacterMarker = ({
       iconAnchor: clampSize(zoom, 2),
       className: "transition-all duration-300 fill-blue-500",
       html: renderToStaticMarkup(
-        <div className="flex relative z-50">
-          <div className="-top-8 -left-20 w-48 mx-auto absolute text-base font-bold text-outline flex justify-center truncate">
-            <span className="bg-black bg-opacity-50 rounded-full border border-blue-400 p-1">
+        <div className="relative z-50 flex">
+          <div className="text-outline absolute -top-8 -left-20 mx-auto flex w-48 justify-center truncate text-base font-bold">
+            <span className="rounded-full border border-blue-400 bg-black bg-opacity-50 p-1">
               {character.name}
             </span>
           </div>

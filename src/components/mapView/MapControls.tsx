@@ -55,20 +55,20 @@ export function MapControls({
   };
 
   return (
-    <div className="leaflet-control shadow-none leaflet-bar p-2 flex flex-col gap-2">
+    <div className="leaflet-control leaflet-bar flex flex-col gap-2 p-2 shadow-none">
       <button
         onClick={() => setShow((prev) => !prev)}
-        className="text-white  bg-neutral-700 rounded-lg p-1 w-8 border border-neutral-600 flex items-center justify-center"
+        className="flex  w-8 items-center justify-center rounded-lg border border-neutral-600 bg-neutral-700 p-1 text-white"
       >
         {show ? (
-          <HiOutlineX className="w-5 h-5" />
+          <HiOutlineX className="h-5 w-5" />
         ) : (
-          <HiAdjustments className="w-5 h-5" />
+          <HiAdjustments className="h-5 w-5" />
         )}
       </button>
       {show && (
-        <div className="flex rounded-lg border border-gray-200 bg-white shadow-md dark:border-neutral-700 dark:bg-neutral-800 flex-col">
-          <div className="p-2 flex flex-col gap-2">
+        <div className="flex flex-col rounded-lg border border-gray-200 bg-white shadow-md dark:border-neutral-700 dark:bg-neutral-800">
+          <div className="flex flex-col gap-2 p-2">
             <div className="flex gap-1">
               <Toggle
                 label="show grid"
@@ -149,7 +149,7 @@ export function MapControls({
             {overlay.id !== 0 && (
               <input
                 type="range"
-                className="w-48 slider-thumb"
+                className="slider-thumb w-48"
                 min={0.1}
                 max={0.9}
                 step={0.1}

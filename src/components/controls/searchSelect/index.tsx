@@ -40,9 +40,9 @@ export const SearchSelect = ({
       {({ open }) => (
         <>
           <div>
-            <Combobox.Button className="relative w-full flex items-center cursor-default overflow-hidden rounded bg-neutral-700 text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-500 focus-visible:ring-opacity-75 focus-visible:ring-offset-1  sm:text-sm">
+            <Combobox.Button className="relative flex w-full cursor-default items-center overflow-hidden rounded bg-neutral-700 text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-500 focus-visible:ring-opacity-75 focus-visible:ring-offset-1  sm:text-sm">
               <Combobox.Input
-                className="w-full  p-2 border-none  text-sm leading-5 focus:outline-none text-white focus:ring-0 bg-neutral-700 ui-disabled:opacity-50"
+                className="w-full border-none bg-neutral-700 p-2 text-sm leading-5 text-white focus:outline-none focus:ring-0 ui-disabled:opacity-50"
                 onFocus={() => setQuery("")}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder={placeholder}
@@ -74,16 +74,16 @@ export const SearchSelect = ({
             <div className="relative z-50 w-full">
               <Combobox.Options
                 unmount={false}
-                className="absolute mt-2 shadow-xl  max-h-60 w-full overflow-auto rounded-md bg-neutral-600  text-base  ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+                className="absolute mt-2 max-h-60 w-full overflow-auto rounded-md bg-neutral-600 text-base shadow-xl ring-black ring-opacity-5 focus:outline-none sm:text-sm"
               >
                 {filteredOptions.map((value, i) => (
                   <Combobox.Option
                     key={i}
-                    className="relative cursor-pointer select-none p-2 ui-active:bg-neutral-500 text-white"
+                    className="relative cursor-pointer select-none p-2 text-white ui-active:bg-neutral-500"
                     value={value.value}
                   >
                     <>
-                      <span className="block truncate  ui-selected:font-medium ui-not-selected:font-normal">
+                      <span className="block truncate ui-selected:font-medium ui-not-selected:font-normal">
                         {value.label}
                       </span>
                     </>

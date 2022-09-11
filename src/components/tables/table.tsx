@@ -39,7 +39,7 @@ export const Table = <T extends object>({
         <thead key={headerGroup.id}>
           <tr>
             {headerGroup.headers.map((header) => (
-              <th key={header.id} className="capitalize p-1 bg-neutral-700 ">
+              <th key={header.id} className="bg-neutral-700 p-1 capitalize ">
                 {header.isPlaceholder ? null : (
                   <div
                     {...{
@@ -54,8 +54,8 @@ export const Table = <T extends object>({
                       header.getContext()
                     )}
                     {{
-                      asc: <HiArrowSmUp className="w-5 h-5" />,
-                      desc: <HiArrowSmDown className="w-5 h-5" />,
+                      asc: <HiArrowSmUp className="h-5 w-5" />,
+                      desc: <HiArrowSmDown className="h-5 w-5" />,
                     }[header.column.getIsSorted() as string] ?? null}
                   </div>
                 )}
@@ -64,7 +64,7 @@ export const Table = <T extends object>({
           </tr>
         </thead>
       ))}
-      <tbody className="divide-y rounded-b n">
+      <tbody className="n divide-y rounded-b">
         {table.getRowModel().rows.map((row) => (
           <tr key={row.id} className="border-neutral-700 bg-neutral-800">
             {row.getVisibleCells().map((cell) => (

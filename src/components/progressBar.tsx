@@ -9,9 +9,9 @@ interface ProgressBar {
 }
 export const ProgressBar = ({ completed }: ProgressBar) => {
   return (
-    <div className="rounded-full w-full h-6 bg-neutral-600 overflow-hidden">
+    <div className="h-6 w-full overflow-hidden rounded-full bg-neutral-600">
       <div
-        className="progressBarInner bg-neutral-800 text-right pr-2"
+        className="progressBarInner bg-neutral-800 pr-2 text-right"
         style={{ "--completed": completed } as ProgressBarCSS}
       >
         {`${completed}%`}

@@ -54,53 +54,62 @@ export const EditGridModal = ({
   };
   return (
     <Dialog open={!!data} onClose={onClose}>
-      <div className="fixed top-0 left-0 h-screen w-screen flex justify-center items-start p-40 bg-black bg-opacity-50">
-        <Dialog.Panel className=" px-4 py-2 flex flex-col rounded-lg bg-neutral-800 divide-y-2  shadow-xl">
-          <Dialog.Title className="text-white text-xl font bold py-2">
+      <div className="fixed top-0 left-0 flex h-screen w-screen items-center justify-center bg-black bg-opacity-50 p-4  ">
+        <Dialog.Panel className=" flex max-w-full flex-col divide-y-2 rounded-lg bg-neutral-800 px-4  py-2  shadow-xl">
+          <Dialog.Title className="font bold py-2 text-xl text-white">
             Edit Grid {data.x},{data.y} in{" "}
-            <span className="text-amber-400 bold">
+            <span className="bold text-amber-400">
               {data.name ?? data.mapId}
             </span>
           </Dialog.Title>
-          <Dialog.Description as="div" className="py-5  text-lg">
+          <Dialog.Description as="div" className="py-5 text-lg">
             <h1 className="text-white">Set Tile Coords to:</h1>
-            <form onSubmit={handleSubmit(onSubmit)} className="flex gap-1">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex flex-wrap gap-1"
+            >
               <input
                 type="hidden"
                 {...register("mapId", { valueAsNumber: true })}
               />
               <div>
                 <>
-                  <div className="flex gap-1">
-                    <input
-                      type="number"
-                      placeholder="x"
-                      className="p-2 rounded"
-                      {...register("x", { valueAsNumber: true })}
-                    />
-                    <input
-                      type="number"
-                      placeholder="y"
-                      className="p-1 rounded"
-                      {...register("y", { valueAsNumber: true })}
-                    />
+                  <div className="flex flex-wrap  gap-1">
+                    <div className="flex w-fit items-center gap-1">
+                      <label className="text-white">X:</label>
+                      <input
+                        type="number"
+                        placeholder="x"
+                        className="w-full rounded p-2"
+                        {...register("x", { valueAsNumber: true })}
+                      />
+                    </div>
+                    <div className="flex w-fit items-center gap-1 ">
+                      <label className="text-white">Y:</label>
+                      <input
+                        type="number"
+                        placeholder="y"
+                        className="w-full rounded p-2"
+                        {...register("y", { valueAsNumber: true })}
+                      />
+                    </div>
+                    <Button type="submit">shift map</Button>
+                    {shift.isLoading && <Spinner />}
                   </div>
                   {errors.x ||
                     (errors.y && (
                       <span
                         role="alert"
-                        className="mt-1 text-sm text-red-600 font-bold"
+                        className="mt-1 text-sm font-bold text-red-600"
                       >
                         {"you need to set data"}
                       </span>
                     ))}
                 </>
               </div>
-              <Button type="submit">shift map</Button>
-              {shift.isLoading && <Spinner />}
             </form>
           </Dialog.Description>
-          <div className="flex pt-2 gap-2">
+          <div className="flex flex-wrap gap-2 pt-2">
             <Button onClick={onClose}>Close</Button>
             <Button
               onClick={async () => {

@@ -29,7 +29,7 @@ const NameChangeInput = ({
     }
   }, [initialValue, debouncedValue, onUpdate]);
   return (
-    <div className="relative w-content  flex items-center">
+    <div className="w-content relative  flex items-center">
       <input
         type="text"
         value={value}
@@ -37,7 +37,7 @@ const NameChangeInput = ({
           setValue(e.target.value);
           setLoading(true);
         }}
-        className="bg-neutral-600 rounded p-2 pr-7 relative w-full truncate ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm "
+        className="relative w-full truncate rounded bg-neutral-600 p-2 pr-7 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm "
       />
       <span className="absolute right-1 animate-bounce">
         {loading && <HiPencil />}
@@ -79,7 +79,7 @@ export const MapsTable = ({ maps }: MapsTableProps) => {
       columnHelper.accessor("hidden", {
         header: "show",
         cell: (info) => (
-          <div className="w-full flex justify-center">
+          <div className="flex w-full justify-center">
             <button
               onClick={async () => {
                 await update.mutateAsync({
@@ -88,14 +88,14 @@ export const MapsTable = ({ maps }: MapsTableProps) => {
                 });
                 maps.refetch();
               }}
-              className={`uppercase font-bold border rounded border-neutral-600 p-1 hover:bg-neutral-600  w-9 flex justify-center  ${
+              className={`flex w-9 justify-center rounded border border-neutral-600 p-1  font-bold uppercase hover:bg-neutral-600  ${
                 info.getValue() ? "text-red-700" : "text-green-700"
               }`}
             >
               {info.getValue() ? (
-                <HiOutlineX className="w-5 h-5 font-extrabold" />
+                <HiOutlineX className="h-5 w-5 font-extrabold" />
               ) : (
-                <HiCheck className="w-5 h-5 font-extrabold" />
+                <HiCheck className="h-5 w-5 font-extrabold" />
               )}
             </button>
           </div>
@@ -103,7 +103,7 @@ export const MapsTable = ({ maps }: MapsTableProps) => {
       }),
       columnHelper.accessor("priority", {
         cell: (info) => (
-          <div className="w-full flex justify-center">
+          <div className="flex w-full justify-center">
             <button
               onClick={async () => {
                 await update.mutateAsync({
@@ -112,14 +112,14 @@ export const MapsTable = ({ maps }: MapsTableProps) => {
                 });
                 maps.refetch();
               }}
-              className={`uppercase font-bold  rounded border border-neutral-600 p-1 hover:bg-neutral-600  w-9 flex justify-center   ${
+              className={`flex w-9  justify-center rounded border border-neutral-600 p-1  font-bold uppercase hover:bg-neutral-600   ${
                 info.getValue() ? "text-green-700" : "text-red-700"
               }`}
             >
               {info.getValue() ? (
-                <HiCheck className="w-5 h-5 font-extrabold" />
+                <HiCheck className="h-5 w-5 font-extrabold" />
               ) : (
-                <HiOutlineX className="w-5 h-5 font-extrabold" />
+                <HiOutlineX className="h-5 w-5 font-extrabold" />
               )}
             </button>
           </div>
@@ -131,7 +131,7 @@ export const MapsTable = ({ maps }: MapsTableProps) => {
           const rebuild = trpc.useMutation("map.rebuildZooms");
           return (
             <div className="flex items-center">
-              {rebuild.isLoading ? <Spinner /> : <div className="w-5 h-5" />}
+              {rebuild.isLoading ? <Spinner /> : <div className="h-5 w-5" />}
 
               <ActionsMenu
                 actions={[

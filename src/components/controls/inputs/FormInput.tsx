@@ -26,7 +26,7 @@ export const Input = <T extends FieldValues = FieldValues>({
   return (
     <div className={`flex flex-col ${className}`}>
       {label && (
-        <label className="mb-2 font-bold tracking-wide text-lg">{label}</label>
+        <label className="mb-2 text-lg font-bold tracking-wide">{label}</label>
       )}
 
       <div className="w-full transform border-b-2 bg-transparent text-lg duration-300 focus-within:border-indigo-500">
@@ -38,7 +38,7 @@ export const Input = <T extends FieldValues = FieldValues>({
           {...rest}
         />
       </div>
-      <span role="alert" className="mt-1 text-sm text-red-600 font-bold">
+      <span role="alert" className="mt-1 text-sm font-bold text-red-600">
         {error && (error.message || "invalid")}
       </span>
     </div>

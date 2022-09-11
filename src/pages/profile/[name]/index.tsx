@@ -6,9 +6,11 @@ import { useRouter } from "next/router";
 import { trpc } from "utils/trpc";
 import { Button } from "~/components/controls/buttons";
 import { HiClipboardCopy } from "react-icons/hi";
+import { useClipboard } from "~/hooks/useClipboard";
 const Page = () => {
   const session = useSession();
   const router = useRouter();
+  const copyToClipboard = useClipboard();
   const queryName = router.query.name as string;
   const user = trpc.useQuery(
     [
@@ -37,7 +39,7 @@ const Page = () => {
     return null;
   }
   return (
-    <div className="p-2 flex flex-col gap-2">
+    <div className="flex flex-col gap-2 p-2">
       Paste this into client:
       <div className="flex items-center gap-1">
         {process.env.NEXT_PUBLIC_PREFIX}/api/client/
@@ -46,15 +48,11 @@ const Page = () => {
           variant="outline"
           className="text-xs"
           onClick={() =>
-            navigator.clipboard
-              .writeText(
-                process.env.NEXT_PUBLIC_PREFIX +
-                  "/api/client/" +
-                  user.data!.token
-              )
-              .then(function () {
-                alert("copied!");
-              })
+            copyToClipboard(
+              process.env.NEXT_PUBLIC_PREFIX + "/api/client/" + user.data!.token
+            ).then(function () {
+              alert("copied!");
+            })
           }
         >
           Copy <HiClipboardCopy />

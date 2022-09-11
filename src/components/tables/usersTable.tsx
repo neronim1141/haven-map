@@ -10,6 +10,7 @@ import { ActionsMenu } from "~/components/actionMenu";
 import { HiTrash, HiPencil } from "react-icons/hi";
 import { Select } from "~/components/controls/select";
 import { UseQueryResult } from "react-query";
+import { ResetPasswordModal } from "../modals/resetPasswordModal";
 
 const columnHelper = createColumnHelper<Pick<User, "name" | "role">>();
 
@@ -26,6 +27,7 @@ export const UsersTable = ({ users }: UsersTableProps) => {
   const { mutateAsync: updateUser } = trpc.useMutation("user.update");
 
   const [userToDelete, setUserToDelete] = useState<string>();
+  const [userToResetPassword, setUserToResetPassword] = useState<string>();
 
   const columns = useMemo(
     () => [
@@ -69,9 +71,9 @@ export const UsersTable = ({ users }: UsersTableProps) => {
           <ActionsMenu
             actions={[
               {
-                name: "Change Password",
+                name: "Reset Password",
                 onClick: () => {
-                  alert("TBD");
+                  setUserToResetPassword(row.original.name);
                 },
                 icon: HiPencil,
               },
@@ -111,6 +113,14 @@ export const UsersTable = ({ users }: UsersTableProps) => {
           onClose={() => {
             setUserToDelete(undefined);
             users.refetch();
+          }}
+        />
+      )}
+      {userToResetPassword && (
+        <ResetPasswordModal
+          data={userToResetPassword}
+          onClose={() => {
+            setUserToResetPassword(undefined);
           }}
         />
       )}

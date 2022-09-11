@@ -11,7 +11,7 @@ export const NavBarMenu = ({ children, icon }: NavBarMenuProps) => {
   return (
     <Menu as="div" className="text-left  ">
       <div>
-        <Menu.Button className=" inline-flex  justify-center rounded-md text-2xl  hover:bg-neutral-400 hover:text-neutral-900 p-1 font-medium text-white  focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+        <Menu.Button className=" inline-flex  justify-center rounded-md p-1  text-2xl font-medium text-white hover:bg-neutral-400 hover:text-neutral-900  focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
           {icon ?? <HiMenu />}
         </Menu.Button>
       </div>
@@ -25,8 +25,8 @@ export const NavBarMenu = ({ children, icon }: NavBarMenuProps) => {
         leaveTo="transform opacity-0 scale-95"
       >
         <div className="relative z-50 ">
-          <Menu.Items className="absolute right-0 rounded-md w-32 bg-neutral-700 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-            <ul className="p-1 flex flex-col divide-y">
+          <Menu.Items className="absolute right-0 w-32 rounded-md bg-neutral-700 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+            <ul className="flex flex-col divide-y p-1">
               {children
                 .filter((action) => React.isValidElement(action))
                 .map((action, index) => (
@@ -35,7 +35,7 @@ export const NavBarMenu = ({ children, icon }: NavBarMenuProps) => {
                       <li
                         className={clsx(
                           { "bg-neutral-600": active },
-                          `p-1 w-full min-w-max text-center`
+                          `w-full min-w-max p-1 text-center`
                         )}
                       >
                         {action ?? "lol"}

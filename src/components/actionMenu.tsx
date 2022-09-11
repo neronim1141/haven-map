@@ -15,7 +15,7 @@ export const ActionsMenu = ({ actions }: ActionsMenuProps) => {
   return (
     <Menu as="div" className="text-left ">
       <div>
-        <Menu.Button className=" inline-flex  justify-center rounded-md text-xl bg-opacity-20 py-1 font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+        <Menu.Button className=" inline-flex  justify-center rounded-md bg-opacity-20 py-1 text-xl font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
           <HiDotsVertical />
         </Menu.Button>
       </div>
@@ -29,7 +29,7 @@ export const ActionsMenu = ({ actions }: ActionsMenuProps) => {
         leaveTo="transform opacity-0 scale-95"
       >
         <div className="relative ">
-          <Menu.Items className="divide-y absolute right-0   divide-gray-100 rounded-md bg-neutral-700 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <Menu.Items className="absolute right-0 divide-y   divide-gray-100 rounded-md bg-neutral-700 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="  px-1 py-1    ">
               {actions.map((action) => (
                 <Menu.Item key={action.name}>
@@ -43,7 +43,7 @@ export const ActionsMenu = ({ actions }: ActionsMenuProps) => {
                               "bg-red-700": action.variant,
                             })
                           : "text-white"
-                      } group flex w-full  gap-1 items-center rounded-md px-2 py-2 text-sm`}
+                      } group flex w-full  items-center gap-1 rounded-md px-2 py-2 text-sm`}
                     >
                       {action.icon && (
                         <action.icon

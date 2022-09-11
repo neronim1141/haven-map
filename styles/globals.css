@@ -1,27 +1,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import '~leaflet/dist/leaflet.css';
+@import "~leaflet/dist/leaflet.css";
 
 .map-tile {
   border-bottom: 1px solid #40404050;
   border-right: 1px solid #40404050;
   color: black;
   font-size: 14px;
-  font-weight:600;
+  font-weight: 600;
   z-index: 10;
 }
-.text-outline{
-  text-shadow: -1px -1px 0px rgba(255, 255, 255, 0.5), 1px -1px 0px rgba(255, 255, 255, 0.5), -1px 1px 0px rgba(255, 255, 255, 0.5), 1px 1px 0px rgba(255, 255, 255, 0.5);
-
+.text-outline {
+  text-shadow: -1px -1px 0px rgba(255, 255, 255, 0.5),
+    1px -1px 0px rgba(255, 255, 255, 0.5), -1px 1px 0px rgba(255, 255, 255, 0.5),
+    1px 1px 0px rgba(255, 255, 255, 0.5);
 }
 .leaflet-container {
   background: #000;
   cursor: crosshair;
 }
-.leaflet-control { z-index: 0 !important}
-.leaflet-pane { z-index: 0 !important}
-.leaflet-top, .leaflet-bottom {z-index: 0 !important}
+.leaflet-control {
+  z-index: 0 !important;
+}
+.leaflet-pane {
+  z-index: 0 !important;
+}
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 0 !important;
+}
 .control-panel {
   position: absolute;
   top: 10%;
@@ -29,24 +37,21 @@
   z-index: 502;
 }
 input[type="range"]::-webkit-slider-thumb {
-  @apply w-5 h-5 bg-neutral-600 border-2 border-neutral-400 border-solid relative -top-1;
+  @apply relative -top-1 h-5 w-5 border-2 border-solid border-neutral-400 bg-neutral-600;
 
   -webkit-appearance: none;
   appearance: none;
   cursor: ew-resize;
   border-radius: 50%;
-  
 }
 input[type="range"]::-webkit-slider-runnable-track {
-  @apply bg-neutral-600 rounded h-full;
-
-  
+  @apply h-full rounded bg-neutral-600;
 }
 
-.slider-thumb{
-  @apply rounded-lg relative  appearance-none bg-gray-400 h-3 
+.slider-thumb {
+  @apply relative h-3  appearance-none rounded-lg bg-gray-400;
 }
 
-.progressBarInner{
-  width: calc(100% * var(--completed)/100)
+.progressBarInner {
+  width: calc(100% * var(--completed) / 100);
 }

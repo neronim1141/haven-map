@@ -10,6 +10,7 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { TRPCError } from "@trpc/server";
 import { logger } from "utils/logger";
 import { prisma } from "utils/prisma";
+import { canAccess, createHash } from "./utils";
 const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   name: true,
   role: true,
@@ -72,7 +73,7 @@ export const userRouter = createRouter()
           data: {
             name: name.toLowerCase(),
             password: await bcrypt.hash(password.toLowerCase(), 10),
-            token: createToken(name.toLowerCase()),
+            token: createHash(),
           },
           select: defaultUserSelect,
         });
@@ -146,11 +147,42 @@ export const userRouter = createRouter()
         throw e;
       }
     },
-  });
+  })
+  .mutation("resetPassword", {
+    input: z.object({
+      name: z.string(),
+    }),
+    async resolve({ ctx, input: { name } }) {
+      if (!canAccess(Role.ADMIN, ctx.session?.user.role)) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+        });
+      }
+      const password = createHash();
+      try {
+        const user = await prisma.user.findUnique({
+          where: { name: name.toLowerCase() },
+        });
+        if (!user) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "User has not be found",
+          });
+        }
 
-export const createToken = (text: string) => {
-  return bcrypt
-    .hashSync(text, 1)
-    .replace(/[^a-z]/g, "")
-    .slice(0, 15);
-};
+        await prisma.user.update({
+          where: {
+            name: name.toLowerCase(),
+          },
+          data: {
+            password: await bcrypt.hash(password.toLowerCase(), 10),
+          },
+          select: defaultUserSelect,
+        });
+        logger.log(`reseted User password: ${user.name}`);
+        return password;
+      } catch (e) {
+        throw e;
+      }
+    },
+  });

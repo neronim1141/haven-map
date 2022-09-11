@@ -21,7 +21,7 @@ export const Button = ({
             variant === "outline",
           "bg-red-600 hover:bg-red-500": variant === "danger",
         },
-        "px-4 py-2  text-white w-max rounded flex items-center gap-1 ",
+        "flex w-max  items-center gap-1 rounded px-4 py-2 text-white ",
         className
       )}
     >

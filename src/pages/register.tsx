@@ -60,9 +60,9 @@ const Register = () => {
       </Head>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full h-full flex items-center justify-center text-white"
+        className="flex h-full w-full items-center justify-center text-white"
       >
-        <section className="flex  p-6 sm:p-0 w-[30rem] flex-col space-y-8">
+        <section className="flex  w-[30rem] flex-col space-y-8 p-6 sm:p-0">
           <div className="text-center text-4xl font-bold">Sign In</div>
 
           <Input<RegisterFormData>

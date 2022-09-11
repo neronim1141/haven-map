@@ -21,9 +21,9 @@ export const Select = ({
       {({ open }) => (
         <>
           <Listbox.Button
-            className={`flex justify-between bg-neutral-700 w-full rounded text-white p-2 text-left shadow-md focus:outline-none focus-visible:ring-neutral-500  focus-visible:ring-2  focus-visible:ring-opacity-75 focus-visible:ring-offset-1  sm:text-sm ${className}`}
+            className={`flex w-full justify-between rounded bg-neutral-700 p-2 text-left text-white shadow-md focus:outline-none focus-visible:ring-2  focus-visible:ring-neutral-500  focus-visible:ring-opacity-75 focus-visible:ring-offset-1  sm:text-sm ${className}`}
           >
-            <span className=" truncate flex-grow ">{value.label}</span>
+            <span className=" flex-grow truncate ">{value.label}</span>
             <span className="pointer-events-none  ">
               {!disabled &&
                 (open ? (
