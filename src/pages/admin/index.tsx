@@ -24,12 +24,14 @@ const AdminPage = () => {
   const maps = trpc.useQuery(["map.all"]);
   const users = trpc.useQuery(["user.all"]);
   const { getFile } = useFileRequest("/api/map/export", (percent) => {
+    console.log(percent);
+
     if (percent < 100) {
       toast.update(exportMapToastId, {
         render: `Downloading progress: \n${percent}%`,
         type: toast.TYPE.DEFAULT,
         isLoading: false,
-        progress: percent,
+        progress: percent / 100,
         autoClose: false,
       });
     } else {
