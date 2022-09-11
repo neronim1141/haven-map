@@ -8,6 +8,7 @@ import { Button } from "~/components/controls/buttons";
 import { HiClipboardCopy } from "react-icons/hi";
 import { useClipboard } from "~/hooks/useClipboard";
 import { toast } from "react-toastify";
+import Link from "next/link";
 const Page = () => {
   const session = useSession();
   const router = useRouter();
@@ -41,7 +42,16 @@ const Page = () => {
   }
   return (
     <div className="flex flex-col gap-2 p-2">
-      Paste this into client:
+      <span>
+        Paste this into client{" "}
+        <Link href="/instruction">
+          <a className="font-bold underline hover:text-neutral-400">
+            (Instructions)
+          </a>
+        </Link>
+        :
+      </span>
+
       <div className="flex items-center gap-1">
         {process.env.NEXT_PUBLIC_PREFIX}/api/client/
         {user.data.token}

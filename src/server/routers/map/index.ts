@@ -9,6 +9,7 @@ import { prisma } from "utils/prisma";
 import { z } from "zod";
 import { Coord, processZoom } from "./utils";
 import { logger } from "utils/logger";
+import { TRPCError } from "@trpc/server";
 export const mapRouter = createRouter()
   .query("all", {
     async resolve({ ctx }) {
@@ -108,7 +109,11 @@ export const mapRouter = createRouter()
     }),
     async resolve({ input: { mapId, x, y } }) {
       const grid = await prisma.grid.findFirst({ where: { mapId, x, y } });
-      if (!grid) return;
+      if (!grid)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Grid has not be found",
+        });
       await prisma.marker.deleteMany({ where: { gridId: grid.id } });
       await prisma.grid.delete({ where: { id: grid.id } });
       let needProcess = new Map<string, Coord>([]);

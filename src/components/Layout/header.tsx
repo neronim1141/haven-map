@@ -35,7 +35,10 @@ export const Header = () => {
               )}
 
               <NavBarMenu icon={<HiUserCircle />}>
-                <Link href={`/profile/${data.user.name}`}>
+                <Link
+                  href={`/profile/[name]`}
+                  as={`/profile/${data.user.name}`}
+                >
                   <a>Profile</a>
                 </Link>
 
