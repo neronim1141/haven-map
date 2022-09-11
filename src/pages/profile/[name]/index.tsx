@@ -7,6 +7,7 @@ import { trpc } from "utils/trpc";
 import { Button } from "~/components/controls/buttons";
 import { HiClipboardCopy } from "react-icons/hi";
 import { useClipboard } from "~/hooks/useClipboard";
+import { toast } from "react-toastify";
 const Page = () => {
   const session = useSession();
   const router = useRouter();
@@ -48,11 +49,18 @@ const Page = () => {
           variant="outline"
           className="text-xs"
           onClick={() =>
-            copyToClipboard(
-              process.env.NEXT_PUBLIC_PREFIX + "/api/client/" + user.data!.token
-            ).then(function () {
-              alert("copied!");
-            })
+            toast.promise(
+              copyToClipboard(
+                process.env.NEXT_PUBLIC_PREFIX +
+                  "/api/client/" +
+                  user.data!.token
+              ),
+              {
+                pending: "Coping",
+                success: "Url copied",
+                error: "Something went wrong",
+              }
+            )
           }
         >
           Copy <HiClipboardCopy />

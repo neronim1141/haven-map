@@ -10,7 +10,8 @@ import Head from "next/head";
 import { withTRPC } from "@trpc/next";
 import { AppRouter } from "~/server/routers";
 import favicon from "../../public/favicon.ico";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <>
@@ -26,6 +27,13 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
           </main>
         </div>
       </SessionProvider>
+      <ToastContainer
+        position="bottom-left"
+        autoClose={3000}
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </>
   );
 }

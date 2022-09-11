@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Dialog } from "@headlessui/react";
 import { Button } from "../controls/buttons";
-import { Spinner } from "../spinner";
+import { toast } from "react-toastify";
 
 const schema = z.object({
   mapId: z.number(),
@@ -43,13 +43,25 @@ export const EditGridModal = ({
   const wipe = trpc.useMutation("map.wipeTile");
 
   const onSubmit = async (values: ShiftMapSchema) => {
-    await shift.mutateAsync({
-      mapId: data.mapId,
-      shiftBy: {
-        x: values.x - data.x,
-        y: values.y - data.y,
-      },
-    });
+    await toast.promise(
+      shift.mutateAsync({
+        mapId: data.mapId,
+        shiftBy: {
+          x: values.x - data.x,
+          y: values.y - data.y,
+        },
+      }),
+      {
+        pending: "Shifting in progress",
+        success: "Shifting sucessfull",
+        error: {
+          render({ data }) {
+            return data.message;
+          },
+        },
+      }
+    );
+
     onClose();
   };
   return (
@@ -94,7 +106,6 @@ export const EditGridModal = ({
                       />
                     </div>
                     <Button type="submit">shift map</Button>
-                    {shift.isLoading && <Spinner />}
                   </div>
                   {errors.x ||
                     (errors.y && (
@@ -113,11 +124,22 @@ export const EditGridModal = ({
             <Button onClick={onClose}>Close</Button>
             <Button
               onClick={async () => {
-                await wipe.mutateAsync({
-                  mapId: data.mapId,
-                  x: data.x,
-                  y: data.y,
-                });
+                await toast.promise(
+                  wipe.mutateAsync({
+                    mapId: data.mapId,
+                    x: data.x,
+                    y: data.y,
+                  }),
+                  {
+                    pending: "Wiping in progress",
+                    success: "Wiping sucessfull",
+                    error: {
+                      render({ data }) {
+                        return data.message;
+                      },
+                    },
+                  }
+                );
               }}
               variant="danger"
             >

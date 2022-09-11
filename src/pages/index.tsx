@@ -2,7 +2,7 @@ import React from "react";
 
 import type { NextPage } from "next";
 import Link from "next/link";
-import { useSocketIO } from "~/hooks/useSocketIO";
+import { toast } from "react-toastify";
 
 const Home: NextPage = () => {
   return (

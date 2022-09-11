@@ -9,6 +9,7 @@ import { UsersTable } from "~/components/tables/usersTable";
 import { useFileRequest } from "~/hooks/useFileRequest";
 import { Button } from "~/components/controls/buttons";
 import { ProgressBar } from "~/components/progressBar";
+import { toast } from "react-toastify";
 
 const AdminTab = ({ children }: { children: ReactNode }) => {
   return (
@@ -19,10 +20,24 @@ const AdminTab = ({ children }: { children: ReactNode }) => {
 };
 
 const AdminPage = () => {
+  const exportMapToastId = "exportMap";
   const maps = trpc.useQuery(["map.all"]);
   const users = trpc.useQuery(["user.all"]);
-  const { loading, downloadProgress, getFile } =
-    useFileRequest("/api/map/export");
+  const { getFile } = useFileRequest("/api/map/export", (percent) => {
+    if (percent < 100) {
+      toast.update(exportMapToastId, {
+        render: `Progress: ${percent}%`,
+        type: toast.TYPE.INFO,
+        progress: percent,
+      });
+    } else {
+      toast.update(exportMapToastId, {
+        render: `Map downloaded`,
+        isLoading: false,
+        type: toast.TYPE.SUCCESS,
+      });
+    }
+  });
   return (
     <div className="mx-auto w-full min-w-max  max-w-2xl p-5">
       <Tab.Group>
@@ -34,13 +49,17 @@ const AdminPage = () => {
         <Tab.Panels>
           <Tab.Panel className="p-2">
             <div className="flex w-full items-center gap-2">
-              <Button onClick={() => getFile()}>Export Data</Button>
-              {loading && "preparing data..."}
-              {downloadProgress != undefined && (
-                <div className="flex-grow">
-                  <ProgressBar completed={downloadProgress} />
-                </div>
-              )}
+              <Button
+                onClick={() => {
+                  getFile();
+                  toast.loading("File is Processed", {
+                    toastId: exportMapToastId,
+                    autoClose: false,
+                  });
+                }}
+              >
+                Export Data
+              </Button>
             </div>
           </Tab.Panel>
           <Tab.Panel className="p-2">

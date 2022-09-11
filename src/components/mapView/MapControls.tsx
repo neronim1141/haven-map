@@ -67,7 +67,7 @@ export function MapControls({
         )}
       </button>
       {show && (
-        <div className="flex flex-col rounded-lg border border-gray-200 bg-white shadow-md dark:border-neutral-700 dark:bg-neutral-800">
+        <div className="flex flex-col rounded-lg border border-neutral-700 bg-neutral-800 shadow-md">
           <div className="flex flex-col gap-2 p-2">
             <div className="flex gap-1">
               <Toggle

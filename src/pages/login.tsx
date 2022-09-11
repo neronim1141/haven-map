@@ -12,6 +12,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import Head from "next/head";
+import { toast } from "react-toastify";
 
 const schema = z.object({
   login: z.string(),
@@ -22,7 +23,6 @@ type LoginFormData = z.infer<typeof schema>;
 
 const Login = () => {
   const router = useRouter();
-  const [error, setError] = useState<string>();
   const {
     register,
     handleSubmit,
@@ -31,17 +31,20 @@ const Login = () => {
     resolver: zodResolver(schema),
   });
   const onSubmit = async (values: any) => {
+    let id = "error";
     const res = await signIn("credentials", {
       redirect: false,
       login: values.login,
       password: values.password,
     });
     if (res?.error) {
-      setError(res.error);
+      toast.error(res.error, {
+        toastId: id,
+      });
       return;
     }
     if (res && res.url) {
-      setError(undefined);
+      toast.dismiss(id);
       router.push(`/profile/${values.login.toLowerCase()}`);
     }
   };
@@ -72,7 +75,6 @@ const Login = () => {
           />
           <SubmitButton>Log In</SubmitButton>
 
-          {error && <ErrorMessage>{error}</ErrorMessage>}
           <p className="text-center text-lg">
             No account?{" "}
             <Link href="/register">

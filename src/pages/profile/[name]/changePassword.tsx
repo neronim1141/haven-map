@@ -13,6 +13,7 @@ import { Role } from "@prisma/client";
 import { trpc } from "utils/trpc";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "react-toastify";
 
 const schema = z
   .object({
@@ -34,7 +35,6 @@ const ChangePassword = () => {
     "user.changePassword"
   );
 
-  const [error, setError] = useState("");
   const {
     register,
     handleSubmit,
@@ -55,19 +55,26 @@ const ChangePassword = () => {
     return;
   }
   const onSubmit = async (values: any) => {
-    await updatePassword(
-      {
-        name: values.login,
-        oldPassword: values.oldPassword,
-        newPassword: values.password,
-      },
-      {
-        onError: (e) => {
-          setError(e.message);
+    await toast.promise(
+      updatePassword(
+        {
+          name: values.login,
+          oldPassword: values.oldPassword,
+          newPassword: values.password,
         },
-        onSuccess: () => {
-          setError("");
-          signOut({ redirect: false }).then(() => router.push("/login"));
+        {
+          onSuccess: () => {
+            signOut({ redirect: false }).then(() => router.push("/login"));
+          },
+        }
+      ),
+      {
+        pending: "Changing password in progress",
+        success: "You need to log again with new password",
+        error: {
+          render({ data }) {
+            return data.message;
+          },
         },
       }
     );
@@ -113,7 +120,6 @@ const ChangePassword = () => {
             error={errors.repeatPassword}
           />
           <SubmitButton>Change your password</SubmitButton>
-          {error && <ErrorMessage>{error}</ErrorMessage>}
         </section>
       </form>
     </>

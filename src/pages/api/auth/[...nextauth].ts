@@ -22,7 +22,7 @@ export const authOptions: NextAuthOptions = {
           const data = await prisma.user.findUnique({
             where: { name: login },
           });
-          if (!data) return null;
+          if (!data) return Promise.reject(new Error("User Not Found"));
           if (data.role === Role.NEED_CHECK) {
             return Promise.reject(
               new Error("Wait until you are checked by admin")

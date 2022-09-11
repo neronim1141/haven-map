@@ -3,7 +3,6 @@ import React from "react";
 import { SubmitButton } from "src/components/controls/buttons/SubmitButton";
 import { Input } from "src/components/controls/inputs/FormInput";
 import { ErrorMessage } from "src/components/errorMessage";
-import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -13,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import Head from "next/head";
 import { trpc } from "utils/trpc";
+import { toast } from "react-toastify";
 
 const schema = z
   .object({
@@ -38,6 +38,7 @@ const Register = () => {
     resolver: zodResolver(schema),
   });
   const onSubmit = async (values: any) => {
+    const id = toast("Please wait...");
     const user = await createUser(
       { name: values.login, password: values.password },
       {
@@ -50,7 +51,15 @@ const Register = () => {
       }
     );
     if (!user) return;
-
+    toast.update(id, {
+      render: "User Created Sucessfully!",
+      type: toast.TYPE.SUCCESS,
+      isLoading: false,
+      autoClose: 2500,
+    });
+    toast("You need to wait for one of the admins to set your role", {
+      autoClose: false,
+    });
     router.push(`/`);
   };
   return (

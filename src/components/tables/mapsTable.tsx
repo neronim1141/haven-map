@@ -8,8 +8,8 @@ import { trpc } from "utils/trpc";
 import useDebounce from "~/hooks/useDebounce";
 import { ActionsMenu } from "~/components/actionMenu";
 import { HiSearch, HiPencil, HiOutlineX, HiCheck } from "react-icons/hi";
-import { Spinner } from "~/components/spinner";
 import { UseQueryResult } from "react-query";
+import { toast } from "react-toastify";
 
 const columnHelper = createColumnHelper<Map>();
 
@@ -23,6 +23,7 @@ const NameChangeInput = ({
   const [value, setValue] = useState(initialValue);
   const [loading, setLoading] = useState(false);
   const debouncedValue = useDebounce<string>(value, 2000);
+
   useEffect(() => {
     if (debouncedValue !== initialValue) {
       onUpdate(debouncedValue).then(() => setLoading(false));
@@ -51,6 +52,7 @@ interface MapsTableProps {
 }
 export const MapsTable = ({ maps }: MapsTableProps) => {
   const update = trpc.useMutation("map.update");
+  const rebuild = trpc.useMutation("map.rebuildZooms");
 
   const columns = useMemo(
     () => [
@@ -65,10 +67,21 @@ export const MapsTable = ({ maps }: MapsTableProps) => {
             initialValue={info.getValue() ?? ""}
             onUpdate={async (name) => {
               const trimmedName = name.trim();
-              await update.mutateAsync({
-                mapId: info.row.original.id,
-                data: { name: trimmedName !== "" ? trimmedName : null },
-              });
+              await toast.promise(
+                update.mutateAsync({
+                  mapId: info.row.original.id,
+                  data: { name: trimmedName !== "" ? trimmedName : null },
+                }),
+                {
+                  pending: "Please wait...",
+                  success: "Map name updated",
+                  error: {
+                    render({ data }) {
+                      return data.message;
+                    },
+                  },
+                }
+              );
               maps.refetch();
             }}
           />
@@ -82,10 +95,22 @@ export const MapsTable = ({ maps }: MapsTableProps) => {
           <div className="flex w-full justify-center">
             <button
               onClick={async () => {
-                await update.mutateAsync({
-                  mapId: info.row.original.id,
-                  data: { hidden: !info.getValue() },
-                });
+                await toast.promise(
+                  update.mutateAsync({
+                    mapId: info.row.original.id,
+                    data: { hidden: !info.getValue() },
+                  }),
+                  {
+                    pending: "Please wait...",
+                    success: "Map visibility updated",
+                    error: {
+                      render({ data }) {
+                        return data.message;
+                      },
+                    },
+                  }
+                );
+
                 maps.refetch();
               }}
               className={`flex w-9 justify-center rounded border border-neutral-600 p-1  font-bold uppercase hover:bg-neutral-600  ${
@@ -106,10 +131,21 @@ export const MapsTable = ({ maps }: MapsTableProps) => {
           <div className="flex w-full justify-center">
             <button
               onClick={async () => {
-                await update.mutateAsync({
-                  mapId: info.row.original.id,
-                  data: { priority: !info.getValue() },
-                });
+                await toast.promise(
+                  update.mutateAsync({
+                    mapId: info.row.original.id,
+                    data: { priority: !info.getValue() },
+                  }),
+                  {
+                    pending: "Please wait...",
+                    success: "Map priority updated",
+                    error: {
+                      render({ data }) {
+                        return data.message;
+                      },
+                    },
+                  }
+                );
                 maps.refetch();
               }}
               className={`flex w-9  justify-center rounded border border-neutral-600 p-1  font-bold uppercase hover:bg-neutral-600   ${
@@ -128,17 +164,25 @@ export const MapsTable = ({ maps }: MapsTableProps) => {
       columnHelper.display({
         id: "actions",
         cell: ({ row }) => {
-          const rebuild = trpc.useMutation("map.rebuildZooms");
           return (
             <div className="flex items-center">
-              {rebuild.isLoading ? <Spinner /> : <div className="h-5 w-5" />}
-
               <ActionsMenu
                 actions={[
                   {
                     name: "rebuild zooms",
                     onClick: () => {
-                      rebuild.mutateAsync({ mapId: row.original.id });
+                      toast.promise(
+                        rebuild.mutateAsync({ mapId: row.original.id }),
+                        {
+                          pending: "Rebuilding in progress",
+                          success: "Rebuilding sucessfull",
+                          error: {
+                            render({ data }) {
+                              return data.message;
+                            },
+                          },
+                        }
+                      );
                     },
                     icon: HiSearch,
                   },
@@ -149,7 +193,7 @@ export const MapsTable = ({ maps }: MapsTableProps) => {
         },
       }),
     ],
-    [maps, update]
+    [maps, update, rebuild]
   );
   if (!maps.data) {
     return <>loading</>;
