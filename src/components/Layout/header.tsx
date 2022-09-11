@@ -39,13 +39,14 @@ export const Header = () => {
                   href={`/profile/[name]`}
                   as={`/profile/${data.user.name}`}
                 >
-                  <a>Profile</a>
+                  <a className="block w-full p-1">Profile</a>
                 </Link>
 
                 <button
                   onClick={() => {
                     signOut({ redirect: true });
                   }}
+                  className="w-full p-1"
                 >
                   Log out
                 </button>

@@ -35,10 +35,10 @@ export const NavBarMenu = ({ children, icon }: NavBarMenuProps) => {
                       <li
                         className={clsx(
                           { "bg-neutral-600": active },
-                          `w-full min-w-max p-1 text-center`
+                          `w-full min-w-max  text-center`
                         )}
                       >
-                        {action ?? "lol"}
+                        {action}
                       </li>
                     )}
                   </Menu.Item>
