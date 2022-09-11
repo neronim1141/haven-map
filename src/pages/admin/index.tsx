@@ -26,9 +26,10 @@ const AdminPage = () => {
   const { getFile } = useFileRequest("/api/map/export", (percent) => {
     if (percent < 100) {
       toast.update(exportMapToastId, {
-        render: `Progress: ${percent}%`,
+        render: `Downloading progress: \n${percent}%`,
         type: toast.TYPE.INFO,
         progress: percent,
+        autoClose: false,
       });
     } else {
       toast.update(exportMapToastId, {
