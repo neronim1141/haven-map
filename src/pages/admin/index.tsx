@@ -23,7 +23,7 @@ const AdminPage = () => {
   const exportMapToastId = "exportMap";
   const maps = trpc.useQuery(["map.all"]);
   const users = trpc.useQuery(["user.all"]);
-  const { getFile } = useFileRequest("/api/map/export", (percent) => {
+  const { getFile, loading } = useFileRequest("/api/map/export", (percent) => {
     console.log(percent);
 
     if (percent < 100) {
@@ -39,6 +39,8 @@ const AdminPage = () => {
         render: `Map downloaded`,
         isLoading: false,
         type: toast.TYPE.SUCCESS,
+        progress: 1,
+        autoClose: 2500,
       });
     }
   });
@@ -54,6 +56,7 @@ const AdminPage = () => {
           <Tab.Panel className="p-2">
             <div className="flex w-full items-center gap-2">
               <Button
+                disabled={loading}
                 onClick={() => {
                   getFile();
                   toast.loading("File is Processed", {
