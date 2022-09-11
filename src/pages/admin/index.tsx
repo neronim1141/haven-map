@@ -54,7 +54,7 @@ const AdminPage = () => {
               <Button
                 onClick={() => {
                   getFile();
-                  toast("File is Processed", {
+                  toast.loading("File is Processed", {
                     toastId: exportMapToastId,
                     autoClose: false,
                   });
