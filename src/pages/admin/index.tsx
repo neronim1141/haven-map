@@ -27,7 +27,7 @@ const AdminPage = () => {
     if (percent < 100) {
       toast.update(exportMapToastId, {
         render: `Downloading progress: \n${percent}%`,
-        type: toast.TYPE.INFO,
+        type: toast.TYPE.DEFAULT,
         isLoading: false,
         progress: percent,
         autoClose: false,
