@@ -55,3 +55,8 @@ input[type="range"]::-webkit-slider-runnable-track {
 .progressBarInner {
   width: calc(100% * var(--completed) / 100);
 }
+
+.logo-text{
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
