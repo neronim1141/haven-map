@@ -1,20 +1,19 @@
 import React from "react";
 
 import { Role } from "@prisma/client";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { NavBarMenu } from "./navBarMenu";
 import { HiMap, HiOutlineChip, HiUserCircle } from "react-icons/hi";
-import { canAccess } from "~/server/routers/user/utils";
 import Link from "next/link";
+import { useAuth } from "~/contexts/auth";
 
 export const Header = () => {
-  const { data } = useSession();
-
+  const auth = useAuth();
   return (
     <header className="flex w-full bg-neutral-800 pl-2   shadow-2xl">
       <nav className="flex w-full justify-between ">
         <div className="flex items-center   gap-1">
-          {data && canAccess(Role.ALLY, data.user.role) && (
+          {auth.canAccess(Role.ALLY) && (
             <Link href="/map/[mapId]/[z]/[x]/[y]" as="/map/1/6/0/0">
               <a className="flex items-center gap-1 rounded p-2 font-bold hover:bg-neutral-400 hover:text-neutral-900">
                 <HiMap />
@@ -24,9 +23,9 @@ export const Header = () => {
           )}
         </div>
         <div className="flex gap-4 p-2">
-          {data ? (
+          {auth.user ? (
             <>
-              {canAccess(Role.ADMIN, data.user.role) && (
+              {auth.canAccess(Role.ADMIN) && (
                 <Link href="/admin">
                   <a className="flex items-center rounded px-1 font-bold hover:bg-neutral-400 hover:text-neutral-900">
                     <HiOutlineChip className="h-6 w-6" />
@@ -35,10 +34,7 @@ export const Header = () => {
               )}
 
               <NavBarMenu icon={<HiUserCircle />}>
-                <Link
-                  href={`/profile/[name]`}
-                  as={`/profile/${data.user.name}`}
-                >
+                <Link href={`/profile`}>
                   <a className="block w-full p-1">Profile</a>
                 </Link>
 

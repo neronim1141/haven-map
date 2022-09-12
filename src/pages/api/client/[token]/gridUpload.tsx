@@ -30,7 +30,6 @@ router.post(async (req, res) => {
   if (!user) return res.status(403).end();
 
   const tile = await getTileFromRequest(req);
-
   try {
     const tileData = await fs.readFile(tile.file.filepath);
     const grid = await prisma.grid.findUnique({
@@ -40,7 +39,16 @@ router.post(async (req, res) => {
       throw new Error(`Unknown grid id: ${tile.id}`);
     }
 
-    await saveTile(grid.mapId, grid.x, grid.y, 0, tileData, socket, grid.id);
+    await saveTile(
+      grid.mapId,
+      grid.x,
+      grid.y,
+      0,
+      tileData,
+      socket,
+      grid.id,
+      tile.extraData.season
+    );
     let coord = { x: grid.x, y: grid.y };
 
     for (let z = HnHMinZoom; z < HnHMaxZoom; z++) {

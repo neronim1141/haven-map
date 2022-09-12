@@ -9,30 +9,27 @@ import { HiClipboardCopy } from "react-icons/hi";
 import { useClipboard } from "~/hooks/useClipboard";
 import { toast } from "react-toastify";
 import Link from "next/link";
+import { useAuth } from "~/contexts/auth";
 const Page = () => {
-  const session = useSession();
+  const auth = useAuth();
   const router = useRouter();
   const copyToClipboard = useClipboard();
-  const queryName = router.query.name as string;
+  const queryid = Number(router.query.id);
   const user = trpc.useQuery(
     [
-      "user.byName",
+      "user.byId",
       {
-        name: queryName,
+        id: queryid,
       },
     ],
-    { enabled: !!queryName }
+    { enabled: !!queryid && !isNaN(queryid) }
   );
 
-  if (session.status === "loading" || !user.data) {
+  if (!user.data) {
     return <>loading</>;
   }
 
-  if (
-    !session.data ||
-    (session.data.user.name !== queryName &&
-      session.data.user.role !== Role.ADMIN)
-  ) {
+  if (!auth.user || (auth.user.id !== queryid && !auth.canAccess(Role.ADMIN))) {
     router.push("/");
     return null;
   }
@@ -42,6 +39,12 @@ const Page = () => {
   }
   return (
     <div className="flex flex-col gap-2 p-2">
+      <h1 className="text-2xl font-bold">User name: {user.data.name}</h1>
+      {user.data.role === Role.NEED_CHECK && (
+        <span className="font-bold text-amber-600">
+          This User is awaiting veryfication
+        </span>
+      )}
       <span>
         Paste this into client{" "}
         <Link href="/instruction">
@@ -78,7 +81,7 @@ const Page = () => {
       </div>
       <Button
         onClick={() => {
-          router.push(`/profile/${user.data!.name}/changePassword`);
+          router.push(`/profile/${user.data!.id}/changePassword`);
         }}
       >
         Change Password

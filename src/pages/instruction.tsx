@@ -2,10 +2,10 @@ import React from "react";
 
 import type { NextPage } from "next";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { useAuth } from "~/contexts/auth";
 
 const Home: NextPage = () => {
-  const session = useSession();
+  const auth = useAuth();
 
   return (
     <div className=" mx-auto w-full max-w-lg  p-2">
@@ -23,11 +23,8 @@ const Home: NextPage = () => {
         </li>
         <li>
           Copy link from your{" "}
-          {session.data?.user.role ? (
-            <Link
-              href={`/profile/[name]`}
-              as={`/profile/${session.data.user.name}`}
-            >
+          {auth.user?.role ? (
+            <Link href={`/profile/[id]`} as={`/profile/${auth.user.id}`}>
               <a className="rounded border-b-2 border-blue-400  tracking-wide   hover:text-blue-500">
                 profile
               </a>

@@ -10,6 +10,7 @@ import {
 } from "react";
 import { useSocketIO } from "~/hooks/useSocketIO";
 import { Map } from "@prisma/client";
+import { useContextFallback } from "./charactersContext";
 
 export type MapCoords = {
   x: number;
@@ -103,11 +104,3 @@ export const useGridToggle = () => useContextFallback(HavenContext).grid;
 export const useMarkersToggle = () => useContextFallback(HavenContext).markers;
 export const useMaps = () => useContextFallback(HavenContext).maps;
 export const useMap = () => useContextFallback(HavenContext).map;
-
-export const useContextFallback = <T,>(value: Context<T | undefined>): T => {
-  const ctx = useContext<T | undefined>(value);
-  if (!ctx) {
-    throw new Error(`This Component require context: ${value.displayName}`);
-  }
-  return ctx;
-};

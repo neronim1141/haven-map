@@ -80,8 +80,8 @@ export const saveTile = async (
   z: number,
   file: Buffer,
   socket?: SocketIO,
-
-  gridId?: string
+  gridId?: string,
+  season: number = 0
 ) => {
   if (z !== 0) {
     let tile = await prisma.tile.findFirst({
@@ -99,7 +99,6 @@ export const saveTile = async (
         },
         data: {
           tileData: file,
-          lastUpdated: Date.now().toString(),
         },
       });
       socket?.emit("tileUpdate", tile);
@@ -112,14 +111,13 @@ export const saveTile = async (
           y,
           z,
           tileData: file,
-          lastUpdated: Date.now().toString(),
         },
       });
       socket?.emit("tileUpdate", tile);
       return true;
     }
   }
-  if (gridId) {
+  if (gridId || season !== 3) {
     let grid = await prisma.grid.update({
       where: {
         id: gridId,
@@ -137,7 +135,7 @@ export const saveTile = async (
       y: grid.y,
       z: 0,
       mapId: grid.mapId,
-      lastUpdated: grid.lastUpdated ?? Date.now().toString(),
+      updatedAt: grid.updatedAt ?? new Date(),
     });
     return true;
   }

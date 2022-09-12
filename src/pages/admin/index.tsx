@@ -39,8 +39,8 @@ const AdminPage = () => {
         render: `Map downloaded`,
         isLoading: false,
         type: toast.TYPE.SUCCESS,
-        progress: 1,
-        autoClose: 2500,
+        progress: undefined,
+        autoClose: 1500,
         closeOnClick: true,
         draggable: true,
       });

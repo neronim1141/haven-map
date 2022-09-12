@@ -13,6 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import Head from "next/head";
 import { toast } from "react-toastify";
+import { useAuth } from "~/contexts/auth";
 
 const schema = z.object({
   login: z.string(),
@@ -23,6 +24,7 @@ type LoginFormData = z.infer<typeof schema>;
 
 const Login = () => {
   const router = useRouter();
+  const auth = useAuth();
   const {
     register,
     handleSubmit,
@@ -45,7 +47,8 @@ const Login = () => {
     }
     if (res && res.url) {
       toast.dismiss(id);
-      router.push(`/profile/${values.login.toLowerCase()}`);
+      const user = await auth.reload?.();
+      router.push("/profile");
     }
   };
   return (

@@ -11,29 +11,35 @@ import { HiTrash, HiPencil } from "react-icons/hi";
 import { Select } from "~/components/controls/select";
 import { UseQueryResult } from "react-query";
 import { ResetPasswordModal } from "../modals/resetPasswordModal";
+import Link from "next/link";
 
-const columnHelper = createColumnHelper<Pick<User, "name" | "role">>();
+const columnHelper = createColumnHelper<Pick<User, "id" | "name" | "role">>();
 
 interface UsersTableProps {
-  users: UseQueryResult<
-    {
-      name: string;
-      role: Role;
-      token: string;
-    }[]
-  >;
+  users: UseQueryResult<Pick<User, "id" | "name" | "role">[]>;
 }
 export const UsersTable = ({ users }: UsersTableProps) => {
   const { mutateAsync: updateUser } = trpc.useMutation("user.update");
 
-  const [userToDelete, setUserToDelete] = useState<string>();
-  const [userToResetPassword, setUserToResetPassword] = useState<string>();
+  const [userToDelete, setUserToDelete] = useState<number>();
+  const [userToResetPassword, setUserToResetPassword] = useState<number>();
 
   const columns = useMemo(
     () => [
+      columnHelper.accessor("id", {
+        id: "id",
+        cell: (info) => info.getValue(),
+        sortDescFirst: true,
+      }),
       columnHelper.accessor("name", {
         id: "name",
-        cell: (info) => info.getValue(),
+        cell: (info) => (
+          <Link href="/profile/[id]" as={`/profile/${info.row.original.id}`}>
+            <a className="p-1 underline hover:text-neutral-400">
+              {info.getValue()}
+            </a>
+          </Link>
+        ),
         sortDescFirst: true,
       }),
 
@@ -48,7 +54,7 @@ export const UsersTable = ({ users }: UsersTableProps) => {
             onChange={async (value) => {
               if (value !== info.row.original.role) {
                 const name = await updateUser({
-                  name: info.row.original.name,
+                  id: info.row.original.id,
                   role: value as Role,
                 });
 
@@ -73,7 +79,7 @@ export const UsersTable = ({ users }: UsersTableProps) => {
               {
                 name: "Reset Password",
                 onClick: () => {
-                  setUserToResetPassword(row.original.name);
+                  setUserToResetPassword(row.original.id);
                 },
                 icon: HiPencil,
               },
@@ -82,7 +88,7 @@ export const UsersTable = ({ users }: UsersTableProps) => {
                     {
                       name: "Delete",
                       onClick: () => {
-                        setUserToDelete(row.original.name);
+                        setUserToDelete(row.original.id);
                       },
                       variant: "warning" as const,
                       icon: HiTrash,

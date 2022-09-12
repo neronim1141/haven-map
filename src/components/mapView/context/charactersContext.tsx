@@ -1,5 +1,4 @@
 import { Role } from "@prisma/client";
-import { useSession } from "next-auth/react";
 import React, {
   Context,
   createContext,
@@ -9,6 +8,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import { useAuth } from "~/contexts/auth";
 import { useSocketIO } from "~/hooks/useSocketIO";
 import { CharacterData } from "~/pages/api/client/[token]/positionUpdate";
 
@@ -17,6 +17,7 @@ const CharactersContext = createContext<CharacterData[] | undefined>(undefined);
 export const CharactersProvider: FunctionComponent<{
   children?: ReactNode;
 }> = ({ children }) => {
+  const auth = useAuth();
   const [characters, setCharacters] = useState<CharacterData[]>([]);
   useSocketIO("characters", (characters) => {
     if (!characters) return;
@@ -43,14 +44,16 @@ export const CharactersProvider: FunctionComponent<{
       setCharacters((prev) => {
         return prev.filter((character) => character.expire > Date.now());
       });
-    }, 5000);
+    }, 10000);
     return () => {
       clearInterval(interval);
     };
   }, []);
 
   return (
-    <CharactersContext.Provider value={characters}>
+    <CharactersContext.Provider
+      value={auth.canAccess(Role.VILLAGER) ? characters : []}
+    >
       {children}
     </CharactersContext.Provider>
   );

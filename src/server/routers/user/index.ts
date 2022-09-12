@@ -10,8 +10,9 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { TRPCError } from "@trpc/server";
 import { logger } from "utils/logger";
 import { prisma } from "utils/prisma";
-import { canAccess, createHash } from "./utils";
+import { createHash } from "./utils";
 const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
+  id: true,
   name: true,
   role: true,
   token: true,
@@ -19,36 +20,54 @@ const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
 export const userRouter = createRouter()
   .query("all", {
     async resolve({ ctx }) {
-      // if (!canAccess(Role.ADMIN, ctx?.session?.user?.role)) {
-      //     handleForbidden();
-      //   }
+      if (!(await ctx.canAccess(Role.ADMIN))) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+        });
+      }
       return await prisma.user.findMany({ select: defaultUserSelect });
     },
   })
-  .query("byName", {
+  .query("byId", {
     input: z.object({
-      name: z.string(),
+      id: z.number(),
     }),
-    async resolve({ ctx, input: { name } }) {
-      // if (!canAccess(Role.ADMIN, ctx?.session?.user?.role)) {
-      //     handleForbidden();
-      //   }
-      return await prisma.user.findUnique({
-        where: { name },
+    async resolve({ ctx, input: { id } }) {
+      const canAccess = await ctx.canAccess(Role.ADMIN);
+      if (ctx.session?.user.id !== id && !(await ctx.canAccess(Role.ADMIN))) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+        });
+      }
+      const user = await prisma.user.findUnique({
+        where: { id },
         select: defaultUserSelect,
       });
+
+      if (!user) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User has not be found",
+        });
+      }
+      return user;
     },
   })
   .mutation("update", {
     input: z.object({
-      name: z.string(),
+      id: z.number(),
       role: z.nativeEnum(Role),
     }),
-    async resolve({ ctx, input: { name, role } }) {
+    async resolve({ ctx, input: { id, role } }) {
       try {
+        if (!(await ctx.canAccess(Role.ADMIN))) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+          });
+        }
         const user = await prisma.user.update({
           where: {
-            name,
+            id,
           },
           data: {
             role,
@@ -92,12 +111,17 @@ export const userRouter = createRouter()
   })
   .mutation("delete", {
     input: z.object({
-      name: z.string(),
+      id: z.number(),
     }),
-    async resolve({ ctx, input: { name } }) {
+    async resolve({ ctx, input: { id } }) {
       try {
+        if (!(await ctx.canAccess(Role.ADMIN))) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+          });
+        }
         const user = await prisma.user.delete({
-          where: { name: name.toLowerCase() },
+          where: { id },
         });
         logger.log(`deleted User : ${user.name}`);
 
@@ -110,14 +134,14 @@ export const userRouter = createRouter()
   })
   .mutation("changePassword", {
     input: z.object({
-      name: z.string(),
+      id: z.number(),
       oldPassword: z.string(),
       newPassword: z.string(),
     }),
-    async resolve({ ctx, input: { name, oldPassword, newPassword } }) {
+    async resolve({ ctx, input: { id, oldPassword, newPassword } }) {
       try {
         const user = await prisma.user.findUnique({
-          where: { name: name.toLowerCase() },
+          where: { id },
         });
         if (!user) {
           throw new TRPCError({
@@ -134,7 +158,7 @@ export const userRouter = createRouter()
         }
         await prisma.user.update({
           where: {
-            name: name.toLowerCase(),
+            id,
           },
           data: {
             password: await bcrypt.hash(newPassword.toLowerCase(), 10),
@@ -150,18 +174,20 @@ export const userRouter = createRouter()
   })
   .mutation("resetPassword", {
     input: z.object({
-      name: z.string(),
+      id: z.number(),
     }),
-    async resolve({ ctx, input: { name } }) {
-      if (!canAccess(Role.ADMIN, ctx.session?.user.role)) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-        });
-      }
-      const password = createHash();
+    async resolve({ ctx, input: { id } }) {
       try {
+        if (!(await ctx.canAccess(Role.ADMIN))) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+          });
+        }
+
+        const password = createHash();
+
         const user = await prisma.user.findUnique({
-          where: { name: name.toLowerCase() },
+          where: { id },
         });
         if (!user) {
           throw new TRPCError({
@@ -172,7 +198,7 @@ export const userRouter = createRouter()
 
         await prisma.user.update({
           where: {
-            name: name.toLowerCase(),
+            id,
           },
           data: {
             password: await bcrypt.hash(password.toLowerCase(), 10),

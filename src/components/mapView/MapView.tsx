@@ -17,12 +17,12 @@ import Head from "next/head";
 import { MarkersProvider } from "./context/markersContext";
 import { HnHMaxZoom, TileSize } from "~/server/routers/map/config";
 import { EditGridModal } from "../modals/shiftMapModal";
-import { canAccess } from "~/server/routers/user/utils";
-import { useSession } from "next-auth/react";
 import { Role } from "@prisma/client";
+import { useAuth } from "~/contexts/auth";
 
 export default function MapView() {
-  const session = useSession();
+  const auth = useAuth();
+
   const coords = useCoords();
   const main = useMain();
   const overlay = useOverlay();
@@ -37,7 +37,7 @@ export default function MapView() {
     y: number;
   }>();
   const onContextMenu = (e: LeafletMouseEvent) => {
-    if (map && canAccess(Role.ADMIN, session?.data?.user.role)) {
+    if (map && auth.canAccess(Role.ADMIN)) {
       let point = map.project(e.latlng, HnHMaxZoom);
       let coords = {
         x: Math.floor(point.x / TileSize),

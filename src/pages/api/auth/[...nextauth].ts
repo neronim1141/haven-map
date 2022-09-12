@@ -23,11 +23,7 @@ export const authOptions: NextAuthOptions = {
             where: { name: login },
           });
           if (!data) return Promise.reject(new Error("User Not Found"));
-          if (data.role === Role.NEED_CHECK) {
-            return Promise.reject(
-              new Error("Wait until you are checked by admin")
-            );
-          }
+
           const { password, ...user } = data;
           if (!(await bcrypt.compare(providedPassowrd, password)))
             return Promise.reject(new Error("Password missmatch"));
@@ -40,16 +36,16 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   pages: {
-    signIn: "/login",
-    signOut: "/login",
+    signIn: "/",
+    signOut: "/",
   },
   callbacks: {
     async session({ session, token }) {
-      if (session.user) session.user.role = token.role;
+      if (session.user) session.user.id = token.id;
       return session;
     },
     async jwt({ token, user }) {
-      if (user) token.role = user.role;
+      if (user) token.id = user.id;
       return token;
     },
   },
