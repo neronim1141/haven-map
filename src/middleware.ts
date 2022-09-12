@@ -19,7 +19,7 @@ export default withAuth(
       authorized: async function ({ req, token }) {
         if (!token) return false;
         const res = await fetch(
-          "http://localhost:3000/api/auth/user/" + token.id
+          req.nextUrl.origin + "/api/auth/user/" + token.id
         );
         const user: User = await res.json();
         if (
