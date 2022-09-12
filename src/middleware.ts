@@ -1,7 +1,6 @@
 import { withAuth, NextRequestWithAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 import { Role, User } from "@prisma/client";
-import { canAccess } from "./contexts/auth";
 export default withAuth(
   async (req: NextRequestWithAuth) => {
     if (req.nextUrl.pathname === "/map") {
@@ -42,3 +41,16 @@ export default withAuth(
 export const config = {
   matcher: ["/map/:path*", "/admin/:path*", "/profile/:path*"],
 };
+
+export const canAccess = (requiredRole: Role, role?: Role) => {
+  if (!role || getAccessLevel(requiredRole) > getAccessLevel(role))
+    return false;
+  return true;
+};
+export const getAccessLevel = (role: Role) =>
+  ({
+    [Role.ADMIN]: 4,
+    [Role.VILLAGER]: 3,
+    [Role.ALLY]: 2,
+    [Role.NEED_CHECK]: 1,
+  }[role]);
