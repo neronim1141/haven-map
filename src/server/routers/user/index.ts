@@ -33,7 +33,6 @@ export const userRouter = createRouter()
       id: z.number(),
     }),
     async resolve({ ctx, input: { id } }) {
-      const canAccess = await ctx.canAccess(Role.ADMIN);
       if (ctx.session?.user.id !== id && !(await ctx.canAccess(Role.ADMIN))) {
         throw new TRPCError({
           code: "FORBIDDEN",
