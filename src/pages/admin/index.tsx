@@ -24,8 +24,6 @@ const AdminPage = () => {
   const maps = trpc.useQuery(["map.all"]);
   const users = trpc.useQuery(["user.all"]);
   const { getFile, loading } = useFileRequest("/api/map/export", (percent) => {
-    console.log(percent);
-
     if (percent < 100) {
       toast.update(exportMapToastId, {
         render: `Downloading progress: \n${percent}%`,
@@ -61,7 +59,7 @@ const AdminPage = () => {
                 disabled={loading}
                 onClick={() => {
                   getFile();
-                  toast.loading("File is Processed", {
+                  toast.loading("Preparing file...", {
                     toastId: exportMapToastId,
                     autoClose: false,
                     closeOnClick: false,

@@ -26,7 +26,6 @@ export const mapRouter = createRouter()
       }),
     }),
     async resolve({ ctx, input: { mapId, data } }) {
-      console.log(data);
       await prisma.map.update({
         where: {
           id: mapId,

@@ -117,7 +117,7 @@ export const saveTile = async (
       return true;
     }
   }
-  if (gridId || season !== 3) {
+  if (gridId && season !== 3) {
     let grid = await prisma.grid.update({
       where: {
         id: gridId,

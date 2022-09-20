@@ -12,13 +12,14 @@ export const useFileRequest = (
     const data = await axios.get(url, {
       responseType: "blob",
       onDownloadProgress(progressEvent) {
-        setLoading(false);
         let percentCompleted = Math.floor(
           (progressEvent.loaded / progressEvent.total) * 100
         );
         onUploadProgress?.(percentCompleted);
       },
     });
+    setLoading(false);
+
     const a = document.createElement("a");
     a.href = window.URL.createObjectURL(data.data);
     a.download = "export.zip";
