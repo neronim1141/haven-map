@@ -201,7 +201,7 @@ export async function mergeMaps(
       y: grid.y,
       z: 0,
       mapId: grid.mapId,
-      lastUpdated: grid.lastUpdated ?? Date.now().toString(),
+      updatedAt: grid.updatedAt ?? Date.now().toString(),
     });
   }
 

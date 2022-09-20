@@ -19,6 +19,7 @@ import { HiAdjustments, HiOutlineX } from "react-icons/hi";
 import { Toggle } from "../controls/switch";
 import { SearchSelect } from "../controls/searchSelect";
 import { useMarkers } from "./context/markersContext";
+import { useAuth } from "~/contexts/auth";
 type MarkerShortType = { x: number; y: number; map: number };
 
 export function MapControls({
@@ -34,7 +35,8 @@ export function MapControls({
   const [showGrid, setShowGrid] = useGridToggle();
 
   const router = useRouter();
-  const session = useSession();
+  const auth = useAuth();
+
   const [show, setShow] = useState(false);
   const maps = useMaps();
   const handleSelect = (marker: MarkerShortType) => {
@@ -159,7 +161,7 @@ export function MapControls({
                 }}
               />
             )}
-            {canAccess(Role.VILLAGER, session.data?.user.role) && (
+            {auth.canAccess(Role.VILLAGER) && (
               <SelectCharacters onSelect={handleSelect} />
             )}
             <SelectMarkers onSelect={handleSelect} />

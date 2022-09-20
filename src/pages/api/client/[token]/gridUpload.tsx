@@ -30,22 +30,42 @@ router.post(async (req, res) => {
   if (!user) return res.status(403).end();
 
   const tile = await getTileFromRequest(req);
-
   try {
     const tileData = await fs.readFile(tile.file.filepath);
     const grid = await prisma.grid.findUnique({
       where: { id: tile.id },
     });
+
     if (!grid) {
       throw new Error(`Unknown grid id: ${tile.id}`);
     }
+    const map = await prisma.map.findUnique({
+      where: {
+        id: grid.mapId,
+      },
+    });
+    if (!map) {
+      throw new Error(`Unknown map id: ${grid.mapId}`);
+    }
+    if (map.winterUpdate || tile.extraData.season !== 3) {
+      const updated = await saveTile(
+        grid.mapId,
+        grid.x,
+        grid.y,
+        0,
+        tileData,
+        socket,
+        grid.id,
+        tile.extraData.season
+      );
+      if (updated) {
+        let coord = { x: grid.x, y: grid.y };
 
-    await saveTile(grid.mapId, grid.x, grid.y, 0, tileData, socket, grid.id);
-    let coord = { x: grid.x, y: grid.y };
-
-    for (let z = HnHMinZoom; z < HnHMaxZoom; z++) {
-      coord = new Coord(coord.x, coord.y).parent();
-      await updateZoomLevel(grid.mapId, coord.x, coord.y, z);
+        for (let z = HnHMinZoom; z < HnHMaxZoom; z++) {
+          coord = new Coord(coord.x, coord.y).parent();
+          await updateZoomLevel(grid.mapId, coord.x, coord.y, z);
+        }
+      }
     }
   } catch (e) {
     logger.error(e);

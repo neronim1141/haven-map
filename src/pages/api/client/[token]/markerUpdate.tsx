@@ -34,7 +34,7 @@ router.post(async (req, res) => {
 
   if (!user) return res.status(403).end();
 
-  if (!canAccess(Role.VILLAGER, user?.role)) return;
+  if (!canAccess(Role.VILLAGER, user?.id)) return;
 
   for (let marker of req.body as MarkersRequest) {
     const { gridID, color, ...data } = marker;

@@ -1,7 +1,10 @@
 import { Role } from "@prisma/client";
 import crypto from "crypto";
-export const canAccess = (requiredRole: Role, role?: Role) => {
-  if (!role || getAccessLevel(requiredRole) > getAccessLevel(role))
+import { prisma } from "utils/prisma";
+
+export const canAccess = async (requiredRole: Role, id?: number) => {
+  const user = await prisma.user.findUnique({ where: { id } });
+  if (!user || getAccessLevel(requiredRole) > getAccessLevel(user.role))
     return false;
   return true;
 };

@@ -161,6 +161,42 @@ export const MapsTable = ({ maps }: MapsTableProps) => {
           </div>
         ),
       }),
+      columnHelper.accessor("winterUpdate", {
+        header: "Update at Winter",
+        cell: (info) => (
+          <div className="flex w-full justify-center">
+            <button
+              onClick={async () => {
+                await toast.promise(
+                  update.mutateAsync({
+                    mapId: info.row.original.id,
+                    data: { winterUpdate: !info.getValue() },
+                  }),
+                  {
+                    pending: "Please wait...",
+                    success: "Map winter check updated",
+                    error: {
+                      render({ data }) {
+                        return data.message;
+                      },
+                    },
+                  }
+                );
+                maps.refetch();
+              }}
+              className={`flex w-9  justify-center rounded border border-neutral-600 p-1  font-bold uppercase hover:bg-neutral-600   ${
+                info.getValue() ? "text-green-700" : "text-red-700"
+              }`}
+            >
+              {info.getValue() ? (
+                <HiCheck className="h-5 w-5 font-extrabold" />
+              ) : (
+                <HiOutlineX className="h-5 w-5 font-extrabold" />
+              )}
+            </button>
+          </div>
+        ),
+      }),
       columnHelper.display({
         id: "actions",
         cell: ({ row }) => {

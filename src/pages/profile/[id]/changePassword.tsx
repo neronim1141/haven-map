@@ -14,10 +14,10 @@ import { trpc } from "utils/trpc";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
+import { useAuth } from "~/contexts/auth";
 
 const schema = z
   .object({
-    login: z.string(),
     oldPassword: z.string().min(3),
     password: z.string().min(3),
     repeatPassword: z.string().min(3),
@@ -29,8 +29,11 @@ const schema = z
 type ChangePasswordFormData = z.infer<typeof schema>;
 
 const ChangePassword = () => {
+  const auth = useAuth();
+
   const router = useRouter();
-  const session = useSession();
+  const queryId = Number(router.query.id);
+
   const { mutateAsync: updatePassword } = trpc.useMutation(
     "user.changePassword"
   );
@@ -42,14 +45,12 @@ const ChangePassword = () => {
   } = useForm<ChangePasswordFormData>({
     resolver: zodResolver(schema),
   });
-  if (session.status === "loading") {
+  if (!auth.user) {
     return <>loading</>;
   }
-
   if (
-    !session.data ||
-    (session.data.user.name !== router.query.name &&
-      session.data.user.role !== Role.ADMIN)
+    !auth.user ||
+    (auth.user.id !== queryId && auth.user.role !== Role.ADMIN)
   ) {
     router.push("/");
     return;
@@ -58,7 +59,7 @@ const ChangePassword = () => {
     await toast.promise(
       updatePassword(
         {
-          name: values.login,
+          id: queryId,
           oldPassword: values.oldPassword,
           newPassword: values.password,
         },
@@ -91,13 +92,6 @@ const ChangePassword = () => {
         <section className="flex  w-[30rem] flex-col space-y-8 p-6 sm:p-0">
           <div className="text-center text-4xl font-bold">Change Password</div>
 
-          <Input<ChangePasswordFormData>
-            id="login"
-            type="hidden"
-            value={router.query.name}
-            register={register}
-            className="hidden"
-          />
           <Input<ChangePasswordFormData>
             id="oldPassword"
             type="password"

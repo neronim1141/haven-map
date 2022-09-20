@@ -12,6 +12,7 @@ import { AppRouter } from "~/server/routers";
 import favicon from "../../public/favicon.ico";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { AuthProvider } from "~/contexts/auth";
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <>
@@ -20,12 +21,14 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
         <link rel="shortcut icon" href={favicon.src} />
       </Head>
       <SessionProvider session={session}>
-        <div className="flex min-h-screen w-full flex-col  bg-neutral-900 text-white ">
-          <Header />
-          <main className="flex flex-grow overflow-y-auto  ">
-            <Component {...pageProps} />
-          </main>
-        </div>
+        <AuthProvider>
+          <div className="flex min-h-screen w-full flex-col bg-neutral-900 text-white ">
+            <Header />
+            <main className="flex flex-grow overflow-y-auto">
+              <Component {...pageProps} />
+            </main>
+          </div>
+        </AuthProvider>
       </SessionProvider>
       <ToastContainer
         position="bottom-left"
@@ -49,10 +52,15 @@ export default withTRPC<AppRouter>({
     return {
       url,
       transformer: superjson,
+
       /**
        * @link https://react-query.tanstack.com/reference/QueryClient
        */
-      // queryClientConfig: { defaultOptions: { queries: { staleTime: 60 } } },
+      queryClientConfig: {
+        defaultOptions: {
+          queries: { staleTime: 30 * 1000, refetchOnWindowFocus: false },
+        },
+      },
     };
   },
   /**

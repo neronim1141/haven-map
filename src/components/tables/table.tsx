@@ -28,7 +28,6 @@ export const Table = <T extends object>({
     state: {
       sorting,
     },
-
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getCoreRowModel: getCoreRowModel(),

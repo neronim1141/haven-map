@@ -14,7 +14,7 @@ export type ClientTile = {
   y: number;
   z: number;
   mapId: number;
-  lastUpdated: string;
+  updatedAt: Date;
 };
 export interface ServerToClientEvents {
   characters: (character: CharacterData[]) => void;

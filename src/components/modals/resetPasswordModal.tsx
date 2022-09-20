@@ -4,21 +4,23 @@ import { Dialog } from "@headlessui/react";
 import { Button } from "../controls/buttons";
 import { useClipboard } from "~/hooks/useClipboard";
 import { HiClipboardCopy } from "react-icons/hi";
+import { toast } from "react-toastify";
 
 interface ModalProps<T extends any = any> {
   data: T;
   onClose: () => void;
 }
-export const ResetPasswordModal = ({ data, onClose }: ModalProps<string>) => {
+export const ResetPasswordModal = ({ data, onClose }: ModalProps<number>) => {
   const { mutateAsync: resetPassword } = trpc.useMutation("user.resetPassword");
   const copyToClipboard = useClipboard();
 
   const [newPassword, setNewPassword] = useState<string>();
   const onApprove = async () => {
-    resetPassword({ name: data }).then((password) => {
+    resetPassword({ id: data }).then((password) => {
       setNewPassword(password);
     });
   };
+
   return (
     <Dialog open={!!data} onClose={onClose}>
       <div className="fixed top-0 left-0 flex h-screen w-screen items-center justify-center bg-black bg-opacity-50 p-4">
@@ -48,8 +50,10 @@ export const ResetPasswordModal = ({ data, onClose }: ModalProps<string>) => {
                 variant="outline"
                 className="text-xs"
                 onClick={() =>
-                  copyToClipboard(newPassword).then(function () {
-                    alert("copied!");
+                  toast.promise(copyToClipboard(newPassword), {
+                    pending: "Coping",
+                    success: "Password copied",
+                    error: "Something went wrong",
                   })
                 }
               >

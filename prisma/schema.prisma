@@ -11,30 +11,34 @@ datasource db {
 }
 
 model Map {
-  id       Int     @id @default(autoincrement())
-  name     String?
-  hidden   Boolean @default(false)
-  priority Boolean @default(false)
+  id           Int     @id @default(autoincrement())
+  name         String?
+  hidden       Boolean @default(false)
+  priority     Boolean @default(false)
+  winterUpdate Boolean @default(true)
 }
 
 model Grid {
-  id          String  @id
+  id          String   @id
   mapId       Int
   tileData    Bytes? // need to be optional because the tileData is uploaded in the next request
   lastUpdated String?
   x           Int
   y           Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 }
 
 model Tile {
-  id          Int     @id @default(autoincrement())
-  gridId      String? @unique
-  mapId       Int
-  x           Int
-  y           Int
-  z           Int
-  tileData    Bytes
-  lastUpdated String
+  id        Int      @id @default(autoincrement())
+  gridId    String?  @unique
+  mapId     Int
+  x         Int
+  y         Int
+  z         Int
+  tileData  Bytes
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Marker {
@@ -55,10 +59,13 @@ model MarkerIcon {
 }
 
 model User {
-  name     String @id
-  password String
-  role     Role   @default(NEED_CHECK)
-  token    String
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  password  String
+  role      Role     @default(NEED_CHECK)
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 enum Role {

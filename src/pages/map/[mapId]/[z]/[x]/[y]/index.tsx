@@ -15,7 +15,9 @@ function isNumeric(str: any) {
 }
 const Page = () => {
   const router = useRouter();
-  const maps = trpc.useQuery(["map.all"], { refetchInterval: 60 * 1000 });
+  const maps = trpc.useQuery(["map.all"], {
+    refetchInterval: 60 * 1000,
+  });
   if (
     !maps.data ||
     router.query.mapId === undefined ||

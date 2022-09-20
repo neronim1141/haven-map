@@ -13,6 +13,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Head from "next/head";
 import { trpc } from "utils/trpc";
 import { toast } from "react-toastify";
+import { useAuth } from "~/contexts/auth";
+import { signIn } from "next-auth/react";
 
 const schema = z
   .object({
@@ -27,6 +29,7 @@ const schema = z
 type RegisterFormData = z.infer<typeof schema>;
 
 const Register = () => {
+  const auth = useAuth();
   const router = useRouter();
   const { mutateAsync: createUser } = trpc.useMutation("user.create");
   const [error, setError] = useState("");
@@ -60,7 +63,22 @@ const Register = () => {
     toast("You need to wait for one of the admins to set your role", {
       autoClose: false,
     });
-    router.push(`/`);
+    const res = await signIn("credentials", {
+      redirect: false,
+      login: values.login,
+      password: values.password,
+    });
+    if (res?.error) {
+      toast.error(res.error, {
+        toastId: id,
+      });
+      return;
+    }
+    if (res && res.url) {
+      toast.dismiss(id);
+      const user = await auth.reload?.();
+      router.push("/profile");
+    }
   };
   return (
     <>
