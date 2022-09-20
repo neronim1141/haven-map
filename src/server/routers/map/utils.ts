@@ -117,26 +117,33 @@ export const saveTile = async (
       return true;
     }
   }
-  if (gridId && season !== 3) {
-    let grid = await prisma.grid.update({
+  if (gridId) {
+    const exist = await prisma.grid.findUnique({
       where: {
         id: gridId,
       },
-      data: {
-        mapId,
-        x,
-        y,
-        tileData: file,
-        lastUpdated: Date.now().toString(),
-      },
     });
-    socket?.emit("tileUpdate", {
-      x: grid.x,
-      y: grid.y,
-      z: 0,
-      mapId: grid.mapId,
-      updatedAt: grid.updatedAt ?? new Date(),
-    });
+    if (!exist?.tileData || season !== 3) {
+      let grid = await prisma.grid.update({
+        where: {
+          id: gridId,
+        },
+        data: {
+          mapId,
+          x,
+          y,
+          tileData: file,
+          lastUpdated: Date.now().toString(),
+        },
+      });
+      socket?.emit("tileUpdate", {
+        x: grid.x,
+        y: grid.y,
+        z: 0,
+        mapId: grid.mapId,
+        updatedAt: grid.updatedAt ?? new Date(),
+      });
+    }
     return true;
   }
   return false;
