@@ -22,6 +22,7 @@ export const mapRouter = createRouter()
       data: z.object({
         hidden: z.boolean().optional(),
         priority: z.boolean().optional(),
+        winterUpdate: z.boolean().optional(),
         name: z.string().optional().nullable(),
       }),
     }),

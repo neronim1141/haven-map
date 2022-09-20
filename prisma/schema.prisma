@@ -11,10 +11,11 @@ datasource db {
 }
 
 model Map {
-  id       Int     @id @default(autoincrement())
-  name     String?
-  hidden   Boolean @default(false)
-  priority Boolean @default(false)
+  id           Int     @id @default(autoincrement())
+  name         String?
+  hidden       Boolean @default(false)
+  priority     Boolean @default(false)
+  winterUpdate Boolean @default(true)
 }
 
 model Grid {
