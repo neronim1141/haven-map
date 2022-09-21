@@ -55,7 +55,7 @@ router.post(async (req, res) => {
       tileData,
       socket,
       grid.id,
-      map.winterUpdate || tile.extraData.season !== 3
+      map.winterUpdate || tile.extraData.season !== 3 || grid.tileData === null
     );
     if (updated) {
       let coord = { x: grid.x, y: grid.y };
