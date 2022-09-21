@@ -80,8 +80,7 @@ export const saveTile = async (
   z: number,
   file: Buffer,
   socket?: SocketIO,
-  gridId?: string,
-  shouldUpdate?: boolean
+  gridId?: string
 ) => {
   if (z !== 0) {
     let tile = await prisma.tile.findFirst({
@@ -117,7 +116,7 @@ export const saveTile = async (
       return true;
     }
   }
-  if (gridId && shouldUpdate) {
+  if (gridId) {
     let grid = await prisma.grid.update({
       where: {
         id: gridId,

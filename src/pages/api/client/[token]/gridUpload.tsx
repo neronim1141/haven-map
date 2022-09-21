@@ -47,22 +47,27 @@ router.post(async (req, res) => {
     if (!map) {
       throw new Error(`Unknown map id: ${grid.mapId}`);
     }
-    const updated = await saveTile(
-      grid.mapId,
-      grid.x,
-      grid.y,
-      0,
-      tileData,
-      socket,
-      grid.id,
-      map.winterUpdate || tile.extraData.season !== 3 || grid.tileData === null
-    );
-    if (updated) {
-      let coord = { x: grid.x, y: grid.y };
+    if (
+      map.winterUpdate ||
+      tile.extraData.season !== 3 ||
+      grid.tileData === null
+    ) {
+      const updated = await saveTile(
+        grid.mapId,
+        grid.x,
+        grid.y,
+        0,
+        tileData,
+        socket,
+        grid.id
+      );
+      if (updated) {
+        let coord = { x: grid.x, y: grid.y };
 
-      for (let z = HnHMinZoom; z < HnHMaxZoom; z++) {
-        coord = new Coord(coord.x, coord.y).parent();
-        await updateZoomLevel(grid.mapId, coord.x, coord.y, z);
+        for (let z = HnHMinZoom; z < HnHMaxZoom; z++) {
+          coord = new Coord(coord.x, coord.y).parent();
+          await updateZoomLevel(grid.mapId, coord.x, coord.y, z);
+        }
       }
     }
   } catch (e) {
