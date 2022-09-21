@@ -12,18 +12,21 @@ import { Select } from "~/components/controls/select";
 import { UseQueryResult } from "react-query";
 import { ResetPasswordModal } from "../modals/resetPasswordModal";
 import Link from "next/link";
+import dayjs from "dayjs";
+dayjs().format();
 
-const columnHelper = createColumnHelper<Pick<User, "id" | "name" | "role">>();
+type UserPick = Pick<User, "id" | "name" | "role" | "createdAt" | "updatedAt">;
+const columnHelper = createColumnHelper<UserPick>();
 
 interface UsersTableProps {
-  users: UseQueryResult<Pick<User, "id" | "name" | "role">[]>;
+  users: UseQueryResult<UserPick[]>;
 }
 export const UsersTable = ({ users }: UsersTableProps) => {
   const { mutateAsync: updateUser } = trpc.useMutation("user.update");
 
   const [userToDelete, setUserToDelete] = useState<number>();
   const [userToResetPassword, setUserToResetPassword] = useState<number>();
-
+  console.log(users);
   const columns = useMemo(
     () => [
       columnHelper.accessor("id", {
@@ -31,6 +34,7 @@ export const UsersTable = ({ users }: UsersTableProps) => {
         cell: (info) => info.getValue(),
         sortDescFirst: true,
       }),
+
       columnHelper.accessor("name", {
         id: "name",
         cell: (info) => (
@@ -71,6 +75,14 @@ export const UsersTable = ({ users }: UsersTableProps) => {
           />
         ),
       }),
+      columnHelper.accessor("createdAt", {
+        header: "created",
+        cell: (info) => dayjs(info.getValue()).format("DD/MM/YYYY HH:mm"),
+      }),
+      columnHelper.accessor("updatedAt", {
+        header: "updated",
+        cell: (info) => dayjs(info.getValue()).format("DD/MM/YYYY HH:mm"),
+      }),
       columnHelper.display({
         id: "actions",
         cell: ({ row }) => (
@@ -110,7 +122,7 @@ export const UsersTable = ({ users }: UsersTableProps) => {
       <Table
         columns={columns}
         data={users.data}
-        initialSort={[{ id: "name", desc: false }]}
+        initialSort={[{ id: "createdAt", desc: true }]}
       />
 
       {userToDelete && (

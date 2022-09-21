@@ -55,6 +55,19 @@ input[type="range"]::-webkit-slider-runnable-track {
 .progressBarInner {
   width: calc(100% * var(--completed) / 100);
 }
+.leaflet-popup-content-wrapper{
+  @apply bg-neutral-700 border border-neutral-500 text-white
+
+}
+.leaflet-popup-content {
+  @apply m-0 p-2 pr-5
+}
+.leaflet-popup-content-wrapper, .leaflet-popup-tip{
+  @apply bg-neutral-700 border border-neutral-500
+}
+.leaflet-container a.leaflet-popup-close-button{
+  @apply text-white hover:text-neutral-400
+}
 
 .logo-text{
   -webkit-background-clip: text;

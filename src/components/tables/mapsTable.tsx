@@ -30,7 +30,7 @@ const NameChangeInput = ({
     }
   }, [initialValue, debouncedValue, onUpdate]);
   return (
-    <div className="w-content relative  flex items-center">
+    <div className="w-content relative flex  items-center">
       <input
         type="text"
         value={value}
@@ -38,7 +38,7 @@ const NameChangeInput = ({
           setValue(e.target.value);
           setLoading(true);
         }}
-        className="relative w-full truncate rounded bg-neutral-600 p-2 pr-7 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm "
+        className="relative w-full min-w-[6rem] truncate rounded bg-neutral-600 p-2 pr-7 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm "
       />
       <span className="absolute right-1 animate-bounce">
         {loading && <HiPencil />}
@@ -87,7 +87,6 @@ export const MapsTable = ({ maps }: MapsTableProps) => {
           />
         ),
         sortDescFirst: true,
-        enableSorting: false,
       }),
       columnHelper.accessor("hidden", {
         header: "show",

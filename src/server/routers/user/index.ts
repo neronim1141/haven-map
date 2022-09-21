@@ -16,6 +16,8 @@ const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   name: true,
   role: true,
   token: true,
+  createdAt: true,
+  updatedAt: true,
 });
 export const userRouter = createRouter()
   .query("all", {

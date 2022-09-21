@@ -42,14 +42,16 @@ model Tile {
 }
 
 model Marker {
-  id     String  @id
-  image  String?
-  x      Int
-  y      Int
-  gridId String
-  name   String
-  hidden Boolean @default(false)
-  type   String  @default("custom")
+  id        String   @id
+  image     String?
+  x         Int
+  y         Int
+  gridId    String
+  name      String
+  hidden    Boolean  @default(false)
+  type      String   @default("custom")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model MarkerIcon {

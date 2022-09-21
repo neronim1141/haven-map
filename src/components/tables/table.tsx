@@ -6,6 +6,8 @@ import {
   ColumnDef,
   SortingState,
   getSortedRowModel,
+  InitialTableState,
+  VisibilityState,
 } from "@tanstack/react-table";
 import { HiArrowSmUp, HiArrowSmDown } from "react-icons/hi";
 
@@ -13,12 +15,14 @@ interface TableProps<T extends object = {}> {
   columns: ColumnDef<T, any>[];
   data: T[];
   initialSort?: SortingState;
+  columnVisibility?: VisibilityState;
   className?: string;
 }
 export const Table = <T extends object>({
   columns,
   data,
   initialSort,
+  columnVisibility,
   className,
 }: TableProps<T>) => {
   const [sorting, setSorting] = React.useState<SortingState>(initialSort ?? []);
@@ -27,7 +31,9 @@ export const Table = <T extends object>({
     columns,
     state: {
       sorting,
+      columnVisibility,
     },
+
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     getCoreRowModel: getCoreRowModel(),

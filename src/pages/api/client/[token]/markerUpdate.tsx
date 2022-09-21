@@ -40,22 +40,18 @@ router.post(async (req, res) => {
     const { gridID, color, ...data } = marker;
     const grid = await prisma.grid.findUnique({ where: { id: gridID } });
     if (!grid) continue;
-
     const id = `${grid.id}_${data.x}_${data.y}`;
+
     await prisma.marker.upsert({
       where: {
         id,
-      },
-      update: {
-        ...data,
-        id,
-        gridId: gridID,
       },
       create: {
         ...data,
         id,
         gridId: gridID,
       },
+      update: {},
     });
   }
 

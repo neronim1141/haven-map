@@ -10,10 +10,11 @@ import { useFileRequest } from "~/hooks/useFileRequest";
 import { Button } from "~/components/controls/buttons";
 import { ProgressBar } from "~/components/progressBar";
 import { toast } from "react-toastify";
+import { MarkersTable } from "~/components/tables/markersTable";
 
 const AdminTab = ({ children }: { children: ReactNode }) => {
   return (
-    <Tab className=" w-full border border-neutral-500 bg-neutral-700 p-2 first:rounded-tl first:border-r-transparent last:rounded-tr last:border-l-transparent hover:bg-neutral-600 ">
+    <Tab className="w-full border border-neutral-500 bg-neutral-700 p-2 outline-none first:rounded-tl first:border-r-transparent last:rounded-tr last:border-l-transparent hover:bg-neutral-600 focus:border-neutral-300 ui-selected:bg-blue-700 ">
       {children}
     </Tab>
   );
@@ -21,8 +22,11 @@ const AdminTab = ({ children }: { children: ReactNode }) => {
 
 const AdminPage = () => {
   const exportMapToastId = "exportMap";
+  const info = trpc.useQuery(["info"]);
   const maps = trpc.useQuery(["map.all"]);
   const users = trpc.useQuery(["user.all"]);
+  const markers = trpc.useQuery(["marker.all", { all: true }]);
+
   const { getFile, loading } = useFileRequest("/api/map/export", (percent) => {
     if (percent < 100) {
       toast.update(exportMapToastId, {
@@ -45,15 +49,26 @@ const AdminPage = () => {
     }
   });
   return (
-    <div className="mx-auto w-full min-w-max  max-w-2xl p-5">
+    <div className="container mx-auto w-full p-5">
       <Tab.Group>
         <Tab.List className=" flex w-full justify-evenly overflow-hidden rounded-t">
-          <AdminTab>Actions</AdminTab>
+          <AdminTab>Info</AdminTab>
           <AdminTab>Maps</AdminTab>
+          <AdminTab>Markers</AdminTab>
           <AdminTab>Users</AdminTab>
         </Tab.List>
         <Tab.Panels>
           <Tab.Panel className="p-2">
+            {info.data && (
+              <div className="p-2">
+                <h1 className="font-bold">Data Count:</h1>
+                maps: {info.data.count.maps}
+                <br />
+                grids: {info.data.count.grids}
+                <br />
+                markers: {info.data.count.markers}
+              </div>
+            )}
             <div className="flex w-full items-center gap-2">
               <Button
                 disabled={loading}
@@ -73,6 +88,9 @@ const AdminPage = () => {
           </Tab.Panel>
           <Tab.Panel className="p-2">
             <MapsTable maps={maps} />
+          </Tab.Panel>
+          <Tab.Panel className="p-2">
+            <MarkersTable markers={markers} />
           </Tab.Panel>
           <Tab.Panel className="p-2">
             <UsersTable users={users} />

@@ -11,34 +11,54 @@ import { z } from "zod";
 export interface ClientMarker extends Marker {
   mapId: number;
 }
-export const markerRouter = createRouter().query("all", {
-  input: z.object({
-    hidden: z.boolean(),
-  }),
-  async resolve({ ctx, input: { hidden } }) {
-    const markers = await prisma.marker.findMany({
-      where: { hidden },
-    });
-    const toSend: ClientMarker[] = [];
-    //TODO: optimize
-    for (let marker of markers) {
-      const grid = await prisma.grid.findUnique({
-        where: { id: marker.gridId },
+export const markerRouter = createRouter()
+  .query("all", {
+    input: z
+      .object({
+        all: z.boolean(),
+      })
+      .optional(),
+    async resolve({ ctx, input }) {
+      const markers = await prisma.marker.findMany({
+        where: { hidden: input?.all ? undefined : false },
       });
-
-      const mappedMarker = mapMarkerType(marker);
-      if (grid)
-        toSend.push({
-          ...mappedMarker,
-          image: mappedMarker.image,
-          mapId: grid.mapId,
-          x: marker.x + grid.x * 100,
-          y: marker.y + grid.y * 100,
+      const toSend: ClientMarker[] = [];
+      //TODO: optimize
+      for (let marker of markers) {
+        const grid = await prisma.grid.findUnique({
+          where: { id: marker.gridId },
         });
-    }
-    return toSend;
-  },
-});
+
+        const mappedMarker = mapMarkerType(marker);
+        if (grid)
+          toSend.push({
+            ...mappedMarker,
+            image: mappedMarker.image,
+            mapId: grid.mapId,
+            x: marker.x + grid.x * 100,
+            y: marker.y + grid.y * 100,
+          });
+      }
+      return toSend;
+    },
+  })
+  .mutation("update", {
+    input: z.object({
+      id: z.string(),
+      data: z.object({
+        hidden: z.boolean().optional(),
+        name: z.string().optional(),
+      }),
+    }),
+    async resolve({ ctx, input: { id, data } }) {
+      await prisma.marker.update({
+        where: {
+          id,
+        },
+        data,
+      });
+    },
+  });
 
 const mapMarkerType = ({
   type: markerType,
