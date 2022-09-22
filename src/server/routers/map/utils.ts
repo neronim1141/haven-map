@@ -80,8 +80,7 @@ export const saveTile = async (
   z: number,
   file: Buffer,
   socket?: SocketIO,
-  gridId?: string,
-  season: number = 0
+  gridId?: string
 ) => {
   if (z !== 0) {
     let tile = await prisma.tile.findFirst({

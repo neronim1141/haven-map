@@ -27,11 +27,14 @@ router.get(async (req, res) => {
       },
     });
     let markers: Marker[] = [];
-    await parallel(25, grids, async (grid) => {
+    await parallel(5, grids, async (grid) => {
       if (grid.tileData) {
         zip.file(`${map.id}/${grid.id}.png`, grid.tileData);
       } else {
-        logger.error("Tile was supposed to be found");
+        await prisma.grid.delete({
+          where: { id: grid.id },
+        });
+        logger.error("Tile was supposed to be found in " + map.id);
       }
 
       const tmp = await prisma.marker.findMany({

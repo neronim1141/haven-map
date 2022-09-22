@@ -47,7 +47,11 @@ router.post(async (req, res) => {
     if (!map) {
       throw new Error(`Unknown map id: ${grid.mapId}`);
     }
-    if (map.winterUpdate || tile.extraData.season !== 3) {
+    if (
+      map.winterUpdate ||
+      tile.extraData.season !== 3 ||
+      grid.tileData === null
+    ) {
       const updated = await saveTile(
         grid.mapId,
         grid.x,
@@ -55,8 +59,7 @@ router.post(async (req, res) => {
         0,
         tileData,
         socket,
-        grid.id,
-        tile.extraData.season
+        grid.id
       );
       if (updated) {
         let coord = { x: grid.x, y: grid.y };
