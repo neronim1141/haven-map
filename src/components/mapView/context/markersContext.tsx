@@ -9,7 +9,7 @@ import { UseQueryResult } from "react-query";
 import { trpc } from "utils/trpc";
 import { ClientMarker } from "~/server/routers/marker";
 import { useContextFallback } from "./charactersContext";
-import { useMarkersToggle } from "./havenContext";
+import { useMarkersToggle } from "./mapSettingsContext";
 
 const MarkersContext = createContext<
   { markers: ClientMarker[]; query: UseQueryResult<ClientMarker[]> } | undefined

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -10,20 +10,28 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 import { HiArrowSmUp, HiArrowSmDown } from "react-icons/hi";
+import { Pagination } from "../controls/pagination/pagination";
 
 interface TableProps<T extends object = {}> {
   columns: ColumnDef<T, any>[];
-  data: T[];
+  data?: T[];
   initialSort?: SortingState;
   columnVisibility?: VisibilityState;
   className?: string;
+  filters?: ReactNode;
+  pagination?: {
+    onPageChange: (page: number) => void;
+    count: number;
+    current: number;
+    perPage: number;
+  };
 }
+
 export const Table = <T extends object>({
   columns,
-  data,
+  data = [],
   initialSort,
   columnVisibility,
-  className,
 }: TableProps<T>) => {
   const [sorting, setSorting] = React.useState<SortingState>(initialSort ?? []);
   const table = useReactTable({
@@ -39,12 +47,15 @@ export const Table = <T extends object>({
     getCoreRowModel: getCoreRowModel(),
   });
   return (
-    <table className={` mx-auto bg-blue-500 ${className}`}>
+    <table className="w-full min-w-max">
       {table.getHeaderGroups().map((headerGroup) => (
         <thead key={headerGroup.id}>
           <tr>
             {headerGroup.headers.map((header) => (
-              <th key={header.id} className="bg-neutral-700 p-1 capitalize ">
+              <th
+                key={header.id}
+                className="bg-neutral-700 p-1 text-center capitalize"
+              >
                 {header.isPlaceholder ? null : (
                   <div
                     {...{
@@ -70,15 +81,26 @@ export const Table = <T extends object>({
         </thead>
       ))}
       <tbody className="n divide-y rounded-b">
-        {table.getRowModel().rows.map((row) => (
-          <tr key={row.id} className="border-neutral-700 bg-neutral-800">
-            {row.getVisibleCells().map((cell) => (
-              <td key={cell.id} className="p-2 px-4">
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </td>
-            ))}
+        {data.length ? (
+          table.getRowModel().rows.map((row) => (
+            <tr key={row.id} className="border-neutral-700 bg-neutral-800">
+              {row.getVisibleCells().map((cell) => (
+                <td key={cell.id} className="p-2 text-center">
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td
+              colSpan={columns.length}
+              className="p-4 text-center text-2xl font-bold"
+            >
+              No data
+            </td>
           </tr>
-        ))}
+        )}
       </tbody>
     </table>
   );

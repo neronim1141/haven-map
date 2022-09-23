@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -67,6 +68,7 @@ model User {
   role      Role     @default(NEED_CHECK)
   token     String
   createdAt DateTime @default(now())
+  lastVisit DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
 

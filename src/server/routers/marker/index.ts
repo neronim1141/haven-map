@@ -2,14 +2,24 @@
  *
  * This is an example router, you can delete this file and then update `../pages/api/trpc/[trpc].tsx`
  */
-import { Marker } from "@prisma/client";
+import { Marker, Prisma } from "@prisma/client";
 
 import { createRouter } from "../../createRouter";
 import { prisma } from "utils/prisma";
 import { z } from "zod";
 
+const tableMarkerSelect = Prisma.validator<Prisma.MarkerSelect>()({
+  id: true,
+  name: true,
+  type: true,
+  hidden: true,
+  gridId: true,
+});
 export interface ClientMarker extends Marker {
   mapId: number;
+}
+export interface TableMarker extends Marker {
+  mapId?: number;
 }
 export const markerRouter = createRouter()
   .query("all", {
@@ -20,7 +30,9 @@ export const markerRouter = createRouter()
       .optional(),
     async resolve({ ctx, input }) {
       const markers = await prisma.marker.findMany({
-        where: { hidden: input?.all ? undefined : false },
+        where: {
+          hidden: false,
+        },
       });
       const toSend: ClientMarker[] = [];
       //TODO: optimize
@@ -40,6 +52,48 @@ export const markerRouter = createRouter()
           });
       }
       return toSend;
+    },
+  })
+  .query("table", {
+    input: z
+      .object({
+        filters: z.object({ name: z.string().optional() }).optional(),
+        pagination: z.object({ take: z.number(), skip: z.number() }).optional(),
+      })
+      .optional(),
+    async resolve({ ctx, input }) {
+      const query: Prisma.MarkerWhereInput = {
+        name: {
+          contains:
+            input?.filters?.name === "" ? undefined : input?.filters?.name,
+          mode: "insensitive",
+        },
+      };
+      const total = await prisma.marker.count({
+        where: query,
+      });
+      const markers = await prisma.marker.findMany({
+        where: query,
+        take: input?.pagination?.take,
+        skip: input?.pagination?.skip,
+      });
+      const toSend: TableMarker[] = [];
+      //TODO: optimize
+      for (let marker of markers) {
+        const grid = await prisma.grid.findUnique({
+          where: { id: marker.gridId },
+        });
+
+        const mappedMarker = mapMarkerType(marker);
+        toSend.push({
+          ...mappedMarker,
+          image: mappedMarker.image,
+          mapId: grid?.mapId,
+          x: marker.x + (grid?.x ?? 1) * 100,
+          y: marker.y + (grid?.y ?? 1) * 100,
+        });
+      }
+      return { count: total, entries: toSend };
     },
   })
   .mutation("update", {

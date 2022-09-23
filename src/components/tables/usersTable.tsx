@@ -15,7 +15,10 @@ import Link from "next/link";
 import dayjs from "dayjs";
 dayjs().format();
 
-type UserPick = Pick<User, "id" | "name" | "role" | "createdAt" | "updatedAt">;
+type UserPick = Pick<
+  User,
+  "id" | "name" | "role" | "createdAt" | "updatedAt" | "lastVisit"
+>;
 const columnHelper = createColumnHelper<UserPick>();
 
 interface UsersTableProps {
@@ -26,7 +29,6 @@ export const UsersTable = ({ users }: UsersTableProps) => {
 
   const [userToDelete, setUserToDelete] = useState<number>();
   const [userToResetPassword, setUserToResetPassword] = useState<number>();
-  console.log(users);
   const columns = useMemo(
     () => [
       columnHelper.accessor("id", {
@@ -67,13 +69,16 @@ export const UsersTable = ({ users }: UsersTableProps) => {
                 }
               }
             }}
-            className="w-32"
             options={Object.keys(Role).map((role) => ({
               value: role,
               label: role,
             }))}
           />
         ),
+      }),
+      columnHelper.accessor("lastVisit", {
+        header: "last visit",
+        cell: (info) => dayjs(info.getValue()).format("DD/MM/YYYY HH:mm"),
       }),
       columnHelper.accessor("createdAt", {
         header: "created",
@@ -87,6 +92,7 @@ export const UsersTable = ({ users }: UsersTableProps) => {
         id: "actions",
         cell: ({ row }) => (
           <ActionsMenu
+            className="text-right"
             actions={[
               {
                 name: "Reset Password",

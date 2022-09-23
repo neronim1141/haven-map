@@ -1,56 +1,64 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { createColumnHelper } from "@tanstack/react-table";
 import { Table } from "~/components/tables/table";
 import { useMemo } from "react";
 import { trpc } from "utils/trpc";
-import useDebounce from "~/hooks/useDebounce";
-import { HiSearch, HiPencil, HiOutlineX, HiCheck } from "react-icons/hi";
-import { UseQueryResult } from "react-query";
+import { HiOutlineX, HiCheck } from "react-icons/hi";
 import { toast } from "react-toastify";
-import { ClientMarker } from "~/server/routers/marker";
+import { TableMarker } from "~/server/routers/marker";
 import dayjs from "dayjs";
+import { DebouncedInput } from "../controls/inputs/DebouncedInput";
+import { Pagination } from "../controls/pagination/pagination";
 dayjs().format();
-const columnHelper = createColumnHelper<ClientMarker>();
 
-const NameChangeInput = ({
-  initialValue,
-  onUpdate,
-}: {
-  initialValue: string;
-  onUpdate: (name: string) => Promise<void>;
-}) => {
-  const [value, setValue] = useState(initialValue);
-  const [loading, setLoading] = useState(false);
-  const debouncedValue = useDebounce<string>(value, 2000);
+const columnHelper = createColumnHelper<TableMarker>();
+const PER_PAGE = 25;
+export const MarkersTable = () => {
+  const [query, setQuery] = useState("");
+  const [page, setPage] = useState(1);
 
-  useEffect(() => {
-    if (debouncedValue !== initialValue) {
-      onUpdate(debouncedValue).then(() => setLoading(false));
-    }
-  }, [initialValue, debouncedValue, onUpdate]);
-  return (
-    <div className="w-content relative  flex items-center">
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => {
-          setValue(e.target.value);
-          setLoading(true);
-        }}
-        className="relative w-full min-w-[14rem] truncate rounded bg-neutral-600 p-2 pr-7 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm "
-      />
-      <span className="absolute right-1 animate-bounce">
-        {loading && <HiPencil />}
-      </span>
-    </div>
+  const markers = trpc.useQuery([
+    "marker.table",
+    {
+      filters: { name: query },
+      pagination: { take: PER_PAGE, skip: (page - 1) * PER_PAGE },
+    },
+  ]);
+  const filters = useMemo(
+    () => (
+      <div className="flex items-center gap-2 p-2">
+        <h2>Filters:</h2>
+        <div>
+          <DebouncedInput
+            className="max-w-[12rem]"
+            placeholder="Filter by name"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setPage(1);
+            }}
+          />
+        </div>
+      </div>
+    ),
+    [query]
   );
-};
+  const pagination = useMemo(
+    () =>
+      markers.data?.count ? (
+        <div className="mt-2 flex justify-center ">
+          <Pagination
+            onPageChange={setPage}
+            count={markers.data.count}
+            perPage={PER_PAGE}
+            current={page}
+          />
+        </div>
+      ) : null,
+    [markers.data, page]
+  );
 
-interface MarkersTableProps {
-  markers: UseQueryResult<ClientMarker[]>;
-}
-export const MarkersTable = ({ markers }: MarkersTableProps) => {
   const update = trpc.useMutation("marker.update");
 
   const columns = useMemo(
@@ -61,9 +69,11 @@ export const MarkersTable = ({ markers }: MarkersTableProps) => {
       columnHelper.accessor("name", {
         id: "name",
         cell: (info) => (
-          <NameChangeInput
-            initialValue={info.getValue() ?? ""}
-            onUpdate={async (name) => {
+          <DebouncedInput
+            className="min-w-[12rem]"
+            value={info.getValue() ?? ""}
+            onChange={async (e) => {
+              const name = e.target.value;
               const trimmedName = name.trim();
               await toast.promise(
                 update.mutateAsync({
@@ -86,9 +96,7 @@ export const MarkersTable = ({ markers }: MarkersTableProps) => {
         ),
         sortDescFirst: true,
       }),
-      columnHelper.accessor("type", {
-        cell: (info) => <div className="text-right">{info.getValue()}</div>,
-      }),
+      columnHelper.accessor("type", {}),
       columnHelper.accessor("hidden", {
         header: "show",
         cell: (info) => (
@@ -136,14 +144,17 @@ export const MarkersTable = ({ markers }: MarkersTableProps) => {
     ],
     [markers, update]
   );
-  if (!markers.data) {
-    return <>loading</>;
-  }
+  if (!markers.data) return <>loading</>;
+
   return (
-    <Table
-      columns={columns}
-      data={markers.data}
-      initialSort={[{ id: "updatedAt", desc: false }]}
-    />
+    <div className={`min-w-max `}>
+      {filters}
+      <Table
+        columns={columns}
+        data={markers.data.entries}
+        initialSort={[{ id: "updatedAt", desc: false }]}
+      />
+      {pagination}
+    </div>
   );
 };

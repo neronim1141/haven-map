@@ -18,6 +18,7 @@ const defaultUserSelect = Prisma.validator<Prisma.UserSelect>()({
   token: true,
   createdAt: true,
   updatedAt: true,
+  lastVisit: true,
 });
 export const userRouter = createRouter()
   .query("all", {
@@ -45,6 +46,32 @@ export const userRouter = createRouter()
         select: defaultUserSelect,
       });
 
+      if (!user) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User has not be found",
+        });
+      }
+      return user;
+    },
+  })
+  .query("verify", {
+    input: z.object({
+      id: z.number(),
+    }),
+    async resolve({ ctx, input: { id } }) {
+      if (ctx.session?.user.id !== id) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+        });
+      }
+      const user = await prisma.user.update({
+        where: { id },
+        data: {
+          lastVisit: new Date(),
+        },
+        select: defaultUserSelect,
+      });
       if (!user) {
         throw new TRPCError({
           code: "NOT_FOUND",

@@ -6,7 +6,6 @@ import { MapControls } from "./MapControls";
 import { LeafletMouseEvent } from "leaflet";
 import {
   useCoords,
-  useGridToggle,
   useMain,
   useMap,
   useMaps,
@@ -19,6 +18,7 @@ import { HnHMaxZoom, TileSize } from "~/server/routers/map/config";
 import { EditGridModal } from "../modals/shiftMapModal";
 import { Role } from "@prisma/client";
 import { useAuth } from "~/contexts/auth";
+import { useGridToggle } from "./context/mapSettingsContext";
 
 export default function MapView() {
   const auth = useAuth();

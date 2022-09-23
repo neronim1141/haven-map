@@ -1,25 +1,24 @@
 import React from "react";
 import { useState } from "react";
-import {
-  MainMap,
-  OverlayMap,
-  useMaps,
-  useMarkersToggle,
-  useGridToggle,
-} from "./context/havenContext";
+import { MainMap, OverlayMap, useMaps } from "./context/havenContext";
 import { useCharacters } from "./context/charactersContext";
 import L from "leaflet";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { Role } from "@prisma/client";
 import { canAccess } from "~/server/routers/user/utils";
-import { HnHMaxZoom, TileSize } from "~/server/routers/map/config";
 import { Select } from "../controls/select";
 import { HiAdjustments, HiOutlineX } from "react-icons/hi";
 import { Toggle } from "../controls/switch";
 import { SearchSelect } from "../controls/searchSelect";
 import { useMarkers } from "./context/markersContext";
 import { useAuth } from "~/contexts/auth";
+import {
+  useGridToggle,
+  useMarkersToggle,
+  useUsernameToggle,
+} from "./context/mapSettingsContext";
+import { HnHMaxZoom, TileSize } from "~/server/routers/map/config";
+import { Role } from "@prisma/client";
 type MarkerShortType = { x: number; y: number; map: number };
 
 export function MapControls({
@@ -33,6 +32,7 @@ export function MapControls({
 }) {
   const [showMarkers, setShowMarkers] = useMarkersToggle();
   const [showGrid, setShowGrid] = useGridToggle();
+  const [showUsernames, setShowUsernames] = useUsernameToggle();
 
   const router = useRouter();
   const auth = useAuth();
@@ -71,20 +71,21 @@ export function MapControls({
       {show && (
         <div className="flex flex-col rounded-lg border border-neutral-700 bg-neutral-800 shadow-md">
           <div className="flex flex-col gap-2 p-2">
-            <div className="flex gap-1">
-              <Toggle
-                label="show grid"
-                value={showGrid}
-                onToggle={() => setShowGrid((prev) => !prev)}
-              />
-            </div>
-            <div className="flex gap-1">
-              <Toggle
-                label="show markers"
-                value={showMarkers}
-                onToggle={() => setShowMarkers((prev) => !prev)}
-              />
-            </div>
+            <Toggle
+              label="show grid"
+              value={showGrid}
+              onToggle={() => setShowGrid((prev) => !prev)}
+            />
+            <Toggle
+              label="show markers"
+              value={showMarkers}
+              onToggle={() => setShowMarkers((prev) => !prev)}
+            />
+            <Toggle
+              label="show usernames"
+              value={showUsernames}
+              onToggle={() => setShowUsernames((prev) => !prev)}
+            />
             <div className="w-48">
               <Select
                 value={{

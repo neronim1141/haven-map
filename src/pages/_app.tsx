@@ -22,7 +22,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
       </Head>
       <SessionProvider session={session}>
         <AuthProvider>
-          <div className="flex min-h-screen w-full flex-col bg-neutral-900 text-white ">
+          <div className="flex h-screen w-full flex-col bg-neutral-900 text-white ">
             <Header />
             <main className="flex flex-grow overflow-y-auto">
               <Component {...pageProps} />

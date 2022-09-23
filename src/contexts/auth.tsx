@@ -28,7 +28,7 @@ export const AuthProvider: FunctionComponent<{
   children?: ReactNode;
 }> = ({ children }) => {
   const session = useSession();
-  const user = trpc.useQuery(["user.byId", { id: session.data?.user.id! }], {
+  const user = trpc.useQuery(["user.verify", { id: session.data?.user.id! }], {
     enabled: !!session.data?.user.id,
     refetchOnWindowFocus: true,
     retry: 2,

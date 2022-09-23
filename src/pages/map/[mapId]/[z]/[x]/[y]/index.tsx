@@ -5,6 +5,7 @@ import { HavenProvider } from "~/components/mapView/context/havenContext";
 import { useRouter } from "next/router";
 import { SocketProvider } from "~/hooks/useSocketIO";
 import { trpc } from "utils/trpc";
+import { MapSettingsProvider } from "~/components/mapView/context/mapSettingsContext";
 
 function isNumeric(str: any) {
   if (typeof str != "string") return false; // we only process strings!
@@ -52,7 +53,9 @@ const Page = () => {
   return (
     <SocketProvider>
       <HavenProvider maps={maps.data} onMerge={maps.refetch}>
-        <Map />
+        <MapSettingsProvider>
+          <Map />
+        </MapSettingsProvider>
       </HavenProvider>
     </SocketProvider>
   );
