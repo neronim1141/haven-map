@@ -1,3 +1,0 @@
-mutation ShiftCoord($mapId: Int!, $shiftBy: CoordInput!) {
-  shiftCoord(mapId: $mapId, shiftBy: $shiftBy)
-}

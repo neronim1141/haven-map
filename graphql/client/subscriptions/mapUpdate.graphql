@@ -1,9 +1,0 @@
-subscription MapUpdates($mapId: Int!) {
-  mapUpdates(id: $mapId) {
-    x
-    y
-    z
-    lastUpdated
-    mapId
-  }
-}
