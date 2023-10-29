@@ -10,42 +10,9 @@ import { ActionsMenu } from "~/components/actionMenu";
 import { HiSearch, HiPencil, HiOutlineX, HiCheck } from "react-icons/hi";
 import { UseQueryResult } from "react-query";
 import { toast } from "react-toastify";
+import { DebouncedInput } from "../controls/inputs/DebouncedInput";
 
 const columnHelper = createColumnHelper<Map>();
-
-const NameChangeInput = ({
-  initialValue,
-  onUpdate,
-}: {
-  initialValue: string;
-  onUpdate: (name: string) => Promise<void>;
-}) => {
-  const [value, setValue] = useState(initialValue);
-  const [loading, setLoading] = useState(false);
-  const debouncedValue = useDebounce<string>(value, 2000);
-
-  useEffect(() => {
-    if (debouncedValue !== initialValue) {
-      onUpdate(debouncedValue).then(() => setLoading(false));
-    }
-  }, [initialValue, debouncedValue, onUpdate]);
-  return (
-    <div className="w-content relative  flex items-center">
-      <input
-        type="text"
-        value={value}
-        onChange={(e) => {
-          setValue(e.target.value);
-          setLoading(true);
-        }}
-        className="relative w-full truncate rounded bg-neutral-600 p-2 pr-7 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm "
-      />
-      <span className="absolute right-1 animate-bounce">
-        {loading && <HiPencil />}
-      </span>
-    </div>
-  );
-};
 
 interface MapsTableProps {
   maps: UseQueryResult<Map[]>;
@@ -63,9 +30,11 @@ export const MapsTable = ({ maps }: MapsTableProps) => {
       columnHelper.accessor("name", {
         id: "name",
         cell: (info) => (
-          <NameChangeInput
-            initialValue={info.getValue() ?? ""}
-            onUpdate={async (name) => {
+          <DebouncedInput
+            className="min-w-[12rem]"
+            value={info.getValue() ?? ""}
+            onChange={async (e) => {
+              const name = e.target.value;
               const trimmedName = name.trim();
               await toast.promise(
                 update.mutateAsync({
@@ -87,7 +56,6 @@ export const MapsTable = ({ maps }: MapsTableProps) => {
           />
         ),
         sortDescFirst: true,
-        enableSorting: false,
       }),
       columnHelper.accessor("hidden", {
         header: "show",

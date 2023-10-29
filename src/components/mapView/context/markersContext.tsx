@@ -5,25 +5,32 @@ import React, {
   ReactNode,
   useContext,
 } from "react";
+import { UseQueryResult } from "react-query";
 import { trpc } from "utils/trpc";
 import { ClientMarker } from "~/server/routers/marker";
-import { useMarkersToggle } from "./havenContext";
+import { useContextFallback } from "./charactersContext";
+import { useMarkersToggle } from "./mapSettingsContext";
 
-const MarkersContext = createContext<ClientMarker[] | undefined>(undefined);
+const MarkersContext = createContext<
+  { markers: ClientMarker[]; query: UseQueryResult<ClientMarker[]> } | undefined
+>(undefined);
 
 export const MarkersProvider: FunctionComponent<{
   children?: ReactNode;
 }> = ({ children }) => {
   const [show] = useMarkersToggle();
-  const markers = trpc.useQuery(["marker.all", { hidden: false }], {
+  const markers = trpc.useQuery(["marker.all"], {
     refetchInterval: 60 * 1000,
   });
   const markersData = markers.data ?? [];
   return (
     <MarkersContext.Provider
-      value={markersData.filter(
-        (marker) => show || marker.type === "thingwall"
-      )}
+      value={{
+        markers: markersData.filter(
+          (marker) => show || marker.type === "thingwall"
+        ),
+        query: markers,
+      }}
     >
       {children}
     </MarkersContext.Provider>
@@ -31,12 +38,8 @@ export const MarkersProvider: FunctionComponent<{
 };
 
 export const useMarkersFor = (mapId: number) =>
-  useContextFallback(MarkersContext).filter((marker) => marker.mapId === mapId);
-export const useMarkers = () => useContextFallback(MarkersContext);
-export const useContextFallback = <T,>(value: Context<T | undefined>): T => {
-  const ctx = useContext<T | undefined>(value);
-  if (!ctx) {
-    throw new Error(`This Component require context: ${value.displayName}`);
-  }
-  return ctx;
-};
+  useContextFallback(MarkersContext).markers.filter(
+    (marker) => marker.mapId === mapId
+  );
+export const useMarkers = () => useContextFallback(MarkersContext).markers;
+export const useMarkersQuery = () => useContextFallback(MarkersContext).query;

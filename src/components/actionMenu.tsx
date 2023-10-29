@@ -4,6 +4,7 @@ import React, { Fragment } from "react";
 import { HiDotsVertical } from "react-icons/hi";
 
 interface ActionsMenuProps {
+  className?: string;
   actions: {
     name: string;
     onClick: () => void;
@@ -11,9 +12,12 @@ interface ActionsMenuProps {
     icon?: React.ElementType;
   }[];
 }
-export const ActionsMenu = ({ actions }: ActionsMenuProps) => {
+export const ActionsMenu = ({
+  className = "text-left",
+  actions,
+}: ActionsMenuProps) => {
   return (
-    <Menu as="div" className="text-left ">
+    <Menu as="div" className={className}>
       <div>
         <Menu.Button className=" inline-flex  justify-center rounded-md bg-opacity-20 py-1 text-xl font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
           <HiDotsVertical />

@@ -2,12 +2,12 @@ import { createRouter } from "next-connect";
 
 import type { NextApiRequest } from "next";
 
+import { Grid } from "@prisma/client";
 import { logger } from "utils/logger";
 import { prisma } from "utils/prisma";
-import { Grid } from "@prisma/client";
-import { NextApiResponseServerIO, SocketIO } from "../../socketio";
-import { Coord, processZoom } from "~/server/routers/map/utils";
 import { defaultHidden } from "~/server/routers/map/config";
+import { Coord, processZoom } from "~/server/routers/map/utils";
+import { NextApiResponseServerIO, SocketIO } from "../../socketio";
 export type HavenGrids = [
   [string, string, string],
   [string, string, string],
@@ -17,7 +17,7 @@ export type HavenGrids = [
 type GridRequest = {
   gridRequests: string[];
   map: number;
-  coord: { x: number; y: number };
+  coords: { x: number; y: number };
 };
 
 const router = createRouter<NextApiRequest, NextApiResponseServerIO>();
@@ -44,7 +44,7 @@ router.post(async (req, res) => {
   const gridRequests: GridRequest = {
     gridRequests: [],
     map: 0,
-    coord: { x: 0, y: 0 },
+    coords: { x: 0, y: 0 },
   };
   const mapsOffsets = await getMapsOffsets(grids);
   const socket = res?.socket?.server?.io;
@@ -60,7 +60,7 @@ router.post(async (req, res) => {
   const centerGrid = (await prisma.grid.findUnique({
     where: { id: grids[1][1] },
   }))!;
-  gridRequests.coord = { x: centerGrid.x, y: centerGrid.y };
+  gridRequests.coords = { x: centerGrid.x, y: centerGrid.y };
   gridRequests.map = centerGrid.mapId;
 
   if (Object.keys(mapsOffsets).length > 1) {

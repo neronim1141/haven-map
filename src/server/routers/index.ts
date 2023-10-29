@@ -6,6 +6,8 @@ import { userRouter } from "./user";
 import { markerRouter } from "./marker";
 import { mapRouter } from "./map";
 import superjson from "superjson";
+import { prisma } from "utils/prisma";
+
 /**
  * Create your application's root router
  * If you want to use SSG, you need export this
@@ -23,9 +25,15 @@ export const appRouter = createRouter()
    * @link https://trpc.io/docs/error-formatting
    */
   // .formatError(({ shape, error }) => { })
-  .query("healthz", {
-    resolve() {
-      return "yay!";
+  .query("info", {
+    async resolve() {
+      return {
+        count: {
+          maps: await prisma.map.count(),
+          grids: await prisma.grid.count(),
+          markers: await prisma.marker.count(),
+        },
+      };
     },
   })
   .merge("user.", userRouter)
