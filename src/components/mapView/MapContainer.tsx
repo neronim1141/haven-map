@@ -1,6 +1,6 @@
 import React, { ReactNode, useCallback, useRef } from "react";
 import { MapContainer as Map } from "react-leaflet";
-import L, { LatLngTuple, LeafletMouseEvent } from "leaflet";
+import L, { LeafletMouseEvent, PointTuple } from "leaflet";
 import { useRouter } from "next/router";
 import { MapEvents } from "./mapEvents";
 import { HnHCRS } from "./utils";
@@ -21,10 +21,10 @@ export const MapContainer = (props: {
     (node: L.Map | null) => {
       if (node) {
         mapRef.current = node;
-        const newCoords: LatLngTuple = [
+        const newCoords: PointTuple = [
           Number(routerRef.current.query.x) * 100,
           Number(routerRef.current.query.y) * 100,
-        ];
+        ] as const;
         setMap(node);
         node.setView(node.unproject(newCoords), undefined, {
           animate: false,

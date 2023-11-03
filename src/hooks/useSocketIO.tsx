@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import SocketIOClient, { Socket } from "socket.io-client";
+import io, { Socket } from "socket.io-client";
 import { ServerToClientEvents } from "~/pages/api/socketio";
 
 const SocketContext = createContext<undefined | Socket<ServerToClientEvents>>(
@@ -16,25 +16,29 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
   const [socket, setSocket] = useState<Socket>();
 
   useEffect(() => {
+    const socketInitializer = async () => {
+      await fetch("/api/socketio");
+      const socket = io({
+        path: "/api/socketio",
+      });
+      socket.on("connect", () => {
+        setSocket(socket);
+      });
+      socket.on("disconnect", () => {
+        setSocket(undefined);
+      });
+      if (socket)
+        return () => {
+          socket.disconnect();
+          setSocket(undefined);
+        };
+    };
+    socketInitializer();
     // connect to socket server
-    const socket: Socket<ServerToClientEvents> = SocketIOClient({
-      path: "/api/socketio",
-    });
-    // log socket connection
-    socket.on("connect", () => {
-      setSocket(socket);
-    });
 
-    socket.on("disconnect", () => {
-      setSocket(undefined);
-    });
+    // log socket connection
 
     // socket disconnet onUnmount if exists
-    if (socket)
-      return () => {
-        socket.disconnect();
-        setSocket(undefined);
-      };
   }, []);
 
   return (
