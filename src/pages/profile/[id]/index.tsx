@@ -47,10 +47,11 @@ const Page = () => {
       )}
       <span>
         Paste this into client{" "}
-        <Link href="/instruction">
-          <a className="font-bold underline hover:text-neutral-400">
-            (Instructions)
-          </a>
+        <Link
+          href="/instruction"
+          className="font-bold underline hover:text-neutral-400"
+        >
+          (Instructions)
         </Link>
         :
       </span>

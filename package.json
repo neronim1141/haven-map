@@ -12,7 +12,10 @@
     "reset:admin": "node ./prisma/seed.js",
     "analyze": "cross-env ANALYZE=true next build",
     "analyze:server": "cross-env BUNDLE_ANALYZE=server next build",
-    "analyze:browser": "cross-env BUNDLE_ANALYZE=browser next build"
+    "analyze:browser": "cross-env BUNDLE_ANALYZE=browser next build",
+    "db:push": "prisma db push",
+    "db:generate": "prisma generate",
+    "db:seed": "node ./prisma/seed.js"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.0",
@@ -26,15 +29,14 @@
     "@trpc/server": "^9.27.2",
     "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
-    "canvas": "^2.10.0",
     "clsx": "^1.2.1",
     "dayjs": "^1.11.5",
     "devalue": "^3.1.2",
     "formidable": "^3.2.4",
     "jszip": "^3.10.0",
     "leaflet": "^1.8.0",
-    "next": "12.2.2",
-    "next-auth": "^4.10.3",
+    "next": "^14.0.1",
+    "next-auth": "^4.24.4",
     "next-connect": "^1.0.0-next.3",
     "pino": "^8.4.0",
     "pino-pretty": "^8.1.0",
@@ -54,7 +56,7 @@
     "socket.io-client": "^4.5.1",
     "superjson": "^1.9.1",
     "ws": "^8.8.1",
-    "zod": "^3.18.0"
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^12.3.0",
