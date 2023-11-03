@@ -24,10 +24,12 @@ const Home: NextPage = () => {
         <li>
           Copy link from your{" "}
           {auth.user?.role ? (
-            <Link href={`/profile/[id]`} as={`/profile/${auth.user.id}`}>
-              <a className="rounded border-b-2 border-blue-400  tracking-wide   hover:text-blue-500">
-                profile
-              </a>
+            <Link
+              href={`/profile/[id]`}
+              as={`/profile/${auth.user.id}`}
+              className="rounded border-b-2 border-blue-400  tracking-wide hover:text-blue-500"
+            >
+              profile
             </Link>
           ) : (
             "profile"

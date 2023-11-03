@@ -9,7 +9,6 @@ router.get(async (req, res) => {
   const [map, data] = req.query.slug as String[];
   const [z, x, y] = data.split("_").map(Number);
   res.setHeader("Content-Type", "image/webp");
-
   const tile = await getMapTileData(
     Number(map),
     Number(x),

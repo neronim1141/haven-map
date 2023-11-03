@@ -10,6 +10,8 @@ import { TableMarker } from "~/server/routers/marker";
 import dayjs from "dayjs";
 import { DebouncedInput } from "../controls/inputs/DebouncedInput";
 import { Pagination } from "../controls/pagination/pagination";
+import Link from "next/link";
+import { HnHMaxZoom, TileSize } from "~/server/routers/map/config";
 dayjs().format();
 
 const columnHelper = createColumnHelper<TableMarker>();
@@ -65,6 +67,23 @@ export const MarkersTable = () => {
     () => [
       columnHelper.accessor("mapId", {
         cell: (info) => <div className="text-right">{info.getValue()}</div>,
+      }),
+      columnHelper.display({
+        id: "goto",
+        cell: ({
+          row: {
+            original: { mapId, x, y },
+          },
+        }) =>
+          mapId ? (
+            <Link
+              href={`/map/${mapId}/${HnHMaxZoom}/${~~(x / TileSize)}/${~~(
+                y / TileSize
+              )}`}
+            >
+              goto
+            </Link>
+          ) : null,
       }),
       columnHelper.accessor("name", {
         id: "name",
