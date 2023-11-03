@@ -117,11 +117,10 @@ const Register = () => {
 
           <p className="text-center text-lg">
             Already have an account?{" "}
-            <Link
-              href="/login"
-              className="font-medium text-indigo-500 underline-offset-4 hover:underline"
-            >
-              Log In.
+            <Link href="/login">
+              <a className="font-medium text-indigo-500 underline-offset-4 hover:underline">
+                Log In.
+              </a>
             </Link>
           </p>
         </section>

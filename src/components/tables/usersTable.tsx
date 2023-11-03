@@ -40,12 +40,10 @@ export const UsersTable = ({ users }: UsersTableProps) => {
       columnHelper.accessor("name", {
         id: "name",
         cell: (info) => (
-          <Link
-            href="/profile/[id]"
-            as={`/profile/${info.row.original.id}`}
-            className="p-1 underline hover:text-neutral-400"
-          >
-            {info.getValue()}
+          <Link href="/profile/[id]" as={`/profile/${info.row.original.id}`}>
+            <a className="p-1 underline hover:text-neutral-400">
+              {info.getValue()}
+            </a>
           </Link>
         ),
         sortDescFirst: true,

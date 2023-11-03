@@ -26,6 +26,20 @@ const resetAdmin = async () => {
   console.log("Restored admin user");
 };
 
+async function getFiles(dir, files_) {
+  files_ = files_ || [];
+  var files = await fs.readdir(dir);
+  for (var i in files) {
+    var name = dir + "/" + files[i];
+    if ((await fs.stat(name)).isDirectory()) {
+      await getFiles(name, files_);
+    } else {
+      files_.push(name);
+    }
+  }
+  return files_;
+}
+
 const load = async () => {
   try {
     await resetAdmin();

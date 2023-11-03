@@ -1,3 +1,4 @@
+import { createCanvas, createImageData } from "canvas";
 import sharp from "sharp";
 import { prisma } from "utils/prisma";
 import { SocketIO } from "~/pages/api/socketio";
@@ -28,6 +29,7 @@ export async function getMapTileData(
   y: number,
   z: number
 ) {
+  let tileData = undefined;
   if (z !== 0) {
     const tile = await prisma.tile.findFirst({
       where: {
@@ -37,8 +39,9 @@ export async function getMapTileData(
         z,
       },
     });
-    return tile?.tileData;
-  } else {
+    tileData = tile?.tileData;
+  }
+  if (z === 0) {
     const grid = await prisma.grid.findFirst({
       where: {
         mapId,
@@ -46,8 +49,10 @@ export async function getMapTileData(
         y,
       },
     });
-    return grid?.tileData;
+    tileData = grid?.tileData;
   }
+
+  return tileData;
 }
 
 export async function processZoom(
@@ -143,7 +148,10 @@ export const updateZoomLevel = async (
   z: number
 ) => {
   const coord = { x, y };
-  let tiles = [];
+  const canvas = createCanvas(100, 100);
+  const ctx = canvas.getContext("2d");
+  let anyTile = false;
+
   for (let x = 0; x <= 1; x++) {
     for (let y = 0; y <= 1; y++) {
       const newX = coord.x * 2 + x;
@@ -152,34 +160,27 @@ export const updateZoomLevel = async (
       const tile = await getMapTileData(mapId, newX, newY, z - 1);
 
       if (!tile) continue;
-      tiles.push({
-        tileBuffer: tile,
-        x,
-        y,
-      });
+
+      anyTile = true;
+      ctx.putImageData(await bufferToImageData(tile), x * 50, y * 50);
     }
   }
 
-  if (tiles.length === 0) {
+  if (!anyTile) {
     return;
   }
-  let tile = sharp({
-    create: {
-      width: 200,
-      height: 200,
-      channels: 4,
-      background: { r: 0, g: 0, b: 0, alpha: 0 },
-    },
-  })
-    .png()
-    .composite(
-      tiles.map((t) => {
-        return { input: t.tileBuffer, left: t.x * 100, top: t.y * 100 };
-      })
-    );
-  tile = sharp(await tile.toBuffer()).resize({
-    width: 100,
-    height: 100,
-  });
-  return await saveTile(mapId, coord.x, coord.y, z, await tile.toBuffer());
+  return await saveTile(mapId, coord.x, coord.y, z, canvas.toBuffer());
 };
+
+async function bufferToImageData(tile: Buffer) {
+  const buffer = await sharp(tile)
+    .raw()
+    .resize(50, 50)
+    .toBuffer({ resolveWithObject: true });
+  const ImageData = createImageData(
+    Uint8ClampedArray.from(buffer.data),
+    50,
+    50
+  );
+  return ImageData;
+}

@@ -80,11 +80,10 @@ const Login = () => {
 
           <p className="text-center text-lg">
             No account?{" "}
-            <Link
-              href="/register"
-              className="font-medium text-indigo-500 underline-offset-4 hover:underline"
-            >
-              Create One
+            <Link href="/register">
+              <a className="font-medium text-indigo-500 underline-offset-4 hover:underline">
+                Create One
+              </a>
             </Link>
           </p>
         </section>

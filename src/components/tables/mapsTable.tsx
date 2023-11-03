@@ -11,7 +11,6 @@ import { HiSearch, HiPencil, HiOutlineX, HiCheck } from "react-icons/hi";
 import { UseQueryResult } from "react-query";
 import { toast } from "react-toastify";
 import { DebouncedInput } from "../controls/inputs/DebouncedInput";
-import Image from "next/image";
 
 const columnHelper = createColumnHelper<Map>();
 
@@ -27,20 +26,6 @@ export const MapsTable = ({ maps }: MapsTableProps) => {
       columnHelper.accessor("id", {
         id: "id",
         cell: (info) => <div className="text-right">{info.getValue()}</div>,
-      }),
-      columnHelper.display({
-        id: "centerTile",
-        header: "center tile",
-        size: 100,
-        cell: ({ row }) => (
-          <Image
-            src={`/api/grids/${row.original.id}/0_0_0`}
-            width={100}
-            height={100}
-            className="h-12 w-12"
-            alt="center tile of"
-          />
-        ),
       }),
       columnHelper.accessor("name", {
         id: "name",
