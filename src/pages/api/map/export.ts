@@ -40,9 +40,9 @@ const getGridsByIteration = async (
     });
     for (let marker of markers) {
       markersData.push(
-        `${marker.id}:${marker.name}:${marker.image}:${marker.gridId}:${
+        `${marker.id},${marker.name},${marker.image},${marker.gridId},${
           marker.x
-        }:${marker.y}:${marker.hidden ? 1 : 0}`
+        },${marker.y},${marker.hidden ? 1 : 0}`
       );
     }
   }
@@ -58,11 +58,11 @@ router.get(async (req, res) => {
     maps
       .map(
         (map) =>
-          `${map.id}:${map.name}:${map.hidden ? 1 : 0}:${
+          `${map.id}:${map.name ?? ""},${map.hidden ? 1 : 0},${
             map.priority ? 1 : 0
-          }:${map.winterUpdate ? 1 : 0}`
+          },${map.winterUpdate ? 1 : 0}`
       )
-      .join(";\n")
+      .join("\n")
   );
 
   for (let map of maps) {
@@ -81,7 +81,7 @@ router.get(async (req, res) => {
       markersData = markersData.concat(markers);
     });
 
-    zip.file(`${map.id}/markers.csv`, markersData.join(";\n"));
+    zip.file(`${map.id}/markers.csv`, markersData.join("\n"));
   }
   const stream = await zip.generateAsync({ type: "nodebuffer" });
   res.setHeader("Content-Type", "application/zip");
